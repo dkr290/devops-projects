@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: todofiber
+  namespace: argocd
+
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: 'todofiber-argo-dev'
+    server: '*'
+  - namespace: 'todofiber-argo-uat'
+    server: '*'
+  sourceRepos:
+    - '*'

@@ -1,0 +1,3 @@
+eksctl create cluster  -n demo-eks-cluster01 --nodes-min=2 --nodes-max=3  --node-private-networking \
+--vpc-private-subnets='subnet-07f744ba01bed825b,subnet-016542cb2a6559984' --node-type=t2.small \
+--asg-access --nodegroup-name=ng-default 

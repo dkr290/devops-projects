@@ -1,0 +1,31 @@
+##kubectl get aws-auth -n kube-system -o yaml > yamfiles
+
+apiVersion: v1
+data:
+  mapRoles: |
+    - groups:
+      - system:bootstrappers
+      - system:nodes
+      rolearn: arn:aws:iam::<xxxx>
+      username: system:node:{{EC2PrivateDNSName}}
+  mapUsers: |
+    - userarn: arn:aws:iam::<xxx>:user/k8sadmin
+      username: k8sadmin
+      groups:
+        - system:masters
+
+    - userarn: arn:aws:iam::<xxxx>:user/prod-viewer
+      username: prod-viewer
+      groups:
+        - prod-viewer-role
+
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {{xxxxxxx}}
+  creationTimestamp: "xxxxxx"
+  name: aws-auth
+  namespace: kube-system
+  resourceVersion: "9457"
+  uid: xxxxx

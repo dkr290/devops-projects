@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app: loki
+    release: loki-stack
+  name: loki-stack
+  namespace: prometheus
+rules:
+- apiGroups:
+  - extensions
+  resourceNames:
+  - loki-stack
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use

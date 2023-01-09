@@ -1,0 +1,59 @@
+--- 
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: demo-eks-cluster01
+  region: eu-central-1
+
+vpc:
+  id: "vpc-0988b31bce2df3d36"  # (optional, must match VPC ID used for each subnet below)
+  cidr: "10.0.0.0/16"       # (optional, must match CIDR used by the given VPC)
+  subnets:
+    # must provide 'private' and/or 'public' subnets by availibility zone as shown
+    private:
+      eu-central-1a:
+        id: "subnet-04d7d9a7d6cb512c0"
+        cidr: "10.0.1.0/24" # (optional, must match CIDR used by the given subnet)
+
+      eu-central-1b:
+        id: "subnet-009ebf23868fb50dc"
+        cidr: "10.0.2.0/24"  # (optional, must match CIDR used by the given subnet)
+
+nodeGroups:
+  - name: ng-default
+    instanceType: t2.small
+    instanceName: ng-default-node
+    minSize: 1
+    maxSize: 4
+    volumeSize: 10
+    volumeType: gp2
+    desiredCapacity: 2
+    ssh:
+      publicKeyName: eks-course1
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+    labels:
+      nodegroup-type: default
+      instance-type: onDemand
+    privateNetworking: true
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["api", "audit", "authenticator"]
+    #enableTypes: ["*"] #for all types to be included
+
+
+  # - name: ng-mixed
+  #   minSize: 2
+  #   maxSize: 4
+  #   instancesDistribution:
+  #     maxPrice: 0.2
+  #     instanceTypes: ["t2.small","t3.small"]
+  #     onDemandBaseCapacity: 0
+  #     onDEmandPercentageAboveBaseCapacity: 50
+  #   privateNetworking: true
+  #   ssh:
+  #     publicKeyName: eks-course1
+  
+    

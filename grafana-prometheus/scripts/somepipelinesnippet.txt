@@ -1,0 +1,40 @@
+- task: Kubernetes@1
+             displayName: Create namespace prometheus
+             inputs:
+           
+               command: 'apply'
+               arguments: '-f $(System.ArtifactsDirectory)/grafana-prometheus/namespace.yaml'
+               
+          
+          
+           - task: Bash@3
+             inputs:
+               targetType: 'inline'
+               script: |
+                 #!/bin/bash
+                 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+            
+          
+
+       
+           - task: Kubernetes@1
+             displayName: Create namespace prometheus
+             inputs:
+               connectionType: 'Azure Resource Manager'
+              
+               namespace: '$(kubernetes-namespace)'
+               useClusterAdmin: true
+               command: 'login'
+
+           - script: |
+               echo $(registrypassword) |  helm registry login  internalregisrty.azurecr.io -u $(registry_user) --password-stdin 2>&1 
+               helm upgrade --install prometheus-grafana  oci://internalregistry.azurecr.io/helm/kube-prometheus-stack --version 42.2.0 --namespace prometheus   --set kubeEtcd.enabled=false   --set kubeControllerManager.enabled=false -f $(System.ArtifactsDirectory)/grafana-prometheus/values.yaml 
+               helm upgrade --install prometheus-blackbox-exporter oci://internalregistry.azurecr.io/helm/prometheus-blackbox-exporter --version 7.1.3 --namespace prometheus -f $(System.ArtifactsDirectory)/grafana-prometheus/blackbox.yaml
+
+           
+           - script: |
+               kubectl apply -f  $(System.ArtifactsDirectory)/loki/.
+
+           - script: |
+              sudo apt-get install -y apache2-utils
+              htpasswd -c -b auth admin $(prometheus-password-admin-uat)

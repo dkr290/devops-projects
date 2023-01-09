@@ -1,0 +1,8 @@
+curl -o cluster-autoscaler-autodiscover.yaml https://raw.githubusercontent.com/kubernetes/autoscaler/master/cluster-autoscaler/cloudprovider/aws/examples/cluster-autoscaler-autodiscover.yaml
+kubectl -n kube-system annotate  deployment.apps/cluster-autoscaler cluster-autoscaler.kubernetes.io/safe-to-evict="false"
+https://github.com/kubernetes/autoscaler/releases?page=2
+get correct image for kubernetes version 
+
+
+
+k edit deploy cluster-autoscaler -n kube-system

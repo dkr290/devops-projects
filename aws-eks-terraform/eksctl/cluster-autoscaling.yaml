@@ -1,0 +1,96 @@
+--- 
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: demo-eks-cluster01
+  region: eu-central-1
+
+vpc:
+  id: "vpc-0d8080a7d09b4606c"  # (optional, must match VPC ID used for each subnet below)
+  cidr: "10.0.0.0/16"       # (optional, must match CIDR used by the given VPC)
+  subnets:
+    # must provide 'private' and/or 'public' subnets by availibility zone as shown
+    private:
+      eu-central-1a:
+        id: "subnet-08eccd28080146500"
+        cidr: "10.0.1.0/24" # (optional, must match CIDR used by the given subnet)
+
+      eu-central-1b:
+        id: "subnet-0bb246179bbaa5e6f"
+        cidr: "10.0.2.0/24"  # (optional, must match CIDR used by the given subnet)
+
+nodeGroups:
+  - name: scale-central1a
+    instanceType: t2.small
+    instanceName: scale-central1a
+    minSize: 1
+    maxSize: 10
+    volumeSize: 10
+    volumeType: gp2
+    desiredCapacity: 1
+    availabilityZones: ["eu-central-1a"]
+    ssh:
+      publicKeyName: eks-course1
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+    labels:
+      nodegroup-type: statefull-eucentral1c
+      instance-type: onDemand
+    privateNetworking: true
+
+  - name: scale-central1b
+    instanceType: t2.small
+    instanceName: scale-central1b
+    minSize: 1
+    maxSize: 10
+    volumeSize: 10
+    volumeType: gp2
+    desiredCapacity: 1
+    availabilityZones: ["eu-central-1b"]
+    ssh:
+      publicKeyName: eks-course1
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+    labels:
+      nodegroup-type: statefull-eucentral1c
+      instance-type: onDemand
+    privateNetworking: true
+  
+    
+  - name: scale-spot
+    instanceName: scale-spot
+    desiredCapacity: 1
+    maxSize: 10
+    instancesDistribution:
+      instanceTypes: ["t2.small","t3.small"]
+      onDemandBaseCapacity: 0
+      onDemandPercentageAboveBaseCapacity: 0
+    ssh:
+      publicKeyName: eks-course1
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+    labels:
+      nodegroup-type: stateless-workload
+      instance-type: spot
+    privateNetworking: true
+
+  
+
+
+  # - name: ng-mixed
+  #   minSize: 2
+  #   maxSize: 4
+  #   instancesDistribution:
+  #     maxPrice: 0.2
+  #     instanceTypes: ["t2.small","t3.small"]
+  #     onDemandBaseCapacity: 0
+  #     onDEmandPercentageAboveBaseCapacity: 50
+  #   privateNetworking: true
+  #   ssh:
+  #     publicKeyName: eks-course1
+  
+    
