@@ -18,3 +18,4 @@ FUTURE-TOPICS
 # Ignore .pem files
 *.pem
 *.txt
+*.json
