@@ -17,3 +17,8 @@ variable "region" {
   description = "Region"
  
 }
+
+variable "bucket_name" {
+type = string
+description = "Bucket name"  
+}
