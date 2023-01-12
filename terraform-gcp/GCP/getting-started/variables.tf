@@ -5,7 +5,7 @@ variable "project_id" {
   
 }
 
-variable "location" {
+variable "zone" {
   
   type = string
   description = "The location"
