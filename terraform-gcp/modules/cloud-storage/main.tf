@@ -7,7 +7,7 @@ resource "google_storage_bucket" "bucket-name" {
 
   lifecycle_rule {
     condition  {
-          age = var.condition
+          age = var.age
     }
       
     
