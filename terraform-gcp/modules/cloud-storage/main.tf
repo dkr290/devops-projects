@@ -12,7 +12,8 @@ resource "google_storage_bucket" "bucket-name" {
       
     
     action {
-      type = var.type
+      type = "SetStorageClass"
+      storage_class = var.type
     }
   }
 
