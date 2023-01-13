@@ -33,10 +33,14 @@ variable "labels" {
   }
   
 }
-variable "uniform_bucket_level_access" {}
+variable "uniform_bucket_level_access" {
+  type = bool
+  description = "The bucket level acess true or false"
+  default = false
+}
 
 variable "storage_class" {
-  type = bool
+  type = string
   description = "The storage class for the bucket"
-  default = true
+  default = "STANDARD"
 }
