@@ -44,3 +44,18 @@ variable "storage_class" {
   description = "The storage class for the bucket"
   default = "STANDARD"
 }
+
+variable "bucket_object_name" {
+  type = string
+  description = "The object inside bucket"
+  default = "tfimages"
+  
+}
+
+variable "image_source" {
+
+  type = string
+  description = "Some sample image to upload"
+  default = "./image.png"
+  
+}
