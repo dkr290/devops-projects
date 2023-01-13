@@ -20,18 +20,23 @@ variable "region" {
 
 variable "bucket_name" {
 type = string
-description = "Bucket name"  
+description = "Bucket name" 
+defdefault = "daninewstorageaccount80" 
 }
 
 variable "labels" {
   type = map
   description = "The labels for the bucket"
+  default = {
+    "env" = "development",
+    "type"= "standart",
+  }
   
 }
 variable "uniform_bucket_level_access" {}
 
 variable "storage_class" {
-  type = string
+  type = bool
   description = "The storage class for the bucket"
-  
+  default = true
 }
