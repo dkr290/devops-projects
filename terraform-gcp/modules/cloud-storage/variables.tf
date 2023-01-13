@@ -35,3 +35,5 @@ variable "storage_class" {
   description = "The storage class for the bucket"
   
 }
+variable "bucket_object_name"{}
+variable "image_source" {}
