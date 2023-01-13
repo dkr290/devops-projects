@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        working-directory: [Cloud-Storage]
+        working-directory: [terrafrom-gcp/Cloud-Storage]
     defaults:
       run:
         working-directory: ${{ matrix.working-directory }}
@@ -91,7 +91,7 @@ jobs:
     environment: 'terraform-destroy'
     strategy:
       matrix:
-        working-directory: [Cloud-Storage]
+        working-directory: [terrafrom-gcp/Cloud-Storage]
     defaults:
       run:
         working-directory: ${{ matrix.working-directory }}
