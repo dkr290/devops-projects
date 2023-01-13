@@ -5,6 +5,17 @@ resource "google_storage_bucket" "bucket-name" {
   uniform_bucket_level_access = var.uniform_bucket_level_access
   storage_class = var.storage_class
 
+  lifecycle_rule {
+    condition  {
+          age = var.condition
+    }
+      
+    
+    action {
+      type = var.type
+    }
+  }
+
   labels = var.labels
    
   

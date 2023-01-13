@@ -37,3 +37,5 @@ variable "storage_class" {
 }
 variable "bucket_object_name"{}
 variable "image_source" {}
+variable "age" {}
+variable "type" {}

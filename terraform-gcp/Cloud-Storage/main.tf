@@ -9,4 +9,6 @@ module "cloud-storage" {
   storage_class = var.storage_class
   bucket_object_name = var.bucket_object_name
   image_source = var.image_source
+  age = local.archive_lf.age
+  type = local.archive_lf.type
 }
