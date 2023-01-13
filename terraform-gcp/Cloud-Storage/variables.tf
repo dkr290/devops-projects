@@ -21,7 +21,7 @@ variable "region" {
 variable "bucket_name" {
 type = string
 description = "Bucket name" 
-defdefault = "daninewstorageaccount80" 
+default = "daninewstorageaccount80" 
 }
 
 variable "labels" {
