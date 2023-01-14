@@ -18,3 +18,7 @@ variable "region" {
  
 }
 
+variable "custom_vpc_name" {
+  type = string
+  default = "gke-vpc"
+}

@@ -11,6 +11,7 @@ resource "google_compute_subnetwork" "gke-nodepools-subnetwork" {
   name          =  each.value.name 
   ip_cidr_range =  each.value.cidr 
   region        =  each.value.region 
+  private_ip_google_access = each.value.private_ip_google_access
   network       =  google_compute_network.custom_vpc_network.id
   
 }
