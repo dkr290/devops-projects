@@ -10,7 +10,7 @@ resource "google_compute_instance" "vm-from-tf" {
       image = "debian-cloud/debian-11"
       size = 20
       labels = {
-        environment = "Development"
+        environment = "development"
       }
     }
   }
