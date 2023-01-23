@@ -1,0 +1,9 @@
+subscription = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+location = "<location the same for aks>"
+application = "AKS Applications"
+environment = "DEV"
+aks-resourcegroup = "aks-rg"
+environment_full = "Development Environment"
+private_dns_zone = "aksdev.domain.net"
+aks-vnet = "aks-vnet-dev"
+virtual_network_link = "aks-vnet-dev-link-new" //todo taken from remote state datasource
