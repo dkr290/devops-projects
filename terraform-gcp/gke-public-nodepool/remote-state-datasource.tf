@@ -1,5 +1,5 @@
 data "terraform_remote_state" "gke-cluster"{
-    backend = "gcp"
+    backend = "gcs"
     config = {
          bucket  = "terraformstate80"
          prefix  = "terraform/gke"

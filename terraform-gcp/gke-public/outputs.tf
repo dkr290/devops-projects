@@ -22,7 +22,7 @@ output "cluster_ca_certificate" {
 }
 
 output "gke_service_account" {
-  value = module.gke_cluster.gke_servicea_account
+  value = module.gke_cluster.gke_service_account
 }
 output "gke_cluster_id" {
   value = module.gke_cluster.gke_cluster_id
