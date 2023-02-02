@@ -1,18 +1,19 @@
 
 
 resource "google_container_node_pool" "general" {
- 
-  name       = var.node_pool_name
-  cluster    = google_container_cluster.gke.name
-  project = data.google_project.dev-k8s.project_id
+  for_each = var.gke_node_pools 
+
+  name       = each.value.name
+  cluster    = var.gke_cluster
+  project = var.project
   location = var.location
-  version = var.gke_version
+  version = var.kubernetes_version
 
   
-  node_locations = var.node_locations
+  node_locations = each.value.node_locations
   autoscaling{
-    min_node_count = 1
-    max_node_count = 3
+    min_node_count = each.value.min_nodes
+    max_node_count = each.value.max_nodes
   }
 management {
   auto_repair = true
@@ -23,14 +24,14 @@ management {
     labels = {
       "role" = "general"
     }
-    machine_type = "e2-medium"
-    disk_size_gb = var.worker_nodes_disk_size
+    machine_type = each.value.machine_type
+    disk_size_gb = each.value.os_disk_size
   
     metadata = {
       disable-legacy-endpoints = "true"
     }
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    service_account = google_service_account.svc-gke.email
+    service_account = var.gke_serviceaccout
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
       "https://www.googleapis.com/auth/logging.write",

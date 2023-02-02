@@ -30,3 +30,20 @@ output "cluster_ca_certificate" {
   description = "The public certificate that is the root of trust for the cluster."
   value       = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate)
 }
+
+output "gke_service_account" {
+  description = "The service account used" 
+  value = google_service_account.svc-gke.email
+  
+}
+
+output "gke_cluster_id" {
+   description = "The id of the cluster"
+   value = google_container_cluster.cluster.id
+  
+}
+
+output "gke_master_version" {
+  description = "The current version of the master in the cluster. This may be different than the min_master_version set in the config if the master has been updated by GKE."
+  value = google_container_cluster.cluster.master_version
+}
