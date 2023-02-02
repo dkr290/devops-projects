@@ -59,6 +59,17 @@ variable "kubernetes_version" {
   type = string
   
 }
+
+variable "enable_vpc_router" {
+  type = bool
+  description = "Whether to enable o not the Router"
+}
+
+variable "enable_vpc_nat" {
+  type = bool
+  description = "Whether to enable nat router for example in case of private gke cluster"
+  
+}
 # For the example /16 network for the VPC. Note that when changing the size of the network,
 
 variable "vpc_cidr_block" {

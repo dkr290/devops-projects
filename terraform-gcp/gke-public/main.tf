@@ -33,7 +33,9 @@ module "vpc_network" {
 
   cidr_block           = var.vpc_cidr_block
   secondary_cidr_block = var.vpc_secondary_cidr_block
-
+  
+  enable_vpc_nat = var.enable_vpc_nat
+  enable_vpc_router = var.enable_vpc_router
   public_subnetwork_secondary_range_name = var.public_subnetwork_secondary_range_name
   public_services_secondary_range_name   = var.public_services_secondary_range_name
   public_services_secondary_cidr_block   = var.public_services_secondary_cidr_block

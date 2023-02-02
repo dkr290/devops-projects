@@ -19,7 +19,7 @@ provider "google" {
 terraform {
  backend "gcs" {
    bucket  = "terraformstate80"
-   prefix  = "terraform/storage-account"
+   prefix  = "terraform/gke"
    
  }
 }

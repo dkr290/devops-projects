@@ -103,3 +103,15 @@ variable "allowed_public_restricted_subnetworks" {
   default     = []
   type        = list(string)
 }
+
+
+variable "enable_vpc_router" {
+  type = bool
+  description = "Whether to enable o not the Router"
+}
+
+variable "enable_vpc_nat" {
+  type = bool
+  description = "Whether to enable nat router for example in case of private gke cluster"
+  
+}

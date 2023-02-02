@@ -1,15 +1,7 @@
-resource "null_resource" "sleep" {
-  provisioner "local-exec" {
-    command = "sleep 40"
-  }
-}
 
 
 resource "google_container_node_pool" "general" {
-    depends_on     = [
-      null_resource.sleep,
-      google_container_cluster.gke,
-      ]
+ 
   name       = var.node_pool_name
   cluster    = google_container_cluster.gke.name
   project = data.google_project.dev-k8s.project_id

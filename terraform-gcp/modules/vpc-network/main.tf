@@ -10,6 +10,7 @@ resource "google_compute_network" "vpc" {
 }
 
 resource "google_compute_router" "vpc_router" {
+  count = var.enable_vpc_router == true ? 1 : 0
   name = "${var.name_prefix}-router"
 
   project = var.project
@@ -63,11 +64,12 @@ resource "google_compute_subnetwork" "vpc_subnetwork_public" {
 }
 
 resource "google_compute_router_nat" "vpc_nat" {
+  count = var.enable_vpc_nat == true ? 1 : 0
   name = "${var.name_prefix}-nat"
 
   project = var.project
   region  = var.region
-  router  = google_compute_router.vpc_router.name
+  router  = google_compute_router.vpc_router[0].name
 
   nat_ip_allocate_option = "AUTO_ONLY"
 
