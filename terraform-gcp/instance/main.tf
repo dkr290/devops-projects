@@ -50,6 +50,18 @@ resource "google_compute_instance" "vm-from-tf" {
 
 #   }
 
+
+provisioner "remote-exec" {
+  
+  inline = [
+    "echo thhis is a test",
+    "echo this is another string ${self.self_link}",
+
+  ]
+}
+
+
+
 # #copies all files and subfolders
 
 #  provisioner "file" {
@@ -57,6 +69,9 @@ resource "google_compute_instance" "vm-from-tf" {
 #   destination = "/tmp/conftest"
    
 #  }
+
+
+
  # metadata_startup_script = "echo hi > /test.txt"
 
  
