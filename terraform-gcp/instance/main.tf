@@ -26,7 +26,7 @@ resource "google_compute_instance" "vm-from-tf" {
   }
 
   provisioner "local-exec" {
-    command = "echo The instance IP address is ${self.private_ip}"
+    command = "echo The instance IP address is ${self.self_link}"
     on_failure = continue
     
   }
