@@ -33,7 +33,7 @@ resource "google_compute_instance" "vm-from-tf" {
 
 
   provisioner "file" {
-    source = "./app.conf"
+    source = "app.conf"
     destination = "/etc/app.conf"
   }
 
