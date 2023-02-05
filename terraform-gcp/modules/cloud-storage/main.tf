@@ -24,13 +24,13 @@ resource "google_storage_bucket" "bucket-name" {
 
 resource "google_storage_bucket_object" "sample-object" {
   name   = var.bucket_object_name
-  bucket = google_storage_bucket.bucket-name[each.key].name
+  bucket = google_storage_bucket.bucket-name.name
   source = var.image_source
 }
 
 resource "google_storage_object_access_control" "public_rule" {
   object = google_storage_bucket_object.sample-object.name
-  bucket = google_storage_bucket.bucket-name[each.key].name
+  bucket = google_storage_bucket.bucket-name.name
   role   = "READER"
   entity = "allUsers"
 }
