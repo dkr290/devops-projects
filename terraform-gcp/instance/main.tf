@@ -32,47 +32,7 @@ resource "google_compute_instance" "vm-from-tf" {
   }
 
 
-#   provisioner "file" {
-#     source = "app.conf"
-#     destination = "/etc/app.conf"
-#   }
 
-#   provisioner "file" {
-
-#     content = "url used:${self.self_link}"
-#     destination = "/tmp/urlinstance.log"
-    
-#   }
-
-#   provisioner "file" {
-#       source = "conf"
-#       destination="/etc"
-
-#   }
-
-
-# provisioner "remote-exec" {
-  
-#   inline = [
-#     "echo thhis is a test",
-#     "echo this is another string ${self.self_link}",
-
-#   ]
-# }
-
-
-
-# #copies all files and subfolders
-
-#  provisioner "file" {
-#   source = "conf/"
-#   destination = "/tmp/conftest"
-   
-#  }
-
-
-
- # metadata_startup_script = "echo hi > /test.txt"
 
  
 }

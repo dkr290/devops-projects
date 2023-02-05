@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo "test" >>/tmp/text.txt
+echo "this is a test" >> /tmp/test.txt
