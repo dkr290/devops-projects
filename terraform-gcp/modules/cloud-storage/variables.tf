@@ -19,7 +19,7 @@ variable "region" {
 }
 
 variable "bucket_names" {
-type = string
+type = list
 description = "Bucket name"  
 }
 
