@@ -21,7 +21,7 @@ variable "region" {
 variable "bucket_names" {
 type = list
 description = "Bucket name" 
-default = ["daninewstorageaccount80","daniwestastore12380"] 
+default = "daninewstorageaccount80"
 }
 
 variable "labels" {

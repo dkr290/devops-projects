@@ -1,6 +1,6 @@
 resource "google_storage_bucket" "bucket-name" {
-  for_each = toset(var.bucket_names)
-  name = each.value
+
+  name = var.bucket_names
   location = var.region
   uniform_bucket_level_access = var.uniform_bucket_level_access
   storage_class = var.storage_class
