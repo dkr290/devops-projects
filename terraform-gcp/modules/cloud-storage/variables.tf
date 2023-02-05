@@ -18,7 +18,7 @@ variable "region" {
  
 }
 
-variable "bucket_name" {
+variable "bucket_names" {
 type = string
 description = "Bucket name"  
 }
@@ -39,8 +39,4 @@ variable "bucket_object_name"{}
 variable "image_source" {}
 variable "age" {}
 variable "type" {}
-
-variable "bucket_names" {
-  
-}
 
