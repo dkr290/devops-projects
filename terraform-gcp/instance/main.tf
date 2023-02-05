@@ -25,8 +25,28 @@ resource "google_compute_instance" "vm-from-tf" {
     }
   }
 
+  provisioner "local-exec" {
+    command = "echo The instance IP address is ${self.private_ip}"
+    on_failure = continue
+    
+  }
+
+
  
  # metadata_startup_script = "echo hi > /test.txt"
 
  
 }
+
+resource "null_resource" "script" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
+  provisioner "local-exec" {
+    command = "${path.module}/script.sh"
+    interpreter = ["sh"]
+  }
+  
+}
+
