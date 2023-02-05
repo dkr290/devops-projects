@@ -24,7 +24,7 @@ resource "google_storage_bucket" "bucket-name" {
 
 resource "google_storage_bucket_object" "sample-object" {
   name   = var.bucket_object_name
-  bucket = google_storage_bucket.bucket-name.name
+  bucket = google_storage_bucket.bucket-name[each.key]
   source = var.image_source
 }
 
