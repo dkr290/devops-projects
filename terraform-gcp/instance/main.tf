@@ -1,5 +1,6 @@
 resource "google_compute_instance" "vm-from-tf" {
-  name         = "vm-from-tf"
+  for_each = toset(var.instances)
+  name         = each.value
   machine_type = "e2-small"
   zone         = var.zone
 
