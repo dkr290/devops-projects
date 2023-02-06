@@ -25,6 +25,6 @@ variable "custom_vpc_name" {
 
 variable "instances" {
   type = list
-  default = ["server01","server02"]
+  default = ["server01","server02","srv03","srv04"]
   
 }
