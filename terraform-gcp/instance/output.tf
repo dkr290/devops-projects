@@ -1,4 +1,4 @@
 output "all_instances" {
-    value = google_compute_instance.vm-from-tf
-    sensitive = true
+    value = values(google_compute_instance.vm-from-tf[*]).hostname
+    
 }
