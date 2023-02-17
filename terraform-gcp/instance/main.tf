@@ -1,5 +1,6 @@
 resource "google_compute_instance" "vm-from-tf" {
-  name         = "vm-from-tf"
+  for_each = toset(var.instances)
+  name         = each.value
   machine_type = "e2-small"
   zone         = var.zone
 
@@ -25,8 +26,27 @@ resource "google_compute_instance" "vm-from-tf" {
     }
   }
 
- 
- # metadata_startup_script = "echo hi > /test.txt"
+  provisioner "local-exec" {
+    command = "echo The instance IP address is ${self.self_link}"
+    on_failure = continue
+    
+  }
+
+
+
 
  
 }
+
+resource "null_resource" "script" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
+  provisioner "local-exec" {
+    command = "${path.module}/script.sh"
+    interpreter = ["sh"]
+  }
+  
+}
+

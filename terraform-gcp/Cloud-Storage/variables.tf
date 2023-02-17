@@ -18,10 +18,10 @@ variable "region" {
  
 }
 
-variable "bucket_name" {
+variable "bucket_names" {
 type = string
 description = "Bucket name" 
-default = "daninewstorageaccount80" 
+default = "daninewstorageaccount80"
 }
 
 variable "labels" {

@@ -22,3 +22,9 @@ variable "custom_vpc_name" {
   type = string
   default = "gke-vpc"
 }
+
+variable "instances" {
+  type = list
+  default = ["server01","server02"]
+  
+}
