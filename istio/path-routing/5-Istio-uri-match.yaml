@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: goapp-istio
+spec:
+  hosts:
+  - "goapp.example.com"
+  gateways:
+  - istio-gateway
+  http:
+  - match:
+    - uri:
+        exact: "/app/hello"
+    route:
+      - destination:
+          host: goapp-istio
+          subset: v2
+  - match:
+    - uri:
+        prefix: "/app/v2/"
+    rewrite:
+      uri: "/app/"
+    route:
+      - destination:
+          host: goapp-istio
+          subset: v2
+  - match:
+    - uri:
+        prefix: "/app/v1/"
+    rewrite:
+      uri: "/app/"
+    route:
+      - destination:
+          host: goapp-istio
+          subset: v1
