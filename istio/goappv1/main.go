@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	message := handlers.NewHandler("Istio form golang app.", "v1")
+	message := handlers.NewHandler("Golang app.", "v1")
 
 	http.HandleFunc("/", message.IndexHandler)
 	http.HandleFunc("/app/message", message.MessageHandler)

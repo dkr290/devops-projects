@@ -37,5 +37,5 @@ func (m *Message) IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Kubernetes Service Mesh Demo with istio appv2")
+	fmt.Fprintf(w, "Welcome to golang app version 2")
 }
