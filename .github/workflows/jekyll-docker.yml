@@ -13,8 +13,8 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 env:
-  DOCKER_IMAGE_APP1: ghcr.io/${{ github.repository }}/goapp:v1
-  DOCKER_IMAGE_APP2: ghcr.io/${{ github.repository }}/goapp:v2
+  DOCKER_IMAGE_APP1: ghcr.io/${{ github.repository }}/goappv1
+  DOCKER_IMAGE_APP2: ghcr.io/${{ github.repository }}/goappv2
 
 
 jobs:
@@ -55,8 +55,12 @@ jobs:
           VERSION=${GITHUB_SHA::8}
           echo DOCKER_IMAGE_APP1=$DOCKER_IMAGE_APP1
           echo DOCKER_IMAGE_APP2=$DOCKER_IMAGE_APP2
+          docker tag $DOCKER_IMAGE_APP1 $DOCKER_IMAGE_APP1:$VERSION 
+          docker tag $DOCKER_IMAGE_APP2 $DOCKER_IMAGE_APP2:$VERSION 
           docker push $DOCKER_IMAGE_APP1
           docker push $DOCKER_IMAGE_APP2
-    
+          echo "::set-output name=commit::$VERSION"
+
+      
   
 
