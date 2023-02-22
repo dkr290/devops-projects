@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: goapp-istio-vs
+spec:
+  hosts:
+  - "goapp.example.com"
+  gateways:
+  - istio-gateway
+  http:
+  - route:
+    - destination:
+        host: goapp-istio # This is the service on the backend 
+        port:
+          number: 8080
