@@ -12,8 +12,8 @@ spec:
     - destination:
         host: goapp-istio
         subset: v1
-      weight: 50
+      weight: 100
     - destination:
         host: goapp-istio
         subset: v2
-      weight: 50
+      weight: 0
