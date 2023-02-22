@@ -48,21 +48,21 @@ jobs:
           docker images -a
           
       - if: github.event_name != 'pull_request'
-        name: docker login and push
+        name: docker login and push app1
         id: push-image
         run: |
           echo "${{ github.token }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           VERSION=${GITHUB_SHA::8}
           echo DOCKER_IMAGE_APP1=$DOCKER_IMAGE_APP1
-          echo DOCKER_IMAGE_APP2=$DOCKER_IMAGE_APP2
           echo VERSION=$VERSION
           docker tag $DOCKER_IMAGE_APP1 $DOCKER_IMAGE_APP1:$VERSION 
-          docker tag $DOCKER_IMAGE_APP2 $DOCKER_IMAGE_APP2:$VERSION 
           docker push $DOCKER_IMAGE_APP1:$VERSION
           docker push $DOCKER_IMAGE_APP1
+
+          docker tag $DOCKER_IMAGE_APP2 $DOCKER_IMAGE_APP2:$VERSION 
           docker push $DOCKER_IMAGE_APP2:$VERSION
           docker push $DOCKER_IMAGE_APP2
-          echo "::set-output name=commit::$VERSION"
+ 
 
       
   
