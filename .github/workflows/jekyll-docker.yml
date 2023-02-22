@@ -1,0 +1,62 @@
+name: Jekyll site CI
+
+on:
+  push:
+    paths:
+    - 'istio/goappv1/**'
+    - 'istio/goappv2/**'
+  
+    branches:
+      - main
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+env:
+  DOCKER_IMAGE_APP1: ghcr.io/${{ github.repository }}/goapp:v1
+  DOCKER_IMAGE_APP2: ghcr.io/${{ github.repository }}/goapp:v2
+
+
+jobs:
+  # This workflow contains a single job called "build"
+  build-goapp:
+    name: Build and push docker image
+    # The type of runner that the job will run on
+    
+    runs-on: ubuntu-latest
+    outputs:
+      commit: ${{ steps.push-image.outputs.commit }}
+    
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+          
+      - name: docker version and build app1
+        run: |
+          cd istio/goappv1/ 
+          docker -v
+          docker build . -f Dockerfile -t $DOCKER_IMAGE_APP1
+          docker images -a
+      
+      - name: docker version and build app2
+        run: |
+          cd istio/goappv2/ 
+          docker -v
+          docker build . -f Dockerfile -t $DOCKER_IMAGE_APP2
+          docker images -a
+          
+      - if: github.event_name != 'pull_request'
+        name: docker login and push
+        id: push-image
+        run: |
+          echo "${{ github.token }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          VERSION=${GITHUB_SHA::8}
+          echo DOCKER_IMAGE_APP1=$DOCKER_IMAGE_APP1
+          echo DOCKER_IMAGE_APP2=$DOCKER_IMAGE_APP2
+          docker push $DOCKER_IMAGE_APP1
+          docker push $DOCKER_IMAGE_APP2
+    
+  
+
