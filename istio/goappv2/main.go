@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/dkr290/devops-projects/istio/goappv1/handlers"
+	"github.com/dkr290/devops-projects/istio/goappv2/handlers"
 )
 
 func main() {
