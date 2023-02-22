@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: goapp-istio
-        image: gcr.io/drk290/goapp-istio:v1
+        image: ghcr.io/dkr290/devops-projects/goappv1:latest
         ports:
         - containerPort: 8080
         resources:
@@ -71,7 +71,7 @@ spec:
     spec:
       containers:
       - name: hello-istio
-        image: gcr.io/dkr290/goapp:v2
+        image: ghcr.io/dkr290/devops-projects/goappv2:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
