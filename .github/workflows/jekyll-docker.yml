@@ -55,9 +55,12 @@ jobs:
           VERSION=${GITHUB_SHA::8}
           echo DOCKER_IMAGE_APP1=$DOCKER_IMAGE_APP1
           echo DOCKER_IMAGE_APP2=$DOCKER_IMAGE_APP2
+          echo VERSION=$VERSION
           docker tag $DOCKER_IMAGE_APP1 $DOCKER_IMAGE_APP1:$VERSION 
           docker tag $DOCKER_IMAGE_APP2 $DOCKER_IMAGE_APP2:$VERSION 
+          docker push $DOCKER_IMAGE_APP1:$VERSION
           docker push $DOCKER_IMAGE_APP1
+          docker push $DOCKER_IMAGE_APP2:$VERSION
           docker push $DOCKER_IMAGE_APP2
           echo "::set-output name=commit::$VERSION"
 
