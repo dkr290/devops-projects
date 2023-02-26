@@ -12,11 +12,13 @@ metadata:
   name: webapp
   namespace: istio-demo
 spec:
+  type: NodePort
   ports:
   - name: http
     port: 80
     protocol: TCP
     targetPort: 8080
+    nodePort: 30008
   selector:
     app: webapp
 ---
