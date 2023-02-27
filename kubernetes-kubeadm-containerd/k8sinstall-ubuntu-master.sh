@@ -53,6 +53,8 @@ echo net.ipv4.ip_forward=1  | sudo tee -a /etc/sysctl.conf
 echo net.bridge.bridge-nf-call-iptables=1 |  sudo tee -a /etc/sysctl.conf
 echo net.bridge.bridge-nf-call-ip6tables =1 |  sudo tee -a /etc/sysctl.conf
 sudo sysctl --system
+sudo modprobe overlay
+sudo modprobe br_netfilter
 
 sudo mkdir -p /etc/containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml
@@ -93,9 +95,8 @@ version = 2
         SystemdCgroup = true
 EOF
 
-curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
+sudo curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni
 sudo apt-mark hold kubelet kubeadm kubectl kubernetes-cni
