@@ -1,0 +1,5 @@
+## service account view
+k -n kubernetes-dashboard create rolebinding insecure --serviceaccount kubernetes-dashboard:kubernetes-dashboard  --clusterrole view -o y
+aml --dry-run
+k -n kubernetes-dashboard create clusterrolebinding insecure --serviceaccount kubernetes-dashboard:kubernetes-dashboard  --clusterrole vi
+ew
