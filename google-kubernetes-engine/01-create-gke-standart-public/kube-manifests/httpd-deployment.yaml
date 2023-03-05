@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment 
 metadata: #Dictionary
-  name: httpd-deployment
+  name: goappv1-deployment
 spec: # Dictionary
   replicas: 2
   selector:
     matchLabels:
-      app: httpd
+      app: goappv1
   template:  
     metadata: # Dictionary
-      name: httpd
+      name: goappv1
       labels: # Dictionary
-        app: httpd  # Key value pairs
+        app: goappv1  # Key value pairs
     spec:
       containers: # List
-        - name: httpd
-          image: httpd
+        - name: goappv1
+          image: ghcr.io/dkr290/devops-projects/goappv1:latest
           ports: 
-            - containerPort: 80
+            - containerPort: 8080
     
