@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -28,6 +29,7 @@ func (m *Message) MessageHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json; charset=utf-8")
 	w.Write(b)
+	log.Println("HTTP get request to app/message")
 }
 
 func (m *Message) IndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,4 +40,5 @@ func (m *Message) IndexHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "Welcome to golang app version 1")
+	log.Println("HTTP get request to /")
 }
