@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: accessor-token
+  annotations:
+    kubernetes.io/service-account.name: accessor
+type: kubernetes.io/service-account-token

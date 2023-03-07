@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: accessor
+  name: accessor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: accessor
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: accessor
+    spec:
+      serviceAccountName: accessor
+      automountServiceAccountToken: false
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
