@@ -1,10 +1,10 @@
-source /etc/lsb-release
-if [ "$DISTRIB_RELEASE" != "20.04" ]; then
+source /etc/os-release
+if [ "$VERSION_ID!="11"]; then
     echo "################################# "
     echo "############ WARNING ############ "
     echo "################################# "
     echo
-    echo "This script only works on Ubuntu 20.04 or debian!"
+    echo "This script only works on DEbian 11!"
     echo "You're using: ${DISTRIB_DESCRIPTION}"
     echo "Better ABORT with Ctrl+C. Or press any key to continue the install"
     read
@@ -53,6 +53,8 @@ echo net.ipv4.ip_forward=1  | sudo tee -a /etc/sysctl.conf
 echo net.bridge.bridge-nf-call-iptables=1 |  sudo tee -a /etc/sysctl.conf
 echo net.bridge.bridge-nf-call-ip6tables =1 |  sudo tee -a /etc/sysctl.conf
 sudo sysctl --system
+sudo modprobe overlay
+sudo modprobe br_netfilter
 
 sudo mkdir -p /etc/containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml
@@ -125,14 +127,45 @@ systemctl enable kubelet && systemctl start kubelet
 
 ### init k8s
 rm /root/.kube/config || true
-kubeadm init --ignore-preflight-errors=NumCPU --skip-token-print --pod-network-cidr 192.168.0.0/16
+kubeadm init --ignore-preflight-errors=NumCPU --skip-token-print --pod-network-cidr 172.16.0.0/16
 
 mkdir -p ~/.kube
 sudo cp -i /etc/kubernetes/admin.conf ~/.kube/config
 
 ### CNI
-kubectl apply -f https://raw.githubusercontent.com/killer-sh/cks-course-environment/master/cluster-setup/calico.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/tigera-operator.yaml
 
+
+cat > custom-resources.yaml <<EOF
+# This section includes base Calico installation configuration.
+# For more information, see: https://projectcalico.docs.tigera.io/master/reference/installation/api#operator.tigera.io/v1.Installation
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  # Configures Calico networking.
+  calicoNetwork:
+    # Note: The ipPools section cannot be modified post-install.
+    ipPools:
+    - blockSize: 26
+      cidr: 172.16.0.0/16
+      encapsulation: VXLANCrossSubnet
+      natOutgoing: Enabled
+      nodeSelector: all()
+
+---
+
+# This section configures the Calico API server.
+# For more information, see: https://projectcalico.docs.tigera.io/master/reference/installation/api#operator.tigera.io/v1.APIServer
+apiVersion: operator.tigera.io/v1
+kind: APIServer 
+metadata: 
+  name: default 
+spec: {}
+EOF
+
+kubectl create -f custom-resources.yaml
 
 # etcdctl
 ETCDCTL_VERSION=v3.5.1
@@ -147,7 +180,3 @@ echo
 echo "### COMMAND TO ADD A WORKER NODE ###"
 kubeadm token create --print-join-command --ttl 0
 
-#### under 
-###   [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
-    ###  ...
-######## SystemdCgroup = true
