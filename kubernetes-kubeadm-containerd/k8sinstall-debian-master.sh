@@ -1,5 +1,5 @@
 source /etc/os-release
-if [ "$VERSION_ID!="11"]; then
+if [ "$VERSION_ID" != "11" ]; then
     echo "################################# "
     echo "############ WARNING ############ "
     echo "################################# "
@@ -9,7 +9,7 @@ if [ "$VERSION_ID!="11"]; then
     echo "Better ABORT with Ctrl+C. Or press any key to continue the install"
     read
 fi
-apt-get install -y bash-completion binutils
+apt-get install -y bash-completion binutils curl wget gpg
 echo 'colorscheme ron' >> ~/.vimrc
 echo 'set tabstop=2' >> ~/.vimrc
 echo 'set shiftwidth=2' >> ~/.vimrc

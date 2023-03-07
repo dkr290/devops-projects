@@ -9,7 +9,7 @@ if [ "$DISTRIB_RELEASE" != "20.04" ]; then
     echo "Better ABORT with Ctrl+C. Or press any key to continue the install"
     read
 fi
-apt-get install -y bash-completion binutils
+apt-get install -y bash-completion binutils curl wget
 echo 'colorscheme ron' >> ~/.vimrc
 echo 'set tabstop=2' >> ~/.vimrc
 echo 'set shiftwidth=2' >> ~/.vimrc
