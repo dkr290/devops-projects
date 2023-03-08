@@ -1,14 +1,14 @@
 source /etc/os-release
 
-KUBERNETES_VERSION=1.25.7
+KUBERNETES_VERSION=1.25.7-00
 
 if [ "$VERSION_ID" != "11" ]; then
     echo "################################# "
     echo "############ WARNING ############ "
     echo "################################# "
     echo
-    echo "This script only works on DEbian 11!"
-    echo "You're using: ${DISTRIB_DESCRIPTION}"
+    echo "This script only works on Debian 11!"
+    echo "You're using: Debian ${Version_ID}"
     echo "Better ABORT with Ctrl+C. Or press any key to continue the install"
     read
 fi
@@ -50,11 +50,12 @@ sudo apt -y install containerd.io
 
 sudo touch /etc/modules-load.d/br_netfilter.conf
 
-echo br_netfilter | sudo tee -a /etc/modules-load.d/br_netfilter.conf
-echo overlay      | sudo tee -a /etc/modules-load.d/overlay.conf
-echo net.ipv4.ip_forward=1  | sudo tee -a /etc/sysctl.conf
-echo net.bridge.bridge-nf-call-iptables=1 |  sudo tee -a /etc/sysctl.conf
-echo net.bridge.bridge-nf-call-ip6tables =1 |  sudo tee -a /etc/sysctl.conf
+echo br_netfilter >  /etc/modules-load.d/br_netfilter.conf
+echo overlay      > /etc/modules-load.d/overlay.conf
+echo net.ipv4.ip_forward=1  > /etc/sysctl.d/10-kubernetes.conf
+echo net.bridge.bridge-nf-call-iptables=1   |   tee -a /etc/sysctl.d/10-kubernetes.conf
+echo net.bridge.bridge-nf-call-ip6tables =1 |   tee -a /etc/sysctl.d/10-kubernetes.conf
+echo GRUB_CMDLINE_LINUX="cgroup_enable=memory" | tee -a /etc/default/grub
 sudo sysctl --system
 sudo modprobe overlay
 sudo modprobe br_netfilter
@@ -99,11 +100,12 @@ version = 2
 EOF
 
 
-sudo curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-sudo apt-get update
-sudo apt-get install -y kubelet=$KUBERNETES_VERSION kubeadm=$KUBERNETES_VERSION kubectl=$KUBERNETES_VERSION kubernetes-cni=$KUBERNETES_VERSION
-sudo apt-mark hold kubelet kubeadm kubectl kubernetes-cni
+apt-get update
+apt-get install kubernetes-cni
+apt-get install -y kubelet=$KUBERNETES_VERSION kubeadm=$KUBERNETES_VERSION kubectl=$KUBERNETES_VERSION
+apt-mark hold kubelet kubeadm kubectl kubernetes-cni
 
 ### crictl uses containerd as default
 {

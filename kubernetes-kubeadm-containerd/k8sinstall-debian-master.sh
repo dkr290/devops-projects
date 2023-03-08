@@ -47,11 +47,11 @@ sudo apt -y install containerd.io
 
 sudo touch /etc/modules-load.d/br_netfilter.conf
 
-echo br_netfilter | sudo tee -a /etc/modules-load.d/br_netfilter.conf
-echo overlay      | sudo tee -a /etc/modules-load.d/overlay.conf
-echo net.ipv4.ip_forward=1  | sudo tee -a /etc/sysctl.conf
-echo net.bridge.bridge-nf-call-iptables=1 |  sudo tee -a /etc/sysctl.conf
-echo net.bridge.bridge-nf-call-ip6tables =1 |  sudo tee -a /etc/sysctl.conf
+echo br_netfilter >  /etc/modules-load.d/br_netfilter.conf
+echo overlay      > /etc/modules-load.d/overlay.conf
+echo net.ipv4.ip_forward=1  > /etc/sysctl.d/10-kubernetes.conf
+echo net.bridge.bridge-nf-call-iptables=1   |   tee -a /etc/sysctl.d/10-kubernetes.conf
+echo net.bridge.bridge-nf-call-ip6tables =1 |   tee -a /etc/sysctl.d/10-kubernetes.conf
 sudo sysctl --system
 sudo modprobe overlay
 sudo modprobe br_netfilter
