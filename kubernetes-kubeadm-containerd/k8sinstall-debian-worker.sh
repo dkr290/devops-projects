@@ -1,15 +1,15 @@
-source /etc/lsb-release
-if [ "$DISTRIB_RELEASE" != "20.04" ]; then
+source /etc/os-release
+if [ "$VERSION_ID" != "11" ]; then
     echo "################################# "
     echo "############ WARNING ############ "
     echo "################################# "
     echo
-    echo "This script only works on Ubuntu 20.04 or debian!"
+    echo "This script only works on DEbian 11!"
     echo "You're using: ${DISTRIB_DESCRIPTION}"
     echo "Better ABORT with Ctrl+C. Or press any key to continue the install"
     read
 fi
-apt-get install -y bash-completion binutils curl wget
+apt-get install -y bash-completion binutils curl wget gpg
 echo 'colorscheme ron' >> ~/.vimrc
 echo 'set tabstop=2' >> ~/.vimrc
 echo 'set shiftwidth=2' >> ~/.vimrc
@@ -38,8 +38,8 @@ systemctl daemon-reload
 sudo apt-get -y update
 sudo apt-get -y install  ca-certificates  curl   gnupg  apt-transport-https   lsb-release cri-tools 
 sudo mkdir -m 0755 -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt update
@@ -47,11 +47,11 @@ sudo apt -y install containerd.io
 
 sudo touch /etc/modules-load.d/br_netfilter.conf
 
-echo br_netfilter | sudo tee -a /etc/modules-load.d/br_netfilter.conf
-echo overlay      | sudo tee -a /etc/modules-load.d/overlay.conf
-echo net.ipv4.ip_forward=1  | sudo tee -a /etc/sysctl.conf
-echo net.bridge.bridge-nf-call-iptables=1 |  sudo tee -a /etc/sysctl.conf
-echo net.bridge.bridge-nf-call-ip6tables =1 |  sudo tee -a /etc/sysctl.conf
+echo br_netfilter >  /etc/modules-load.d/br_netfilter.conf
+echo overlay      > /etc/modules-load.d/overlay.conf
+echo net.ipv4.ip_forward=1  > /etc/sysctl.d/10-kubernetes.conf
+echo net.bridge.bridge-nf-call-iptables=1   |   tee -a /etc/sysctl.d/10-kubernetes.conf
+echo net.bridge.bridge-nf-call-ip6tables =1 |   tee -a /etc/sysctl.d/10-kubernetes.conf
 sudo sysctl --system
 sudo modprobe overlay
 sudo modprobe br_netfilter
@@ -95,6 +95,7 @@ version = 2
         SystemdCgroup = true
 EOF
 
+
 sudo curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update
@@ -124,31 +125,3 @@ systemctl enable containerd
 systemctl restart containerd
 systemctl enable kubelet && systemctl start kubelet
 
-### init k8s
-rm /root/.kube/config || true
-kubeadm init --ignore-preflight-errors=NumCPU --skip-token-print --pod-network-cidr 192.168.0.0/16
-
-mkdir -p ~/.kube
-sudo cp -i /etc/kubernetes/admin.conf ~/.kube/config
-
-### CNI
-kubectl apply -f https://raw.githubusercontent.com/killer-sh/cks-course-environment/master/cluster-setup/calico.yaml
-
-
-# etcdctl
-ETCDCTL_VERSION=v3.5.1
-ETCDCTL_ARCH=$(dpkg --print-architecture)
-ETCDCTL_VERSION_FULL=etcd-${ETCDCTL_VERSION}-linux-${ETCDCTL_ARCH}
-wget https://github.com/etcd-io/etcd/releases/download/${ETCDCTL_VERSION}/${ETCDCTL_VERSION_FULL}.tar.gz
-tar xzf ${ETCDCTL_VERSION_FULL}.tar.gz ${ETCDCTL_VERSION_FULL}/etcdctl
-mv ${ETCDCTL_VERSION_FULL}/etcdctl /usr/bin/
-rm -rf ${ETCDCTL_VERSION_FULL} ${ETCDCTL_VERSION_FULL}.tar.gz
-
-echo
-echo "### COMMAND TO ADD A WORKER NODE ###"
-kubeadm token create --print-join-command --ttl 0
-
-#### under 
-###   [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
-    ###  ...
-######## SystemdCgroup = true
