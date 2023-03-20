@@ -7,4 +7,9 @@ COPY . .
 
 RUN GGO_ENABLED=0 go build main.go
 
+
+
+FROM alpine
+COPY --from=0 /main .
+
 CMD ["./main"]
