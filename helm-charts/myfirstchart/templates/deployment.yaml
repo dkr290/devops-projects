@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: 
+  name: {{ .Values.deployment.name }}
   labels:
     app: nginx
  
 spec:
 
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.deployment.replicaCount }}
  
   selector:
     matchLabels:
@@ -21,9 +21,9 @@ spec:
     spec:
   
       containers:
-        - name: {{ .Chart.Name }}
+        - name: nginxcontainer
          
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.deployment.image.app }}:{{ .Values.deployment.image.version }}"
           
           ports:
             - name: http

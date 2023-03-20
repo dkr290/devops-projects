@@ -4,7 +4,7 @@
 
 
 deployment:
-  name: hekmdeployment
+  name: helmdeployment
   replicaCount: 1
   image:
     app: nginx
