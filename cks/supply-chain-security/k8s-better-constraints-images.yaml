@@ -18,3 +18,4 @@ spec:
       - k8s.gcr.io/
       - quay.io/
       - registry.k8s.io/
+      - openpolicyagent/
