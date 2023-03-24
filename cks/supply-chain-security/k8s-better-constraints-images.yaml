@@ -1,0 +1,20 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: k8sWhitelistedImages
+metadata:
+  name: k8senforcewhitelistedimages
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    images:
+      - amazon/aws-node-termination-handler
+      - amazon/aws-alb-ingress-controller
+      - amazon/aws-efs-csi-driver
+      - amazon/cloudwatch-agent
+      - docker.io/
+      - k8s.gcr.io/
+      - k8s.gcr.io/
+      - quay.io/
+      - registry.k8s.io/
