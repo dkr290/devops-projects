@@ -11,3 +11,5 @@ kubectl get constraint -o yaml k8senforcewhitelistedimages
 
 k get constrainttemplates
 k get k8swhitelistedimages
+
+k describe constraint k8senforcewhitelistedimages
