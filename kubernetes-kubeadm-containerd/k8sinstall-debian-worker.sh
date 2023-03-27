@@ -35,29 +35,30 @@ systemctl daemon-reload
 
 
 
-sudo apt-get -y update
-sudo apt-get -y install  ca-certificates  curl   gnupg  apt-transport-https   lsb-release cri-tools 
-sudo mkdir -m 0755 -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+apt-get -y update
+apt-get -y install  ca-certificates  curl   gnupg  apt-transport-https   lsb-release cri-tools 
+mkdir -m 0755 -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg |  gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 echo  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  $(lsb_release -cs) stable" |  tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-sudo apt update
-sudo apt -y install containerd.io
+apt update
+apt -y install containerd.io
 
-sudo touch /etc/modules-load.d/br_netfilter.conf
+touch /etc/modules-load.d/br_netfilter.conf
 
 echo br_netfilter >  /etc/modules-load.d/br_netfilter.conf
 echo overlay      > /etc/modules-load.d/overlay.conf
 echo net.ipv4.ip_forward=1  > /etc/sysctl.d/10-kubernetes.conf
 echo net.bridge.bridge-nf-call-iptables=1   |   tee -a /etc/sysctl.d/10-kubernetes.conf
 echo net.bridge.bridge-nf-call-ip6tables =1 |   tee -a /etc/sysctl.d/10-kubernetes.conf
-sudo sysctl --system
-sudo modprobe overlay
-sudo modprobe br_netfilter
+echo GRUB_CMDLINE_LINUX="cgroup_enable=memory" | tee -a /etc/default/grub
+sysctl --system
+modprobe overlay
+modprobe br_netfilter
 
-sudo mkdir -p /etc/containerd
-sudo containerd config default | sudo tee /etc/containerd/config.toml
+mkdir -p /etc/containerd
+containerd config default |  tee /etc/containerd/config.toml
 ### containerd config
 cat > /etc/containerd/config.toml <<EOF
 disabled_plugins = []
@@ -96,15 +97,15 @@ version = 2
 EOF
 
 
-sudo curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-sudo apt-get update
-sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni
-sudo apt-mark hold kubelet kubeadm kubectl kubernetes-cni
+curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list
+apt-get update
+apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+apt-mark hold kubelet kubeadm kubectl kubernetes-cni
 
 ### crictl uses containerd as default
 {
-cat <<EOF | sudo tee /etc/crictl.yaml
+cat <<EOF |  tee /etc/crictl.yaml
 runtime-endpoint: unix:///run/containerd/containerd.sock
 EOF
 }
@@ -112,7 +113,7 @@ EOF
 
 ### kubelet should use containerd
 {
-cat <<EOF | sudo tee /etc/default/kubelet
+cat <<EOF | tee /etc/default/kubelet
 KUBELET_EXTRA_ARGS="--container-runtime remote --container-runtime-endpoint unix:///run/containerd/containerd.sock"
 EOF
 }
