@@ -53,7 +53,7 @@ echo overlay      > /etc/modules-load.d/overlay.conf
 echo net.ipv4.ip_forward=1  > /etc/sysctl.d/10-kubernetes.conf
 echo net.bridge.bridge-nf-call-iptables=1   |   tee -a /etc/sysctl.d/10-kubernetes.conf
 echo net.bridge.bridge-nf-call-ip6tables =1 |   tee -a /etc/sysctl.d/10-kubernetes.conf
-echo GRUB_CMDLINE_LINUX="cgroup_enable=memory" | tee -a /etc/default/grub
+#echo GRUB_CMDLINE_LINUX="cgroup_enable=memory" | tee -a /etc/default/grub
 sysctl --system
 modprobe overlay
 modprobe br_netfilter
@@ -126,59 +126,4 @@ systemctl daemon-reload
 systemctl enable containerd
 systemctl restart containerd
 systemctl enable kubelet && systemctl start kubelet
-
-### init k8s
-rm /root/.kube/config || true
-kubeadm init --ignore-preflight-errors=NumCPU --skip-token-print --pod-network-cidr 172.16.0.0/16
-
-mkdir -p ~/.kube
-cp -i /etc/kubernetes/admin.conf ~/.kube/config
-
-### CNI
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/tigera-operator.yaml
-
-
-cat > custom-resources.yaml <<EOF
-# This section includes base Calico installation configuration.
-# For more information, see: https://projectcalico.docs.tigera.io/master/reference/installation/api#operator.tigera.io/v1.Installation
-apiVersion: operator.tigera.io/v1
-kind: Installation
-metadata:
-  name: default
-spec:
-  # Configures Calico networking.
-  calicoNetwork:
-    # Note: The ipPools section cannot be modified post-install.
-    ipPools:
-    - blockSize: 26
-      cidr: 172.16.0.0/16
-      encapsulation: VXLANCrossSubnet
-      natOutgoing: Enabled
-      nodeSelector: all()
-
----
-
-# This section configures the Calico API server.
-# For more information, see: https://projectcalico.docs.tigera.io/master/reference/installation/api#operator.tigera.io/v1.APIServer
-apiVersion: operator.tigera.io/v1
-kind: APIServer 
-metadata: 
-  name: default 
-spec: {}
-EOF
-
-kubectl create -f custom-resources.yaml
-
-# etcdctl
-ETCDCTL_VERSION=v3.5.1
-ETCDCTL_ARCH=$(dpkg --print-architecture)
-ETCDCTL_VERSION_FULL=etcd-${ETCDCTL_VERSION}-linux-${ETCDCTL_ARCH}
-wget https://github.com/etcd-io/etcd/releases/download/${ETCDCTL_VERSION}/${ETCDCTL_VERSION_FULL}.tar.gz
-tar xzf ${ETCDCTL_VERSION_FULL}.tar.gz ${ETCDCTL_VERSION_FULL}/etcdctl
-mv ${ETCDCTL_VERSION_FULL}/etcdctl /usr/bin/
-rm -rf ${ETCDCTL_VERSION_FULL} ${ETCDCTL_VERSION_FULL}.tar.gz
-
-echo
-echo "### COMMAND TO ADD A WORKER NODE ###"
-kubeadm token create --print-join-command --ttl 0
 
