@@ -1,5 +1,5 @@
 apiVersion: v2
-name: goapp
+name: myapp
 description: A hello application written on golang
 
 # A chart can be either an 'application' or a 'library' chart.
