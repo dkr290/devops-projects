@@ -1,15 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
-
-  {{ .Values.customblock.author.address }}
-  {{ .Values.customblock.author.addresssss | default "Hi, I am not null" }}
-  {{ .Values.customblock.author.address | default "Hi, I am not null" }}
-  {{ .Values.customblock.author.addresssss | default "Hi, I am not null" | upper }}
-  {{ .Values.customblock.author.addresssss | default "Hi, I am not null" | upper | quote }}
+{{- if .Values.customblock.author.name }}
+{{"Custom value is present" | nindent 2}}
+{{- else }}
+{{" Other else custom value when false"}}
+{{- end }}
+  
 metadata:
   name: {{ include "testchart.fullname" . }}
   labels:
-    {{- include "testchart.labels" . | nindent 4 }}
+    {{- include "testchart.labels" . | nindent 2 }}
+   
     
 spec:
   {{- if not .Values.autoscaling.enabled }}
