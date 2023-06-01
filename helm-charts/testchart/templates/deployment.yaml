@@ -1,8 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
-  {{ .Values.customblock.author.name }}
+
   {{ .Values.customblock.author.address }}
-  {{ .Chart.AppVersion }}
+  {{ .Values.customblock.author.addresssss | default "Hi, I am not null" }}
+  {{ .Values.customblock.author.address | default "Hi, I am not null" }}
+  {{ .Values.customblock.author.addresssss | default "Hi, I am not null" | upper }}
+  {{ .Values.customblock.author.addresssss | default "Hi, I am not null" | upper | quote }}
 metadata:
   name: {{ include "testchart.fullname" . }}
   labels:
