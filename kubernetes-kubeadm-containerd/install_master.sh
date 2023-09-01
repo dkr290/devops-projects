@@ -5,7 +5,7 @@
 set -e
 
 source /etc/lsb-release
-if [ "$DISTRIB_RELEASE" != "20.04" ]; then
+if [ "$DISTRIB_RELEASE" != "22.04" ]; then
     echo "################################# "
     echo "############ WARNING ############ "
     echo "################################# "
@@ -21,7 +21,7 @@ KUBE_VERSION=1.27.3
 
 ### setup terminal
 apt-get --allow-unauthenticated update
-apt-get --allow-unauthenticated install -y bash-completion binutils
+apt-get --allow-unauthenticated install -y bash-completion binutils curl wget gpg
 echo 'colorscheme ron' >> ~/.vimrc
 echo 'set tabstop=2' >> ~/.vimrc
 echo 'set shiftwidth=2' >> ~/.vimrc
@@ -62,37 +62,29 @@ EOF
 
 
 ### install packages
-curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-echo "deb [trusted=yes] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-apt-get --allow-unauthenticated update
-apt-get --allow-unauthenticated install -y docker.io containerd kubelet=${KUBE_VERSION}-00 kubeadm=${KUBE_VERSION}-00 kubectl=${KUBE_VERSION}-00 kubernetes-cni
-apt-mark hold kubelet kubeadm kubectl kubernetes-cni
+apt-get -y update
+apt-get -y install  ca-certificates  curl   gnupg  apt-transport-https   lsb-release cri-tools 
+mkdir -m 0755 -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt update
+apt -y install containerd.io docker.io 
 
+touch /etc/modules-load.d/br_netfilter.conf
 
-### install containerd 1.6 over apt-installed-version
-wget https://github.com/containerd/containerd/releases/download/v1.6.12/containerd-1.6.12-linux-amd64.tar.gz
-tar xvf containerd-1.6.12-linux-amd64.tar.gz
-systemctl stop containerd
-mv bin/* /usr/bin
-rm -rf bin containerd-1.6.12-linux-amd64.tar.gz
-systemctl unmask containerd
-systemctl start containerd
+echo br_netfilter >  /etc/modules-load.d/br_netfilter.conf
+echo overlay      > /etc/modules-load.d/overlay.conf
+echo net.ipv4.ip_forward=1  > /etc/sysctl.d/10-kubernetes.conf
+echo net.bridge.bridge-nf-call-iptables=1   |   tee -a /etc/sysctl.d/10-kubernetes.conf
+echo net.bridge.bridge-nf-call-ip6tables =1 |   tee -a /etc/sysctl.d/10-kubernetes.conf
+echo GRUB_CMDLINE_LINUX="cgroup_enable=memory" | tee -a /etc/default/grub
+sysctl --system
+modprobe overlay
+modprobe br_netfilter
 
-
-### containerd
-cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
-overlay
-br_netfilter
-EOF
-sudo modprobe overlay
-sudo modprobe br_netfilter
-cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
-net.bridge.bridge-nf-call-iptables  = 1
-net.ipv4.ip_forward                 = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-EOF
-sudo sysctl --system
-sudo mkdir -p /etc/containerd
+mkdir -p /etc/containerd
+containerd config default | tee /etc/containerd/config.toml
 
 
 ### containerd config
@@ -133,6 +125,14 @@ version = 2
 EOF
 
 
+systemctl restart containerd
+curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list
+apt-get update
+apt-get install -y kubernetes-cni
+apt-get install -y kubelet=$KUBERNETES_VERSION kubeadm=$KUBERNETES_VERSION kubectl=$KUBERNETES_VERSION
+apt-mark hold kubelet kubeadm kubectl kubernetes-cni
+
 ### crictl uses containerd as default
 {
 cat <<EOF | sudo tee /etc/crictl.yaml
@@ -144,7 +144,7 @@ EOF
 ### kubelet should use containerd
 {
 cat <<EOF | sudo tee /etc/default/kubelet
-KUBELET_EXTRA_ARGS="--container-runtime-endpoint unix:///run/containerd/containerd.sock"
+KUBELET_EXTRA_ARGS="--container-runtime remote --container-runtime-endpoint unix:///run/containerd/containerd.sock"
 EOF
 }
 
@@ -156,17 +156,46 @@ systemctl enable containerd
 systemctl restart containerd
 systemctl enable kubelet && systemctl start kubelet
 
-
 ### init k8s
 rm /root/.kube/config || true
-kubeadm init --kubernetes-version=${KUBE_VERSION} --ignore-preflight-errors=NumCPU --skip-token-print --pod-network-cidr 192.168.0.0/16
+kubeadm init --ignore-preflight-errors=NumCPU --skip-token-print --pod-network-cidr 172.16.0.0/16
 
 mkdir -p ~/.kube
-sudo cp -i /etc/kubernetes/admin.conf ~/.kube/config
+cp -i /etc/kubernetes/admin.conf ~/.kube/config
 
 ### CNI
-kubectl apply -f https://raw.githubusercontent.com/killer-sh/cks-course-environment/master/cluster-setup/calico.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/tigera-operator.yaml
 
+cat > custom-resources.yaml <<EOF
+# This section includes base Calico installation configuration.
+# For more information, see: https://projectcalico.docs.tigera.io/master/reference/installation/api#operator.tigera.io/v1.Installation
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  # Configures Calico networking.
+  calicoNetwork:
+    # Note: The ipPools section cannot be modified post-install.
+    ipPools:
+    - blockSize: 26
+      cidr: 172.16.0.0/16
+      encapsulation: VXLANCrossSubnet
+      natOutgoing: Enabled
+      nodeSelector: all()
+
+---
+
+# This section configures the Calico API server.
+# For more information, see: https://projectcalico.docs.tigera.io/master/reference/installation/api#operator.tigera.io/v1.APIServer
+apiVersion: operator.tigera.io/v1
+kind: APIServer 
+metadata: 
+  name: default 
+spec: {}
+EOF
+
+kubectl create -f custom-resources.yaml
 
 # etcdctl
 ETCDCTL_VERSION=v3.5.1
