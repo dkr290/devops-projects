@@ -1,27 +1,20 @@
-#!/bin/sh
+source /etc/os-release
 
-# Source: http://kubernetes.io/docs/getting-started-guides/kubeadm
 
-set -e
+KUBERNETES_VERSION=1.25.7-00
 
-source /etc/lsb-release
-if [ "$DISTRIB_RELEASE" != "20.04" ]; then
+
+if [ "$VERSION_ID" != "22.04" ]; then
     echo "################################# "
     echo "############ WARNING ############ "
     echo "################################# "
     echo
-    echo "This script only works on Ubuntu 20.04!"
-    echo "You're using: ${DISTRIB_DESCRIPTION}"
+    echo "This script only works on Ubuntu 22.04!"
+    echo "You're using: ${VERSION_ID}"
     echo "Better ABORT with Ctrl+C. Or press any key to continue the install"
     read
 fi
-
-KUBE_VERSION=1.27.3
-
-
-### setup terminal
-apt-get --allow-unauthenticated update
-apt-get --allow-unauthenticated install -y bash-completion binutils
+apt-get install -y bash-completion binutils curl wget gpg
 echo 'colorscheme ron' >> ~/.vimrc
 echo 'set tabstop=2' >> ~/.vimrc
 echo 'set shiftwidth=2' >> ~/.vimrc
@@ -46,8 +39,6 @@ apt-get remove -y docker.io containerd kubelet kubeadm kubectl kubernetes-cni ||
 apt-get autoremove -y
 systemctl daemon-reload
 
-
-
 ### install podman
 . /etc/os-release
 echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:testing.list
@@ -60,42 +51,30 @@ cat <<EOF | sudo tee /etc/containers/registries.conf
 registries = ['docker.io']
 EOF
 
+apt-get -y update
+apt-get -y install  ca-certificates  curl   gnupg  apt-transport-https   lsb-release cri-tools 
+mkdir -m 0755 -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-### install packages
-curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-mkdir -p /etc/apt/keyrings
-echo "deb [trusted=yes] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-apt-get --allow-unauthenticated update
-apt-get --allow-unauthenticated install -y docker.io containerd kubelet=${KUBE_VERSION}-00 kubeadm=${KUBE_VERSION}-00 kubectl=${KUBE_VERSION}-00 kubernetes-cni
-apt-mark hold kubelet kubeadm kubectl kubernetes-cni
+apt update
+apt -y install containerd.io docker.io
 
+touch /etc/modules-load.d/br_netfilter.conf
 
-### install containerd 1.6 over apt-installed-version
-wget https://github.com/containerd/containerd/releases/download/v1.6.12/containerd-1.6.12-linux-amd64.tar.gz
-tar xvf containerd-1.6.12-linux-amd64.tar.gz
-systemctl stop containerd
-mv bin/* /usr/bin
-rm -rf bin containerd-1.6.12-linux-amd64.tar.gz
-systemctl unmask containerd
-systemctl start containerd
+echo br_netfilter >  /etc/modules-load.d/br_netfilter.conf
+echo overlay      > /etc/modules-load.d/overlay.conf
+echo net.ipv4.ip_forward=1  > /etc/sysctl.d/10-kubernetes.conf
+echo net.bridge.bridge-nf-call-iptables=1   |   tee -a /etc/sysctl.d/10-kubernetes.conf
+echo net.bridge.bridge-nf-call-ip6tables =1 |   tee -a /etc/sysctl.d/10-kubernetes.conf
+#echo GRUB_CMDLINE_LINUX="cgroup_enable=memory" | tee -a /etc/default/grub
+sysctl --system
+modprobe overlay
+modprobe br_netfilter
 
-
-### containerd
-cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
-overlay
-br_netfilter
-EOF
-sudo modprobe overlay
-sudo modprobe br_netfilter
-cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
-net.bridge.bridge-nf-call-iptables  = 1
-net.ipv4.ip_forward                 = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-EOF
-sudo sysctl --system
-sudo mkdir -p /etc/containerd
-
-
+mkdir -p /etc/containerd
+containerd config default | tee /etc/containerd/config.toml
 ### containerd config
 cat > /etc/containerd/config.toml <<EOF
 disabled_plugins = []
@@ -133,6 +112,13 @@ version = 2
         SystemdCgroup = true
 EOF
 
+systemctl restart containerd
+curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list
+apt-get update
+apt-get install -y kubernetes-cni
+apt-get install -y kubelet=$KUBERNETES_VERSION kubeadm=$KUBERNETES_VERSION kubectl=$KUBERNETES_VERSION
+apt-mark hold kubelet kubeadm kubectl kubernetes-cni
 
 ### crictl uses containerd as default
 {
@@ -145,7 +131,7 @@ EOF
 ### kubelet should use containerd
 {
 cat <<EOF | sudo tee /etc/default/kubelet
-KUBELET_EXTRA_ARGS="--container-runtime-endpoint unix:///run/containerd/containerd.sock"
+KUBELET_EXTRA_ARGS="--container-runtime remote --container-runtime-endpoint unix:///run/containerd/containerd.sock"
 EOF
 }
 
@@ -159,13 +145,3 @@ systemctl enable kubelet && systemctl start kubelet
 
 
 
-### init k8s
-kubeadm reset -f
-systemctl daemon-reload
-service kubelet start
-
-
-echo
-echo "EXECUTE ON MASTER: kubeadm token create --print-join-command --ttl 0"
-echo "THEN RUN THE OUTPUT AS COMMAND HERE TO ADD AS WORKER"
-echo
