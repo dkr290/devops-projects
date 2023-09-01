@@ -1,25 +1,19 @@
 #!/bin/bash
 
-
+KUBERNETES_VERSION=1.25.7-00
 
 source /etc/os-release
-if [ "$DISTRIB_RELEASE" != "22.04" ]; then
+if [ "$VERSION_ID" != "22.04" ]; then
     echo "################################# "
     echo "############ WARNING ############ "
     echo "################################# "
     echo
-    echo "This script only works on Ubuntu 20.04!"
-    echo "You're using: ${DISTRIB_DESCRIPTION}"
+    echo "This script only works on Ubuntu 22.04!"
+    echo "You're using: ${VERSION_ID}"
     echo "Better ABORT with Ctrl+C. Or press any key to continue the install"
     read
 fi
-
-KUBE_VERSION=1.27.3
-
-
-### setup terminal
-apt-get --allow-unauthenticated update
-apt-get --allow-unauthenticated install -y bash-completion binutils curl wget gpg
+apt-get install -y bash-completion binutils curl wget gpg
 echo 'colorscheme ron' >> ~/.vimrc
 echo 'set tabstop=2' >> ~/.vimrc
 echo 'set shiftwidth=2' >> ~/.vimrc
@@ -44,8 +38,6 @@ apt-get remove -y docker.io containerd kubelet kubeadm kubectl kubernetes-cni ||
 apt-get autoremove -y
 systemctl daemon-reload
 
-
-
 ### install podman
 . /etc/os-release
 echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:testing.list
@@ -59,13 +51,14 @@ registries = ['docker.io']
 EOF
 
 
-### install packages
+
 apt-get -y update
 apt-get -y install  ca-certificates  curl   gnupg  apt-transport-https   lsb-release cri-tools 
 mkdir -m 0755 -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
 apt update
 apt -y install containerd.io docker.io 
 
@@ -83,8 +76,6 @@ modprobe br_netfilter
 
 mkdir -p /etc/containerd
 containerd config default | tee /etc/containerd/config.toml
-
-
 ### containerd config
 cat > /etc/containerd/config.toml <<EOF
 disabled_plugins = []
@@ -121,7 +112,6 @@ version = 2
         ShimCgroup = ""
         SystemdCgroup = true
 EOF
-
 
 systemctl restart containerd
 curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
@@ -163,6 +153,7 @@ cp -i /etc/kubernetes/admin.conf ~/.kube/config
 
 ### CNI
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/tigera-operator.yaml
+
 
 cat > custom-resources.yaml <<EOF
 # This section includes base Calico installation configuration.
@@ -207,3 +198,4 @@ rm -rf ${ETCDCTL_VERSION_FULL} ${ETCDCTL_VERSION_FULL}.tar.gz
 echo
 echo "### COMMAND TO ADD A WORKER NODE ###"
 kubeadm token create --print-join-command --ttl 0
+
