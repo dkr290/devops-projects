@@ -1,10 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
-# Source: http://kubernetes.io/docs/getting-started-guides/kubeadm
 
-set -e
 
-source /etc/lsb-release
+source /etc/os-release
 if [ "$DISTRIB_RELEASE" != "22.04" ]; then
     echo "################################# "
     echo "############ WARNING ############ "
