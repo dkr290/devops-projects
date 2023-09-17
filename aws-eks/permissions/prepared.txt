@@ -1,0 +1,12 @@
+AmazonEC2FullAccess (AWS Managed Policy)
+AWSCloudFormationFullAccess (AWS Managed Policy)
+
+
+
+EKSFullAccess
+EKSIamAccess
+EKSKmsPermissions
+
+
+
+

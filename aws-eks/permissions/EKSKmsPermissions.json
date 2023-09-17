@@ -1,0 +1,8 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {"Sid": "EKSKMSPermisssions",
+            "Effect": "Allow",
+            "Action": ["kms:ListKeys"],
+            "Resource": "*"
+        }]}
