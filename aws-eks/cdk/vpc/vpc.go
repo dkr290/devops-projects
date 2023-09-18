@@ -29,9 +29,27 @@ func NewVpcStack(scope constructs.Construct, id string, props *VpcStackProps) aw
 	// 	VisibilityTimeout: awscdk.Duration_Seconds(jsii.Number(300)),
 	// })
 
+	subnetConfiguration := []*awsec2.SubnetConfiguration{
+		{
+			CidrMask:   aws.Float64(24),
+			Name:       aws.String("public"),
+			SubnetType: awsec2.SubnetType_PUBLIC,
+		},
+
+		{
+			CidrMask:   aws.Float64(24),
+			Name:       aws.String("private"),
+			SubnetType: awsec2.SubnetType_PRIVATE_WITH_EGRESS,
+		},
+	}
+
 	eksVpc := awsec2.NewVpc(stack, aws.String("eks-vpc"), &awsec2.VpcProps{
-		IpAddresses: awsec2.IpAddresses_Cidr(jsii.String("10.0.0.0/16")),
-		MaxAzs:      aws.Float64(1),
+		IpAddresses:         awsec2.IpAddresses_Cidr(jsii.String("10.0.0.0/16")),
+		MaxAzs:              aws.Float64(2),
+		EnableDnsHostnames:  aws.Bool(true),
+		EnableDnsSupport:    aws.Bool(true),
+		NatGateways:         aws.Float64(1),
+		SubnetConfiguration: &subnetConfiguration,
 	})
 
 	awsssm.NewStringParameter(stack, aws.String("eks-vpc-parm"),
