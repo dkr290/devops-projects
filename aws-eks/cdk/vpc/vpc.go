@@ -60,6 +60,19 @@ func NewVpcStack(scope constructs.Construct, id string, props *VpcStackProps) aw
 		},
 	)
 
+	privSubnets := eksVpc.PrivateSubnets()
+	publicSubnets := eksVpc.PublicSubnets()
+
+	for _, p := range *privSubnets {
+
+		awscdk.Tags_Of(p).Add(aws.String("kubernetes.io/role/internal-elb"), aws.String("1"), nil)
+
+	}
+
+	for _, p := range *publicSubnets {
+		awscdk.Tags_Of(p).Add(aws.String("kubernetes.io/role/elb"), aws.String("1"), nil)
+	}
+
 	return stack
 }
 

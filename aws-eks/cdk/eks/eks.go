@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
@@ -9,6 +10,7 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/v2/awseks"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsiam"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/joho/godotenv"
 
 	// "github.com/aws/aws-cdk-go/awscdk/v2/awssqs"
 	"github.com/aws/constructs-go/constructs/v10"
@@ -19,8 +21,36 @@ type EksStackProps struct {
 	awscdk.StackProps
 }
 
+var (
+	masterUser    string
+	masterUserArn string
+)
+
+func GetEnvs() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
+
+	}
+
+	masterUser = os.Getenv("USER_NAME")
+	if len(masterUser) == 0 {
+		log.Fatal("You must set your 'USER_NAME' environmental variable. See\n\t https://pkg.go.dev/os#Getenv")
+	}
+
+	masterUserArn = os.Getenv("USER_ARN")
+	if len(masterUserArn) == 0 {
+		log.Fatal("You must set your 'USER_ARN' environmental variable. See\n\t https://pkg.go.dev/os#Getenv")
+	}
+
+}
+
 func NewEksStack(scope constructs.Construct, id string, props *EksStackProps) awscdk.Stack {
 	var sprops awscdk.StackProps
+
+	var role awsiam.Role
+
+	GetEnvs()
+
 	if props != nil {
 		sprops = props.StackProps
 	}
@@ -34,7 +64,31 @@ func NewEksStack(scope constructs.Construct, id string, props *EksStackProps) aw
 	// IAM role for our EC2 worker nodes
 	workerRole := awsiam.NewRole(stack, jsii.String("EKSWorkerRole"), &awsiam.RoleProps{
 		AssumedBy: awsiam.NewServicePrincipal(jsii.String("ec2.amazonaws.com"), nil),
+		RoleName:  jsii.String("EKSWorkerRole"),
 	})
+
+	// masterRole := awsiam.NewRole(stack, jsii.String("EKSFullAdminsDEV"), &awsiam.RoleProps{
+	// 	Description: aws.String("The Cluster construct will associate this role with the system:masters RBAC group, giving it super-user access to the cluster"),
+	// 	AssumedBy:   awsiam.NewServicePrincipal(jsii.String("eks.amazonaws.com"), nil),
+
+	// 	RoleName: jsii.String("EKSFullAdminsDEV"),
+	// })
+
+	// newAdminGroup := awsiam.NewGroup(stack, aws.String("EKS-Full-Admins-Dev"), &awsiam.GroupProps{
+	// 	GroupName: aws.String("EKS-Full-Admins-Dev"),
+	// })
+
+	// policy1 := awsiam.NewPolicyStatement(&awsiam.PolicyStatementProps{
+	// 	Actions: &[]*string{
+	// 		jsii.String("sts:AssumeRole"),
+	// 	},
+
+	// 	Resources: &[]*string{
+	// 		masterRole.RoleArn(),
+	// 	},
+	// })
+
+	// newAdminGroup.AddToPolicy(policy1)
 
 	eksCluster := awseks.NewCluster(stack, jsii.String("eks-dev-cluster"), &awseks.ClusterProps{
 		Vpc:                 vpc,
@@ -42,6 +96,13 @@ func NewEksStack(scope constructs.Construct, id string, props *EksStackProps) aw
 		Version:             awseks.KubernetesVersion_V1_27(),
 		ClusterName:         aws.String("eks-dev-cluster"),
 		OutputConfigCommand: aws.Bool(true),
+		MastersRole:         role,
+	})
+	eksCluster.AwsAuth().AddUserMapping(awsiam.User_FromUserArn(stack, aws.String(masterUser), aws.String(masterUserArn)), &awseks.AwsAuthMapping{
+		Groups: &[]*string{
+			jsii.String("system:masters"),
+		},
+		Username: aws.String(masterUser),
 	})
 
 	onDemandASG := awsautoscaling.NewAutoScalingGroup(stack, jsii.String("OnDemandASG"), &awsautoscaling.AutoScalingGroupProps{
@@ -58,6 +119,9 @@ func NewEksStack(scope constructs.Construct, id string, props *EksStackProps) aw
 			SubnetType: awsec2.SubnetType_PRIVATE_WITH_EGRESS,
 		},
 	})
+
+	//for managed nodegroup
+	//eksCluster.AddNodegroupCapacity()
 
 	eksCluster.ConnectAutoScalingGroupCapacity(onDemandASG, &awseks.AutoScalingGroupOptions{})
 
