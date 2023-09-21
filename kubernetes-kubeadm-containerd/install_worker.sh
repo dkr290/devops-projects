@@ -1,7 +1,7 @@
 source /etc/os-release
 
 
-KUBERNETES_VERSION=1.25.7-00
+KUBERNETES_VERSION=1.27.5-00
 
 
 if [ "$VERSION_ID" != "22.04" ]; then
@@ -131,7 +131,7 @@ EOF
 ### kubelet should use containerd
 {
 cat <<EOF | sudo tee /etc/default/kubelet
-KUBELET_EXTRA_ARGS="--container-runtime remote --container-runtime-endpoint unix:///run/containerd/containerd.sock"
+KUBELET_EXTRA_ARGS="--container-runtime-endpoint unix:///run/containerd/containerd.sock"
 EOF
 }
 
