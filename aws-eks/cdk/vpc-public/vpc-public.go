@@ -1,0 +1,142 @@
+package main
+
+import (
+	"github.com/aws/aws-cdk-go/awscdk/v2"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsec2"
+	"github.com/aws/aws-sdk-go-v2/aws"
+
+	// "github.com/aws/aws-cdk-go/awscdk/v2/awssqs"
+	"github.com/aws/constructs-go/constructs/v10"
+	"github.com/aws/jsii-runtime-go"
+)
+
+type VpcPublicStackProps struct {
+	awscdk.StackProps
+}
+
+var vpcName string = "custom-vpc"
+var pVpc awsec2.Vpc
+
+func NewEc2K8sInstances(scope constructs.Construct, id string, props *VpcPublicStackProps) awscdk.Stack {
+	var sprops awscdk.StackProps
+	if props != nil {
+		sprops = props.StackProps
+	}
+	stack := awscdk.NewStack(scope, &id, &sprops)
+
+	var amiImage = make(map[string]*string)
+
+	amiImage["eu-central-1"] = jsii.String("ami-04e601abe3e1a910f")
+
+	k8sSG := awsec2.NewSecurityGroup(stack, aws.String("k8sSG"), &awsec2.SecurityGroupProps{
+		Vpc:               pVpc,
+		AllowAllOutbound:  aws.Bool(true),
+		SecurityGroupName: aws.String("k8sSG"),
+	})
+
+	k8sSG.AddIngressRule(awsec2.Peer_AnyIpv4(), awsec2.Port_Tcp(jsii.Number(22)), aws.String("allow port 22"), aws.Bool(false))
+
+	awsec2.NewInstance(stack, jsii.String("master01"), &awsec2.InstanceProps{
+		Vpc:          pVpc,
+		InstanceType: awsec2.InstanceType_Of(awsec2.InstanceClass_BURSTABLE2, awsec2.InstanceSize_SMALL),
+		MachineImage: awsec2.MachineImage_GenericLinux(
+			&amiImage,
+			&awsec2.GenericLinuxImageProps{},
+		),
+		InstanceName:  aws.String("master01"),
+		KeyName:       aws.String("ec2-key"),
+		SecurityGroup: k8sSG,
+	})
+
+	awsec2.NewInstance(stack, jsii.String("worker01"), &awsec2.InstanceProps{
+		Vpc:          pVpc,
+		InstanceType: awsec2.InstanceType_Of(awsec2.InstanceClass_BURSTABLE2, awsec2.InstanceSize_SMALL),
+		MachineImage: awsec2.MachineImage_GenericLinux(
+			&amiImage,
+			&awsec2.GenericLinuxImageProps{},
+		),
+		InstanceName:  aws.String("worker01"),
+		KeyName:       aws.String("ec2-key"),
+		SecurityGroup: k8sSG,
+	})
+
+	return stack
+
+}
+
+func NewVpcPublicStack(scope constructs.Construct, id string, props *VpcPublicStackProps) awscdk.Stack {
+	var sprops awscdk.StackProps
+	if props != nil {
+		sprops = props.StackProps
+	}
+	stack := awscdk.NewStack(scope, &id, &sprops)
+
+	subnetConfiguration := []*awsec2.SubnetConfiguration{
+		{
+			CidrMask:   aws.Float64(24),
+			Name:       aws.String("public"),
+			SubnetType: awsec2.SubnetType_PUBLIC,
+		},
+	}
+
+	pVpc = awsec2.NewVpc(stack, aws.String(vpcName), &awsec2.VpcProps{
+		IpAddresses:         awsec2.IpAddresses_Cidr(jsii.String("10.0.0.0/16")),
+		MaxAzs:              aws.Float64(2),
+		EnableDnsHostnames:  aws.Bool(true),
+		EnableDnsSupport:    aws.Bool(true),
+		NatGateways:         aws.Float64(0),
+		SubnetConfiguration: &subnetConfiguration,
+		VpcName:             &vpcName,
+	})
+
+	pVpc.VpcArn()
+
+	return stack
+}
+
+func main() {
+	defer jsii.Close()
+
+	app := awscdk.NewApp(nil)
+
+	NewVpcPublicStack(app, "VpcPublicStack", &VpcPublicStackProps{
+		awscdk.StackProps{
+			Env: env(),
+		},
+	})
+
+	NewEc2K8sInstances(app, "ec2k8sInstance", &VpcPublicStackProps{
+		awscdk.StackProps{
+			Env: env(),
+		},
+	})
+
+	app.Synth(nil)
+}
+
+// env determines the AWS environment (account+region) in which our stack is to
+// be deployed. For more information see: https://docs.aws.amazon.com/cdk/latest/guide/environments.html
+func env() *awscdk.Environment {
+	// If unspecified, this stack will be "environment-agnostic".
+	// Account/Region-dependent features and context lookups will not work, but a
+	// single synthesized template can be deployed anywhere.
+	//---------------------------------------------------------------------------
+	return nil
+
+	// Uncomment if you know exactly what account and region you want to deploy
+	// the stack to. This is the recommendation for production stacks.
+	//---------------------------------------------------------------------------
+	// return &awscdk.Environment{
+	//  Account: jsii.String("123456789012"),
+	//  Region:  jsii.String("us-east-1"),
+	// }
+
+	// Uncomment to specialize this stack for the AWS Account and Region that are
+	// implied by the current CLI configuration. This is recommended for dev
+	// stacks.
+	//---------------------------------------------------------------------------
+	// return &awscdk.Environment{
+	//  Account: jsii.String(os.Getenv("CDK_DEFAULT_ACCOUNT")),
+	//  Region:  jsii.String(os.Getenv("CDK_DEFAULT_REGION")),
+	// }
+}
