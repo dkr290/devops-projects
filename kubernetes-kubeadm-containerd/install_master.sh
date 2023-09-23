@@ -60,7 +60,7 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 apt update
-apt -y install containerd.io docker.io 
+apt -y install containerd.io docker-ce 
 
 touch /etc/modules-load.d/br_netfilter.conf
 
