@@ -50,6 +50,7 @@ func NewVpcStack(scope constructs.Construct, id string, props *VpcStackProps) aw
 		EnableDnsSupport:    aws.Bool(true),
 		NatGateways:         aws.Float64(1),
 		SubnetConfiguration: &subnetConfiguration,
+		VpcName:             aws.String("eks-vpc"),
 	})
 
 	awsssm.NewStringParameter(stack, aws.String("eks-vpc-parm"),

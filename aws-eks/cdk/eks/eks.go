@@ -56,9 +56,9 @@ func NewEksStack(scope constructs.Construct, id string, props *EksStackProps) aw
 	}
 	stack := awscdk.NewStack(scope, &id, &sprops)
 
-	vpc := awsec2.Vpc_FromLookup(stack, aws.String("VpcStack/eks-vpc"), &awsec2.VpcLookupOptions{
+	vpc := awsec2.Vpc_FromLookup(stack, aws.String("eks-vpc"), &awsec2.VpcLookupOptions{
 		IsDefault: aws.Bool(false),
-		VpcName:   aws.String("VpcStack/eks-vpc"),
+		VpcName:   aws.String("eks-vpc"),
 	})
 
 	// IAM role for our EC2 worker nodes
@@ -118,6 +118,7 @@ func NewEksStack(scope constructs.Construct, id string, props *EksStackProps) aw
 		VpcSubnets: &awsec2.SubnetSelection{
 			SubnetType: awsec2.SubnetType_PRIVATE_WITH_EGRESS,
 		},
+		AutoScalingGroupName: aws.String("DefaultASG"),
 	})
 
 	//for managed nodegroup
