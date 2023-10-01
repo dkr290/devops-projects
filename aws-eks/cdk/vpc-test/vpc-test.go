@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsec2"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -15,6 +13,8 @@ import (
 type VpcTestStackProps struct {
 	awscdk.StackProps
 }
+
+var vpc awsec2.Vpc
 
 type Subnets struct {
 	Subnet    string
@@ -38,6 +38,40 @@ func AddNames() []Subnets {
 
 }
 
+func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc) {
+
+	var amiImageEuCentral = make(map[string]*string)
+	amiImageEuCentral["eu-central-1"] = jsii.String("ami-04e601abe3e1a910f")
+
+	InstanceSG := awsec2.NewSecurityGroup(stack, aws.String("InstancesSG"), &awsec2.SecurityGroupProps{
+		Vpc:               vpc,
+		AllowAllOutbound:  aws.Bool(true),
+		SecurityGroupName: aws.String("InstancesSG"),
+	})
+
+	awsec2.NewInstance(stack, jsii.String("App1-Pub"), &awsec2.InstanceProps{
+		Vpc:          vpc,
+		InstanceType: awsec2.InstanceType_Of(awsec2.InstanceClass_BURSTABLE2, awsec2.InstanceSize_SMALL),
+		MachineImage: awsec2.MachineImage_GenericLinux(
+			&amiImageEuCentral,
+			&awsec2.GenericLinuxImageProps{},
+		),
+		InstanceName:  aws.String("App1-Pub"),
+		KeyName:       aws.String("ec2-key"),
+		SecurityGroup: InstanceSG,
+		VpcSubnets: &awsec2.SubnetSelection{
+			Subnets: &[]awsec2.ISubnet{
+				awsec2.Subnet_FromSubnetAttributes(stack, aws.String("subnet-05b4cc8cb69d3efc7"), &awsec2.SubnetAttributes{
+					SubnetId:         aws.String("subnet-05b4cc8cb69d3efc7"),
+					AvailabilityZone: aws.String("eu-central-1a"),
+					RouteTableId:     aws.String("rtb-02d16a9b9727fe21e"),
+				}),
+			},
+		},
+	})
+
+}
+
 func NewVpcTestStack(scope constructs.Construct, id string, props *VpcTestStackProps) awscdk.Stack {
 	var sprops awscdk.StackProps
 	if props != nil {
@@ -45,7 +79,7 @@ func NewVpcTestStack(scope constructs.Construct, id string, props *VpcTestStackP
 	}
 	stack := awscdk.NewStack(scope, &id, &sprops)
 
-	vpc := awsec2.NewVpc(stack, aws.String("qa-vpc1"), &awsec2.VpcProps{
+	vpc = awsec2.NewVpc(stack, aws.String("qa-vpc1"), &awsec2.VpcProps{
 		IpAddresses:           awsec2.IpAddresses_Cidr(jsii.String("192.168.0.0/16")),
 		MaxAzs:                aws.Float64(0),
 		CreateInternetGateway: jsii.Bool(true),
@@ -55,56 +89,63 @@ func NewVpcTestStack(scope constructs.Construct, id string, props *VpcTestStackP
 		VpcName:               aws.String("qa-vpc1"),
 	})
 
-	tags := []*awscdk.CfnTag{
-		{
-			Key:   jsii.String("Name"),
-			Value: jsii.String("to-internet"),
-		},
-	}
-	RoutingToInternet := awsec2.NewCfnRouteTable(stack, jsii.String("to-internet"), &awsec2.CfnRouteTableProps{
-		VpcId: vpc.VpcId(),
-		Tags:  &tags,
-	})
+	// tagsPub := []*awscdk.CfnTag{
+	// 	{
+	// 		Key:   jsii.String("Name"),
+	// 		Value: jsii.String("to-internet"),
+	// 	},
+	// }
 
-	routInternet := awsec2.NewCfnRoute(stack, jsii.String("Internet-route"), &awsec2.CfnRouteProps{
-		RouteTableId:         RoutingToInternet.AttrRouteTableId(),
-		DestinationCidrBlock: jsii.String("0.0.0.0/0"),
-		GatewayId:            vpc.InternetGatewayId(),
-	})
+	// tagsPriv := []*awscdk.CfnTag{
+	// 	{
+	// 		Key:   jsii.String("Name"),
+	// 		Value: jsii.String("private"),
+	// 	},
+	// }
+	// RoutingToInternet := awsec2.NewCfnRouteTable(stack, jsii.String("to-internet"), &awsec2.CfnRouteTableProps{
+	// 	VpcId: vpc.VpcId(),
+	// 	Tags:  &tagsPub,
+	// })
 
-	RoutingToPrivate := awsec2.NewCfnRouteTable(stack, jsii.String("to-private"), &awsec2.CfnRouteTableProps{
-		VpcId: vpc.VpcId(),
-	})
-
-	routPrivate := awsec2.NewCfnRoute(stack, jsii.String("private-route"), &awsec2.CfnRouteProps{
-		RouteTableId:         RoutingToPrivate.AttrRouteTableId(),
-		DestinationCidrBlock: aws.String("192.168.0.0/16"),
-	})
+	// routInternet := awsec2.NewCfnRoute(stack, jsii.String("Internet-route"), &awsec2.CfnRouteProps{
+	// 	RouteTableId:         RoutingToInternet.AttrRouteTableId(),
+	// 	DestinationCidrBlock: jsii.String("0.0.0.0/0"),
+	// 	GatewayId:            vpc.InternetGatewayId(),
+	// })
+	// routInternet.AddDependency(RoutingToInternet)
 
 	subnets := AddNames()
-	var RouteId *string
 
 	for _, sub := range subnets {
 
 		if sub.IsPublic {
-			RouteId = routInternet.RouteTableId()
+
+			subnet := awsec2.NewPublicSubnet(stack, jsii.String(sub.Subnet), &awsec2.PublicSubnetProps{
+				VpcId:               vpc.VpcId(),
+				CidrBlock:           jsii.String(sub.CidrBlock),
+				AvailabilityZone:    jsii.String(sub.Zone),
+				MapPublicIpOnLaunch: jsii.Bool(sub.IsPublic),
+			})
+
+			subnet.AddRoute(jsii.String("to-internet"), &awsec2.AddRouteOptions{
+				RouterId:   vpc.InternetGatewayId(),
+				RouterType: awsec2.RouterType_GATEWAY,
+			})
+
 		} else {
-			RouteId = routPrivate.RouteTableId()
+			subnet := awsec2.NewPrivateSubnet(stack, jsii.String(sub.Subnet), &awsec2.PrivateSubnetProps{
+				AvailabilityZone:    jsii.String(sub.Zone),
+				CidrBlock:           jsii.String(sub.CidrBlock),
+				VpcId:               vpc.VpcId(),
+				MapPublicIpOnLaunch: jsii.Bool(sub.IsPublic),
+			})
+
+			subnet.SubnetId()
 		}
-
-		subnet := awsec2.Subnet_FromSubnetAttributes(stack, jsii.String(sub.Subnet), &awsec2.SubnetAttributes{
-			SubnetId:         jsii.String(sub.Subnet),
-			AvailabilityZone: jsii.String(sub.Zone),
-			Ipv4CidrBlock:    jsii.String(sub.CidrBlock),
-
-			RouteTableId: RouteId,
-		})
-
-		fmt.Println(subnet.SubnetId())
 
 	}
 
-	fmt.Println(vpc.VpcId())
+	InstanceCreation(stack, vpc)
 
 	return stack
 }
