@@ -18,6 +18,12 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc) {
 		SecurityGroupName: aws.String("InstancesSG"),
 	})
 
+	multipartUserData := awsec2.NewMultipartUserData(&awsec2.MultipartUserDataOptions{})
+	commandsUserData := awsec2.UserData_ForLinux(&awsec2.LinuxUserDataOptions{})
+	multipartUserData.AddUserDataPart(commandsUserData, awsec2.MultipartBody_SHELL_SCRIPT(), jsii.Bool(true))
+	multipartUserData.AddCommands(jsii.String("apt-get update"))
+	multipartUserData.AddCommands(jsii.String("apt-get -y install apache2"))
+
 	awsec2.NewInstance(stack, jsii.String("App1-Pub"), &awsec2.InstanceProps{
 		Vpc:          vpc,
 		InstanceType: awsec2.InstanceType_Of(awsec2.InstanceClass_BURSTABLE2, awsec2.InstanceSize_SMALL),
@@ -37,6 +43,8 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc) {
 				}),
 			},
 		},
+
+		UserData: multipartUserData,
 	})
 
 }
