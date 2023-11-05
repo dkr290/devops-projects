@@ -36,14 +36,20 @@ func NewEc2K8sInstances(scope constructs.Construct, id string, props *VpcPublicS
 
 	k8sSG.AddIngressRule(awsec2.Peer_AnyIpv4(), awsec2.Port_Tcp(jsii.Number(22)), aws.String("allow port 22"), aws.Bool(false))
 	k8sSG.Connections().AllowFrom(k8sSG, awsec2.NewPort(&awsec2.PortProps{
-		Protocol: awsec2.Protocol_ALL,
-		FromPort: aws.Float64(0),
-		ToPort:   aws.Float64(65535),
+		Protocol:             awsec2.Protocol_ALL,
+		StringRepresentation: aws.String("k8sSG-FromItselfAllow"),
+		FromPort:             jsii.Number(0),
+		ToPort:               jsii.Number(65535),
 	}), aws.String("Allow from k8sSG all"))
 
 	setupCommandsMaster := awsec2.UserData_ForLinux(&awsec2.LinuxUserDataOptions{})
 	setupCommandsMaster.AddExecuteFileCommand(&awsec2.ExecuteFileOptions{
-		FilePath: aws.String("./cmd/install_master.sh"),
+		FilePath: aws.String("yes Y | ./cmd/install_master.sh"),
+	})
+
+	setupCommandsWorker := awsec2.UserData_ForLinux(&awsec2.LinuxUserDataOptions{})
+	setupCommandsWorker.AddExecuteFileCommand(&awsec2.ExecuteFileOptions{
+		FilePath: aws.String("yes Y | ./cmd/install_worker.sh"),
 	})
 
 	awsec2.NewInstance(stack, jsii.String("master01"), &awsec2.InstanceProps{
@@ -69,6 +75,7 @@ func NewEc2K8sInstances(scope constructs.Construct, id string, props *VpcPublicS
 		InstanceName:  aws.String("worker01"),
 		KeyName:       aws.String("ec2-key"),
 		SecurityGroup: k8sSG,
+		UserData:      setupCommandsWorker,
 	})
 
 	return stack
