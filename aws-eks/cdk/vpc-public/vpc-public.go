@@ -44,12 +44,12 @@ func NewEc2K8sInstances(scope constructs.Construct, id string, props *VpcPublicS
 
 	setupCommandsMaster := awsec2.UserData_ForLinux(&awsec2.LinuxUserDataOptions{})
 	setupCommandsMaster.AddExecuteFileCommand(&awsec2.ExecuteFileOptions{
-		FilePath: aws.String("yes Y | ./cmd/install_master.sh"),
+		FilePath: aws.String("./install_master.sh"),
 	})
 
 	setupCommandsWorker := awsec2.UserData_ForLinux(&awsec2.LinuxUserDataOptions{})
 	setupCommandsWorker.AddExecuteFileCommand(&awsec2.ExecuteFileOptions{
-		FilePath: aws.String("yes Y | ./cmd/install_worker.sh"),
+		FilePath: aws.String("./install_worker.sh"),
 	})
 
 	awsec2.NewInstance(stack, jsii.String("master01"), &awsec2.InstanceProps{
