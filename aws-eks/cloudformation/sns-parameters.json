@@ -1,0 +1,30 @@
+
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Enter email for sns notification",
+    "Parameters": {
+         "SNSEmail":{
+            "Type": "String",
+            "Description": "Enter email for sns notification"
+         }
+    },
+    
+    "Resources": {
+        
+     
+     "AlertSnsTopic": {
+       "Type": "AWS::SNS::Topic",
+       "Properties": {
+        
+         "Subscription": [{
+            "Endpoint" : { "Ref": "SNSEmail" },
+            "Protocol": "email"
+            
+         }]
+       }
+     }
+     
+        
+    }
+   
+}
