@@ -25,6 +25,8 @@ type Subnets struct {
 	IsPublic  bool
 }
 
+var instanceCreate = false
+
 func AddNames() []Subnets {
 
 	subnets := []Subnets{
@@ -112,9 +114,9 @@ func NewVpcTestStack(scope constructs.Construct, id string, props *VpcTestStackP
 		}
 
 	}
-
-	instances.InstanceCreation(stack, vpc)
-
+	if instanceCreate {
+		instances.InstanceCreation(stack, vpc)
+	}
 	return stack
 }
 
