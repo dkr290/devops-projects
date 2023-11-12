@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsec2"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awss3"
 	"github.com/aws/aws-sdk-go-v2/aws"
 
 	// "github.com/aws/aws-cdk-go/awscdk/v2/awssqs"
@@ -42,14 +43,34 @@ func NewEc2K8sInstances(scope constructs.Construct, id string, props *VpcPublicS
 		ToPort:               jsii.Number(65535),
 	}), aws.String("Allow from k8sSG all"))
 
+	assetMaster := awscdk.NewAssetStaging(stack, jsii.String("AssetMaster"), &awscdk.AssetStagingProps{
+		SourcePath: aws.String("install_master.sh"),
+	})
+
+	assetWorker := awscdk.NewAssetStaging(stack, jsii.String("AssetWorker"), &awscdk.AssetStagingProps{
+		SourcePath: aws.String("install_worker.sh"),
+	})
+
+	bucket := awss3.NewBucket(stack, aws.String("k8s-bucket"), &awss3.BucketProps{})
+
 	setupCommandsMaster := awsec2.UserData_ForLinux(&awsec2.LinuxUserDataOptions{})
+	localPath := setupCommandsMaster.AddS3DownloadCommand(&awsec2.S3DownloadOptions{
+		Bucket:    bucket,
+		BucketKey: assetMaster.RelativeStagedPath(stack),
+		Region:    aws.String("eu-central-1"),
+	})
 	setupCommandsMaster.AddExecuteFileCommand(&awsec2.ExecuteFileOptions{
-		FilePath: aws.String("./install_master.sh"),
+		FilePath: localPath,
 	})
 
 	setupCommandsWorker := awsec2.UserData_ForLinux(&awsec2.LinuxUserDataOptions{})
+	localPath = setupCommandsMaster.AddS3DownloadCommand(&awsec2.S3DownloadOptions{
+		Bucket:    bucket,
+		BucketKey: assetWorker.RelativeStagedPath(stack),
+		Region:    aws.String("eu-central-1"),
+	})
 	setupCommandsWorker.AddExecuteFileCommand(&awsec2.ExecuteFileOptions{
-		FilePath: aws.String("./install_worker.sh"),
+		FilePath: localPath,
 	})
 
 	awsec2.NewInstance(stack, jsii.String("master01"), &awsec2.InstanceProps{
