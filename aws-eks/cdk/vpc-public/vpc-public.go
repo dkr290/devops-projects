@@ -1,9 +1,11 @@
 package main
 
 import (
+	"path"
+
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsec2"
-	"github.com/aws/aws-cdk-go/awscdk/v2/awss3"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awss3assets"
 	"github.com/aws/aws-sdk-go-v2/aws"
 
 	// "github.com/aws/aws-cdk-go/awscdk/v2/awssqs"
@@ -43,37 +45,30 @@ func NewEc2K8sInstances(scope constructs.Construct, id string, props *VpcPublicS
 		ToPort:               jsii.Number(65535),
 	}), aws.String("Allow from k8sSG all"))
 
-	assetMaster := awscdk.NewAssetStaging(stack, jsii.String("AssetMaster"), &awscdk.AssetStagingProps{
-		SourcePath: aws.String("install_master.sh"),
+	masterAsset := awss3assets.NewAsset(stack, aws.String("install-master-script"), &awss3assets.AssetProps{
+		Path: aws.String(path.Join("./", "install_master.sh")),
 	})
 
-	assetWorker := awscdk.NewAssetStaging(stack, jsii.String("AssetWorker"), &awscdk.AssetStagingProps{
-		SourcePath: aws.String("install_worker.sh"),
+	workerAsset := awss3assets.NewAsset(stack, aws.String("install-worker_script"), &awss3assets.AssetProps{
+		Path: aws.String(path.Join("./", "install_worker.sh")),
 	})
 
-	bucket := awss3.NewBucket(stack, aws.String("k8s-bucket"), &awss3.BucketProps{})
-
-	setupCommandsMaster := awsec2.UserData_ForLinux(&awsec2.LinuxUserDataOptions{})
-	localPath := setupCommandsMaster.AddS3DownloadCommand(&awsec2.S3DownloadOptions{
-		Bucket:    bucket,
-		BucketKey: assetMaster.RelativeStagedPath(stack),
+	// userdataMaster := awsec2.MultipartUserData_ForLinux(&awsec2.LinuxUserDataOptions{})
+	// userdataMaster.AddCommands(aws.String("apt -y update && DEBIAN_FRONTEND=noninteractive apt -y install awscli"))
+	// userdataMaster.AddS3DownloadCommand(&awsec2.S3DownloadOptions{
+	// 	Bucket:    masterAsset.Bucket(),
+	// 	BucketKey: masterAsset.S3ObjectKey(),
+	// 	Region:    aws.String("eu-central-1"),
+	// })
+	userdataWorker := awsec2.MultipartUserData_ForLinux(&awsec2.LinuxUserDataOptions{})
+	userdataWorker.AddCommands(aws.String("apt -y update && DEBIAN_FRONTEND=noninteractive apt -y install awscli"))
+	userdataWorker.AddS3DownloadCommand(&awsec2.S3DownloadOptions{
+		Bucket:    workerAsset.Bucket(),
+		BucketKey: workerAsset.S3ObjectKey(),
 		Region:    aws.String("eu-central-1"),
 	})
-	setupCommandsMaster.AddExecuteFileCommand(&awsec2.ExecuteFileOptions{
-		FilePath: localPath,
-	})
 
-	setupCommandsWorker := awsec2.UserData_ForLinux(&awsec2.LinuxUserDataOptions{})
-	localPath = setupCommandsMaster.AddS3DownloadCommand(&awsec2.S3DownloadOptions{
-		Bucket:    bucket,
-		BucketKey: assetWorker.RelativeStagedPath(stack),
-		Region:    aws.String("eu-central-1"),
-	})
-	setupCommandsWorker.AddExecuteFileCommand(&awsec2.ExecuteFileOptions{
-		FilePath: localPath,
-	})
-
-	awsec2.NewInstance(stack, jsii.String("master01"), &awsec2.InstanceProps{
+	masterInstance := awsec2.NewInstance(stack, jsii.String("master01"), &awsec2.InstanceProps{
 		Vpc:          pVpc,
 		InstanceType: awsec2.InstanceType_Of(awsec2.InstanceClass_BURSTABLE2, awsec2.InstanceSize_SMALL),
 		MachineImage: awsec2.MachineImage_GenericLinux(
@@ -83,7 +78,15 @@ func NewEc2K8sInstances(scope constructs.Construct, id string, props *VpcPublicS
 		InstanceName:  aws.String("master01"),
 		KeyName:       aws.String("ec2-key"),
 		SecurityGroup: k8sSG,
-		UserData:      setupCommandsMaster,
+		//UserData:      userdataMaster,
+	})
+
+	workerAsset.GrantRead(masterInstance.Role())
+	masterInstance.UserData().AddCommands(aws.String("apt -y update && DEBIAN_FRONTEND=noninteractive apt -y install awscli"))
+	masterInstance.UserData().AddS3DownloadCommand(&awsec2.S3DownloadOptions{
+		Bucket:    masterAsset.Bucket(),
+		BucketKey: masterAsset.S3ObjectKey(),
+		Region:    aws.String("eu-central-1"),
 	})
 
 	awsec2.NewInstance(stack, jsii.String("worker01"), &awsec2.InstanceProps{
@@ -96,7 +99,7 @@ func NewEc2K8sInstances(scope constructs.Construct, id string, props *VpcPublicS
 		InstanceName:  aws.String("worker01"),
 		KeyName:       aws.String("ec2-key"),
 		SecurityGroup: k8sSG,
-		UserData:      setupCommandsWorker,
+		UserData:      userdataWorker,
 	})
 
 	return stack
