@@ -60,13 +60,13 @@ func NewEc2K8sInstances(scope constructs.Construct, id string, props *VpcPublicS
 	// 	BucketKey: masterAsset.S3ObjectKey(),
 	// 	Region:    aws.String("eu-central-1"),
 	// })
-	userdataWorker := awsec2.MultipartUserData_ForLinux(&awsec2.LinuxUserDataOptions{})
-	userdataWorker.AddCommands(aws.String("apt -y update && DEBIAN_FRONTEND=noninteractive apt -y install awscli"))
-	userdataWorker.AddS3DownloadCommand(&awsec2.S3DownloadOptions{
-		Bucket:    workerAsset.Bucket(),
-		BucketKey: workerAsset.S3ObjectKey(),
-		Region:    aws.String("eu-central-1"),
-	})
+	// userdataWorker := awsec2.MultipartUserData_ForLinux(&awsec2.LinuxUserDataOptions{})
+	// userdataWorker.AddCommands(aws.String("apt -y update && DEBIAN_FRONTEND=noninteractive apt -y install awscli"))
+	// userdataWorker.AddS3DownloadCommand(&awsec2.S3DownloadOptions{
+	// 	Bucket:    workerAsset.Bucket(),
+	// 	BucketKey: workerAsset.S3ObjectKey(),
+	// 	Region:    aws.String("eu-central-1"),
+	// })
 
 	masterInstance := awsec2.NewInstance(stack, jsii.String("master01"), &awsec2.InstanceProps{
 		Vpc:          pVpc,
@@ -81,15 +81,18 @@ func NewEc2K8sInstances(scope constructs.Construct, id string, props *VpcPublicS
 		//UserData:      userdataMaster,
 	})
 
-	workerAsset.GrantRead(masterInstance.Role())
+	masterAsset.GrantRead(masterInstance.Role())
 	masterInstance.UserData().AddCommands(aws.String("apt -y update && DEBIAN_FRONTEND=noninteractive apt -y install awscli"))
-	masterInstance.UserData().AddS3DownloadCommand(&awsec2.S3DownloadOptions{
+	localFile := masterInstance.UserData().AddS3DownloadCommand(&awsec2.S3DownloadOptions{
 		Bucket:    masterAsset.Bucket(),
 		BucketKey: masterAsset.S3ObjectKey(),
 		Region:    aws.String("eu-central-1"),
 	})
+	masterInstance.UserData().AddExecuteFileCommand(&awsec2.ExecuteFileOptions{
+		FilePath: localFile,
+	})
 
-	awsec2.NewInstance(stack, jsii.String("worker01"), &awsec2.InstanceProps{
+	workerInstance := awsec2.NewInstance(stack, jsii.String("worker01"), &awsec2.InstanceProps{
 		Vpc:          pVpc,
 		InstanceType: awsec2.InstanceType_Of(awsec2.InstanceClass_BURSTABLE2, awsec2.InstanceSize_SMALL),
 		MachineImage: awsec2.MachineImage_GenericLinux(
@@ -99,7 +102,18 @@ func NewEc2K8sInstances(scope constructs.Construct, id string, props *VpcPublicS
 		InstanceName:  aws.String("worker01"),
 		KeyName:       aws.String("ec2-key"),
 		SecurityGroup: k8sSG,
-		UserData:      userdataWorker,
+		//UserData:      userdataWorker,
+	})
+
+	workerAsset.GrantRead(workerInstance.Role())
+	workerInstance.UserData().AddCommands(aws.String("apt -y update && DEBIAN_FRONTEND=noninteractive apt -y install awscli"))
+	localFilew := workerInstance.UserData().AddS3DownloadCommand(&awsec2.S3DownloadOptions{
+		Bucket:    workerAsset.Bucket(),
+		BucketKey: workerAsset.S3ObjectKey(),
+		Region:    aws.String("eu-central-1"),
+	})
+	workerInstance.UserData().AddExecuteFileCommand(&awsec2.ExecuteFileOptions{
+		FilePath: localFilew,
 	})
 
 	return stack
