@@ -151,7 +151,7 @@ kubeadm init --ignore-preflight-errors=NumCPU --skip-token-print --pod-network-c
 
 mkdir -p ~/.kube
 cp -i /etc/kubernetes/admin.conf ~/.kube/config
-
+sleep 17
 ### CNI
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/tigera-operator.yaml
 
