@@ -150,10 +150,14 @@ rm /root/.kube/config || true
 kubeadm init --ignore-preflight-errors=NumCPU --skip-token-print --pod-network-cidr 172.16.0.0/16
 
 mkdir -p ~/.kube
-cp -i /etc/kubernetes/admin.conf ~/.kube/config
-echo "pause of 3 min"
-crictl ps
-sleep 180
+sudo cp -i /etc/kubernetes/admin.conf ~/.kube/config
+sudo chown $(id -u):$(id -g) ~/.kube/config
+
+sudo cp  /etc/kubernetes/admin.conf kubecf.conf
+sudo chmod +rx kubecf.conf
+export KUBECONFIG=./kubecf.conf
+
+sleep 30
 ### CNI
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/tigera-operator.yaml
 
