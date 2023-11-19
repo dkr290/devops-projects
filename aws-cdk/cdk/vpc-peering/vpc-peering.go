@@ -33,6 +33,14 @@ func NewVpcPeeringStack2(scope constructs.Construct, id string, props *VpcPeerin
 
 	pVpc2 = vpcpeering.NewVpc(stack, vpcName2, "10.77.0.0/16")
 	pVpc2.VpcId()
+	defSG := awsec2.NewSecurityGroup(stack, aws.String("Allow-From-Europe-VPC"), &awsec2.SecurityGroupProps{
+		Vpc:               pVpc2,
+		AllowAllOutbound:  aws.Bool(true),
+		SecurityGroupName: aws.String("Allow-From-Europe-VPC"),
+	})
+
+	defSG.AddIngressRule(awsec2.Peer_AnyIpv4(), awsec2.Port_Tcp(jsii.Number(22)), aws.String("allow port 22"), aws.Bool(false))
+	defSG.AddIngressRule(awsec2.Peer_Ipv4(aws.String("172.31.0.0/16")), awsec2.Port_AllTraffic(), aws.String("allow all from VPC Europe"), aws.Bool(false))
 
 	return stack
 }
@@ -46,6 +54,15 @@ func NewVpcPeeringStack(scope constructs.Construct, id string, props *VpcPeering
 
 	pVpc1 = vpcpeering.NewVpc(stack, vpcName1, "172.31.0.0/16")
 	fmt.Println(pVpc1.VpcId())
+
+	defSG := awsec2.NewSecurityGroup(stack, aws.String("Allow-To-Asia"), &awsec2.SecurityGroupProps{
+		Vpc:               pVpc1,
+		AllowAllOutbound:  aws.Bool(true),
+		SecurityGroupName: aws.String("Allow-From-Europe-VPC"),
+	})
+
+	defSG.AddIngressRule(awsec2.Peer_AnyIpv4(), awsec2.Port_Tcp(jsii.Number(22)), aws.String("allow port 22"), aws.Bool(false))
+	defSG.AddEgressRule(awsec2.Peer_AnyIpv4(), awsec2.Port_AllTraffic(), aws.String("allow all to internet"), aws.Bool(false))
 
 	vpcpeering.NewPeering(pVpc1, aws.String("vpc-01b578200b6419999"), stack)
 
