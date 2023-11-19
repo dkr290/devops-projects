@@ -1,0 +1,298 @@
+{
+  "version": "34.0.0",
+  "artifacts": {
+    "VpcPublicStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "VpcPublicStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "VpcPublicStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "VpcPublicStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e009a356fd9f08e3084559427609f67df07834281378b76c35899f3ea43420c9.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "VpcPublicStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "VpcPublicStack.assets"
+      ],
+      "metadata": {
+        "/VpcPublicStack/custom-vpc/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customvpc47192D33"
+          }
+        ],
+        "/VpcPublicStack/custom-vpc/publicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customvpcpublicSubnet1Subnet599790CF"
+          }
+        ],
+        "/VpcPublicStack/custom-vpc/publicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customvpcpublicSubnet1RouteTable608DB414"
+          }
+        ],
+        "/VpcPublicStack/custom-vpc/publicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customvpcpublicSubnet1RouteTableAssociationFA4548F5"
+          }
+        ],
+        "/VpcPublicStack/custom-vpc/publicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customvpcpublicSubnet1DefaultRouteFE2A2D2B"
+          }
+        ],
+        "/VpcPublicStack/custom-vpc/publicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customvpcpublicSubnet2SubnetAF96BD2A"
+          }
+        ],
+        "/VpcPublicStack/custom-vpc/publicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customvpcpublicSubnet2RouteTable727D426C"
+          }
+        ],
+        "/VpcPublicStack/custom-vpc/publicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customvpcpublicSubnet2RouteTableAssociation797AA4F6"
+          }
+        ],
+        "/VpcPublicStack/custom-vpc/publicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customvpcpublicSubnet2DefaultRouteDF05CD05"
+          }
+        ],
+        "/VpcPublicStack/custom-vpc/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customvpcIGWE989450B"
+          }
+        ],
+        "/VpcPublicStack/custom-vpc/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customvpcVPCGW8692F501"
+          }
+        ],
+        "/VpcPublicStack/custom-vpc/RestrictDefaultSecurityGroupCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customvpcRestrictDefaultSecurityGroupCustomResource92268639"
+          }
+        ],
+        "/VpcPublicStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+          }
+        ],
+        "/VpcPublicStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E"
+          }
+        ],
+        "/VpcPublicStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/VpcPublicStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/VpcPublicStack/Exports/Output{\"Ref\":\"customvpc47192D33\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefcustomvpc47192D33615E6D33"
+          }
+        ],
+        "/VpcPublicStack/Exports/Output{\"Ref\":\"customvpcpublicSubnet1Subnet599790CF\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefcustomvpcpublicSubnet1Subnet599790CF477C0955"
+          }
+        ],
+        "/VpcPublicStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/VpcPublicStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "VpcPublicStack"
+    },
+    "ec2k8sInstance.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ec2k8sInstance.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ec2k8sInstance": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "ec2k8sInstance.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/bd0d8b675888cec7e9cbee7da9d076fc02cdcd884af5f82542a5d7cb793f5783.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ec2k8sInstance.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "VpcPublicStack",
+        "ec2k8sInstance.assets"
+      ],
+      "metadata": {
+        "/ec2k8sInstance/k8sSG/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "k8sSG2579B530"
+          }
+        ],
+        "/ec2k8sInstance/k8sSG/from ec2k8sInstancek8sSG11483984:k8sSG-FromItselfAllow": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "k8sSGfromec2k8sInstancek8sSG11483984k8sSGFromItselfAllowF233C662"
+          }
+        ],
+        "/ec2k8sInstance/master01/InstanceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "master01InstanceRoleD8A6B6F5"
+          }
+        ],
+        "/ec2k8sInstance/master01/InstanceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "master01InstanceRoleDefaultPolicy845EBF2E"
+          }
+        ],
+        "/ec2k8sInstance/master01/InstanceProfile": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "master01InstanceProfileD37BA5EC"
+          }
+        ],
+        "/ec2k8sInstance/master01/AmiMap": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "master01AmiMap14491CDC"
+          }
+        ],
+        "/ec2k8sInstance/master01/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "master01A0AB7E41"
+          }
+        ],
+        "/ec2k8sInstance/worker01/InstanceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "worker01InstanceRole481569B8"
+          }
+        ],
+        "/ec2k8sInstance/worker01/InstanceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "worker01InstanceRoleDefaultPolicy944275FE"
+          }
+        ],
+        "/ec2k8sInstance/worker01/InstanceProfile": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "worker01InstanceProfileE3472C94"
+          }
+        ],
+        "/ec2k8sInstance/worker01/AmiMap": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "worker01AmiMapF20AFB59"
+          }
+        ],
+        "/ec2k8sInstance/worker01/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "worker0151074B89"
+          }
+        ],
+        "/ec2k8sInstance/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ec2k8sInstance/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/ec2k8sInstance/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ec2k8sInstance/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ec2k8sInstance"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

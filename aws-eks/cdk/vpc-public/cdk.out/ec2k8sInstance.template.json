@@ -1,0 +1,635 @@
+{
+ "Resources": {
+  "k8sSG2579B530": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "ec2k8sInstance/k8sSG",
+    "GroupName": "k8sSG",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "allow port 22",
+      "FromPort": 22,
+      "IpProtocol": "tcp",
+      "ToPort": 22
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "VpcPublicStack:ExportsOutputRefcustomvpc47192D33615E6D33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ec2k8sInstance/k8sSG/Resource"
+   }
+  },
+  "k8sSGfromec2k8sInstancek8sSG11483984k8sSGFromItselfAllowF233C662": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Allow from k8sSG all",
+    "FromPort": 0,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "k8sSG2579B530",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "-1",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "k8sSG2579B530",
+      "GroupId"
+     ]
+    },
+    "ToPort": 65535
+   },
+   "Metadata": {
+    "aws:cdk:path": "ec2k8sInstance/k8sSG/from ec2k8sInstancek8sSG11483984:k8sSG-FromItselfAllow"
+   }
+  },
+  "master01InstanceRoleD8A6B6F5": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ec2.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "master01"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ec2k8sInstance/master01/InstanceRole/Resource"
+   }
+  },
+  "master01InstanceRoleDefaultPolicy845EBF2E": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":s3:::",
+           {
+            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+           },
+           "/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":s3:::",
+           {
+            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+           }
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "master01InstanceRoleDefaultPolicy845EBF2E",
+    "Roles": [
+     {
+      "Ref": "master01InstanceRoleD8A6B6F5"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ec2k8sInstance/master01/InstanceRole/DefaultPolicy/Resource"
+   }
+  },
+  "master01InstanceProfileD37BA5EC": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "master01InstanceRoleD8A6B6F5"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ec2k8sInstance/master01/InstanceProfile"
+   }
+  },
+  "master01A0AB7E41": {
+   "Type": "AWS::EC2::Instance",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "IamInstanceProfile": {
+     "Ref": "master01InstanceProfileD37BA5EC"
+    },
+    "ImageId": {
+     "Fn::FindInMap": [
+      "master01AmiMap14491CDC",
+      {
+       "Ref": "AWS::Region"
+      },
+      "ami"
+     ]
+    },
+    "InstanceType": "t2.small",
+    "KeyName": "ec2-key",
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "k8sSG2579B530",
+       "GroupId"
+      ]
+     }
+    ],
+    "SubnetId": {
+     "Fn::ImportValue": "VpcPublicStack:ExportsOutputRefcustomvpcpublicSubnet1Subnet599790CF477C0955"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "master01"
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": {
+      "Fn::Join": [
+       "",
+       [
+        "#!/bin/bash\napt -y update && DEBIAN_FRONTEND=noninteractive apt -y install awscli\nmkdir -p $(dirname '/tmp/431916c9702a70d874fbba72369b974a8731aa1111e92878189603f0c854c023.sh')\naws s3 cp 's3://",
+        {
+         "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+        },
+        "/431916c9702a70d874fbba72369b974a8731aa1111e92878189603f0c854c023.sh' '/tmp/431916c9702a70d874fbba72369b974a8731aa1111e92878189603f0c854c023.sh' --region eu-central-1\nset -e\nchmod +x '/tmp/431916c9702a70d874fbba72369b974a8731aa1111e92878189603f0c854c023.sh'\n'/tmp/431916c9702a70d874fbba72369b974a8731aa1111e92878189603f0c854c023.sh'"
+       ]
+      ]
+     }
+    }
+   },
+   "DependsOn": [
+    "master01InstanceRoleDefaultPolicy845EBF2E",
+    "master01InstanceRoleD8A6B6F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "ec2k8sInstance/master01/Resource"
+   }
+  },
+  "worker01InstanceRole481569B8": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ec2.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "worker01"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ec2k8sInstance/worker01/InstanceRole/Resource"
+   }
+  },
+  "worker01InstanceRoleDefaultPolicy944275FE": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":s3:::",
+           {
+            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+           },
+           "/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":s3:::",
+           {
+            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+           }
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "worker01InstanceRoleDefaultPolicy944275FE",
+    "Roles": [
+     {
+      "Ref": "worker01InstanceRole481569B8"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ec2k8sInstance/worker01/InstanceRole/DefaultPolicy/Resource"
+   }
+  },
+  "worker01InstanceProfileE3472C94": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "worker01InstanceRole481569B8"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ec2k8sInstance/worker01/InstanceProfile"
+   }
+  },
+  "worker0151074B89": {
+   "Type": "AWS::EC2::Instance",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "IamInstanceProfile": {
+     "Ref": "worker01InstanceProfileE3472C94"
+    },
+    "ImageId": {
+     "Fn::FindInMap": [
+      "worker01AmiMapF20AFB59",
+      {
+       "Ref": "AWS::Region"
+      },
+      "ami"
+     ]
+    },
+    "InstanceType": "t2.small",
+    "KeyName": "ec2-key",
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "k8sSG2579B530",
+       "GroupId"
+      ]
+     }
+    ],
+    "SubnetId": {
+     "Fn::ImportValue": "VpcPublicStack:ExportsOutputRefcustomvpcpublicSubnet1Subnet599790CF477C0955"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "worker01"
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": {
+      "Fn::Join": [
+       "",
+       [
+        "#!/bin/bash\napt -y update && DEBIAN_FRONTEND=noninteractive apt -y install awscli\nmkdir -p $(dirname '/tmp/26c18d4f06e9bca1898e5507767d6a68a3636db16d8fd77102f6fef69bc79bdf.sh')\naws s3 cp 's3://",
+        {
+         "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+        },
+        "/26c18d4f06e9bca1898e5507767d6a68a3636db16d8fd77102f6fef69bc79bdf.sh' '/tmp/26c18d4f06e9bca1898e5507767d6a68a3636db16d8fd77102f6fef69bc79bdf.sh' --region eu-central-1\nset -e\nchmod +x '/tmp/26c18d4f06e9bca1898e5507767d6a68a3636db16d8fd77102f6fef69bc79bdf.sh'\n'/tmp/26c18d4f06e9bca1898e5507767d6a68a3636db16d8fd77102f6fef69bc79bdf.sh'"
+       ]
+      ]
+     }
+    }
+   },
+   "DependsOn": [
+    "worker01InstanceRoleDefaultPolicy944275FE",
+    "worker01InstanceRole481569B8"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "ec2k8sInstance/worker01/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/32OwY7CMAxEv4V7atiCKu0ROCAOSKh8AAqpqbxNnSpOBKjqv9MUoeXEaWae7LFz+C0gn+mbZKZqMksX6E9Bm0aN6NyjyceMJnoKj513sVPbK38He649iqg9S9BsMA28/aBkedYiGATWScYMm2gaDBstqEi30JfOTkuTHp0l80jx373bjt5dyeIwqKlr/LsmrlWJ4qJ/HT7orkss1X3greOKAjkeVO1+IF9AMbfE8T7XbVWsZn9ClPnIgVqE8qVPXw1RgSsBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "ec2k8sInstance/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Mappings": {
+  "master01AmiMap14491CDC": {
+   "eu-central-1": {
+    "ami": "ami-04e601abe3e1a910f"
+   }
+  },
+  "worker01AmiMapF20AFB59": {
+   "eu-central-1": {
+    "ami": "ami-04e601abe3e1a910f"
+   }
+  }
+ },
+ "Conditions": {
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-2"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

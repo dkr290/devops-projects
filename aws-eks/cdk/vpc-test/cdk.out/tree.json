@@ -1,0 +1,740 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "VpcTestStack": {
+        "id": "VpcTestStack",
+        "path": "VpcTestStack",
+        "children": {
+          "qa-vpc1": {
+            "id": "qa-vpc1",
+            "path": "VpcTestStack/qa-vpc1",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "VpcTestStack/qa-vpc1/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::VPC",
+                  "aws:cdk:cloudformation:props": {
+                    "cidrBlock": "192.168.0.0/16",
+                    "enableDnsHostnames": true,
+                    "enableDnsSupport": true,
+                    "instanceTenancy": "default",
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "qa-vpc1"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnVPC",
+                  "version": "2.96.2"
+                }
+              },
+              "IGW": {
+                "id": "IGW",
+                "path": "VpcTestStack/qa-vpc1/IGW",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::InternetGateway",
+                  "aws:cdk:cloudformation:props": {
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "qa-vpc1"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnInternetGateway",
+                  "version": "2.96.2"
+                }
+              },
+              "VPCGW": {
+                "id": "VPCGW",
+                "path": "VpcTestStack/qa-vpc1/VPCGW",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::VPCGatewayAttachment",
+                  "aws:cdk:cloudformation:props": {
+                    "internetGatewayId": {
+                      "Ref": "qavpc1IGW2ABDC2CC"
+                    },
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnVPCGatewayAttachment",
+                  "version": "2.96.2"
+                }
+              },
+              "RestrictDefaultSecurityGroupCustomResource": {
+                "id": "RestrictDefaultSecurityGroupCustomResource",
+                "path": "VpcTestStack/qa-vpc1/RestrictDefaultSecurityGroupCustomResource",
+                "children": {
+                  "Default": {
+                    "id": "Default",
+                    "path": "VpcTestStack/qa-vpc1/RestrictDefaultSecurityGroupCustomResource/Default",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.CfnResource",
+                      "version": "2.96.2"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CustomResource",
+                  "version": "2.96.2"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.Vpc",
+              "version": "2.96.2"
+            }
+          },
+          "Custom::VpcRestrictDefaultSGCustomResourceProvider": {
+            "id": "Custom::VpcRestrictDefaultSGCustomResourceProvider",
+            "path": "VpcTestStack/Custom::VpcRestrictDefaultSGCustomResourceProvider",
+            "children": {
+              "Staging": {
+                "id": "Staging",
+                "path": "VpcTestStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Staging",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.AssetStaging",
+                  "version": "2.96.2"
+                }
+              },
+              "Role": {
+                "id": "Role",
+                "path": "VpcTestStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.96.2"
+                }
+              },
+              "Handler": {
+                "id": "Handler",
+                "path": "VpcTestStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.96.2"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CustomResourceProvider",
+              "version": "2.96.2"
+            }
+          },
+          "App1-QA-Web-Pub": {
+            "id": "App1-QA-Web-Pub",
+            "path": "VpcTestStack/App1-QA-Web-Pub",
+            "children": {
+              "Subnet": {
+                "id": "Subnet",
+                "path": "VpcTestStack/App1-QA-Web-Pub/Subnet",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                  "aws:cdk:cloudformation:props": {
+                    "availabilityZone": "eu-central-1a",
+                    "cidrBlock": "192.168.0.0/22",
+                    "mapPublicIpOnLaunch": true,
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "VpcTestStack/App1-QA-Web-Pub"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                  "version": "2.96.2"
+                }
+              },
+              "Acl": {
+                "id": "Acl",
+                "path": "VpcTestStack/App1-QA-Web-Pub/Acl",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.96.2"
+                }
+              },
+              "RouteTable": {
+                "id": "RouteTable",
+                "path": "VpcTestStack/App1-QA-Web-Pub/RouteTable",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                  "aws:cdk:cloudformation:props": {
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "VpcTestStack/App1-QA-Web-Pub"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                  "version": "2.96.2"
+                }
+              },
+              "RouteTableAssociation": {
+                "id": "RouteTableAssociation",
+                "path": "VpcTestStack/App1-QA-Web-Pub/RouteTableAssociation",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                  "aws:cdk:cloudformation:props": {
+                    "routeTableId": {
+                      "Ref": "App1QAWebPubRouteTableC0A24550"
+                    },
+                    "subnetId": {
+                      "Ref": "App1QAWebPubSubnet3E6A7D1B"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                  "version": "2.96.2"
+                }
+              },
+              "to-internet": {
+                "id": "to-internet",
+                "path": "VpcTestStack/App1-QA-Web-Pub/to-internet",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                  "aws:cdk:cloudformation:props": {
+                    "destinationCidrBlock": "0.0.0.0/0",
+                    "gatewayId": {
+                      "Ref": "qavpc1IGW2ABDC2CC"
+                    },
+                    "routeTableId": {
+                      "Ref": "App1QAWebPubRouteTableC0A24550"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnRoute",
+                  "version": "2.96.2"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.PublicSubnet",
+              "version": "2.96.2"
+            }
+          },
+          "App2-QA-Web-Pub": {
+            "id": "App2-QA-Web-Pub",
+            "path": "VpcTestStack/App2-QA-Web-Pub",
+            "children": {
+              "Subnet": {
+                "id": "Subnet",
+                "path": "VpcTestStack/App2-QA-Web-Pub/Subnet",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                  "aws:cdk:cloudformation:props": {
+                    "availabilityZone": "eu-central-1b",
+                    "cidrBlock": "192.168.12.0/22",
+                    "mapPublicIpOnLaunch": true,
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "VpcTestStack/App2-QA-Web-Pub"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                  "version": "2.96.2"
+                }
+              },
+              "Acl": {
+                "id": "Acl",
+                "path": "VpcTestStack/App2-QA-Web-Pub/Acl",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.96.2"
+                }
+              },
+              "RouteTable": {
+                "id": "RouteTable",
+                "path": "VpcTestStack/App2-QA-Web-Pub/RouteTable",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                  "aws:cdk:cloudformation:props": {
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "VpcTestStack/App2-QA-Web-Pub"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                  "version": "2.96.2"
+                }
+              },
+              "RouteTableAssociation": {
+                "id": "RouteTableAssociation",
+                "path": "VpcTestStack/App2-QA-Web-Pub/RouteTableAssociation",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                  "aws:cdk:cloudformation:props": {
+                    "routeTableId": {
+                      "Ref": "App2QAWebPubRouteTable9053AD40"
+                    },
+                    "subnetId": {
+                      "Ref": "App2QAWebPubSubnet201E9623"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                  "version": "2.96.2"
+                }
+              },
+              "to-internet": {
+                "id": "to-internet",
+                "path": "VpcTestStack/App2-QA-Web-Pub/to-internet",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                  "aws:cdk:cloudformation:props": {
+                    "destinationCidrBlock": "0.0.0.0/0",
+                    "gatewayId": {
+                      "Ref": "qavpc1IGW2ABDC2CC"
+                    },
+                    "routeTableId": {
+                      "Ref": "App2QAWebPubRouteTable9053AD40"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnRoute",
+                  "version": "2.96.2"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.PublicSubnet",
+              "version": "2.96.2"
+            }
+          },
+          "App1-QA-App": {
+            "id": "App1-QA-App",
+            "path": "VpcTestStack/App1-QA-App",
+            "children": {
+              "Subnet": {
+                "id": "Subnet",
+                "path": "VpcTestStack/App1-QA-App/Subnet",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                  "aws:cdk:cloudformation:props": {
+                    "availabilityZone": "eu-central-1c",
+                    "cidrBlock": "192.168.4.0/22",
+                    "mapPublicIpOnLaunch": false,
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "VpcTestStack/App1-QA-App"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                  "version": "2.96.2"
+                }
+              },
+              "Acl": {
+                "id": "Acl",
+                "path": "VpcTestStack/App1-QA-App/Acl",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.96.2"
+                }
+              },
+              "RouteTable": {
+                "id": "RouteTable",
+                "path": "VpcTestStack/App1-QA-App/RouteTable",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                  "aws:cdk:cloudformation:props": {
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "VpcTestStack/App1-QA-App"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                  "version": "2.96.2"
+                }
+              },
+              "RouteTableAssociation": {
+                "id": "RouteTableAssociation",
+                "path": "VpcTestStack/App1-QA-App/RouteTableAssociation",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                  "aws:cdk:cloudformation:props": {
+                    "routeTableId": {
+                      "Ref": "App1QAAppRouteTableA0446407"
+                    },
+                    "subnetId": {
+                      "Ref": "App1QAAppSubnet6BB379BC"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                  "version": "2.96.2"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.PrivateSubnet",
+              "version": "2.96.2"
+            }
+          },
+          "App2-QA-App": {
+            "id": "App2-QA-App",
+            "path": "VpcTestStack/App2-QA-App",
+            "children": {
+              "Subnet": {
+                "id": "Subnet",
+                "path": "VpcTestStack/App2-QA-App/Subnet",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                  "aws:cdk:cloudformation:props": {
+                    "availabilityZone": "eu-central-1c",
+                    "cidrBlock": "192.168.16.0/22",
+                    "mapPublicIpOnLaunch": false,
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "VpcTestStack/App2-QA-App"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                  "version": "2.96.2"
+                }
+              },
+              "Acl": {
+                "id": "Acl",
+                "path": "VpcTestStack/App2-QA-App/Acl",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.96.2"
+                }
+              },
+              "RouteTable": {
+                "id": "RouteTable",
+                "path": "VpcTestStack/App2-QA-App/RouteTable",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                  "aws:cdk:cloudformation:props": {
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "VpcTestStack/App2-QA-App"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                  "version": "2.96.2"
+                }
+              },
+              "RouteTableAssociation": {
+                "id": "RouteTableAssociation",
+                "path": "VpcTestStack/App2-QA-App/RouteTableAssociation",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                  "aws:cdk:cloudformation:props": {
+                    "routeTableId": {
+                      "Ref": "App2QAAppRouteTable080F3F93"
+                    },
+                    "subnetId": {
+                      "Ref": "App2QAAppSubnetFE5DAB2E"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                  "version": "2.96.2"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.PrivateSubnet",
+              "version": "2.96.2"
+            }
+          },
+          "App1-QA-DB": {
+            "id": "App1-QA-DB",
+            "path": "VpcTestStack/App1-QA-DB",
+            "children": {
+              "Subnet": {
+                "id": "Subnet",
+                "path": "VpcTestStack/App1-QA-DB/Subnet",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                  "aws:cdk:cloudformation:props": {
+                    "availabilityZone": "eu-central-1a",
+                    "cidrBlock": "192.168.8.0/22",
+                    "mapPublicIpOnLaunch": false,
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "VpcTestStack/App1-QA-DB"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                  "version": "2.96.2"
+                }
+              },
+              "Acl": {
+                "id": "Acl",
+                "path": "VpcTestStack/App1-QA-DB/Acl",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.96.2"
+                }
+              },
+              "RouteTable": {
+                "id": "RouteTable",
+                "path": "VpcTestStack/App1-QA-DB/RouteTable",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                  "aws:cdk:cloudformation:props": {
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "VpcTestStack/App1-QA-DB"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                  "version": "2.96.2"
+                }
+              },
+              "RouteTableAssociation": {
+                "id": "RouteTableAssociation",
+                "path": "VpcTestStack/App1-QA-DB/RouteTableAssociation",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                  "aws:cdk:cloudformation:props": {
+                    "routeTableId": {
+                      "Ref": "App1QADBRouteTableEE3853B1"
+                    },
+                    "subnetId": {
+                      "Ref": "App1QADBSubnet0C07D589"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                  "version": "2.96.2"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.PrivateSubnet",
+              "version": "2.96.2"
+            }
+          },
+          "App2-QA-DB": {
+            "id": "App2-QA-DB",
+            "path": "VpcTestStack/App2-QA-DB",
+            "children": {
+              "Subnet": {
+                "id": "Subnet",
+                "path": "VpcTestStack/App2-QA-DB/Subnet",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                  "aws:cdk:cloudformation:props": {
+                    "availabilityZone": "eu-central-1b",
+                    "cidrBlock": "192.168.20.0/22",
+                    "mapPublicIpOnLaunch": false,
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "VpcTestStack/App2-QA-DB"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                  "version": "2.96.2"
+                }
+              },
+              "Acl": {
+                "id": "Acl",
+                "path": "VpcTestStack/App2-QA-DB/Acl",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.96.2"
+                }
+              },
+              "RouteTable": {
+                "id": "RouteTable",
+                "path": "VpcTestStack/App2-QA-DB/RouteTable",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                  "aws:cdk:cloudformation:props": {
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "VpcTestStack/App2-QA-DB"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "qavpc1318F264C"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                  "version": "2.96.2"
+                }
+              },
+              "RouteTableAssociation": {
+                "id": "RouteTableAssociation",
+                "path": "VpcTestStack/App2-QA-DB/RouteTableAssociation",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                  "aws:cdk:cloudformation:props": {
+                    "routeTableId": {
+                      "Ref": "App2QADBRouteTable93B985AF"
+                    },
+                    "subnetId": {
+                      "Ref": "App2QADBSubnet95F5C098"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                  "version": "2.96.2"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.PrivateSubnet",
+              "version": "2.96.2"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "VpcTestStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "VpcTestStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.96.2"
+                }
+              },
+              "Condition": {
+                "id": "Condition",
+                "path": "VpcTestStack/CDKMetadata/Condition",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnCondition",
+                  "version": "2.96.2"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.2.70"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "VpcTestStack/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.96.2"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "VpcTestStack/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.96.2"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.96.2"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.2.70"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.96.2"
+    }
+  }
+}

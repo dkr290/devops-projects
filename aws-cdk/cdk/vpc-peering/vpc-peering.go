@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"vpc-peering/vpcpeering"
+
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsec2"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -27,23 +30,9 @@ func NewVpcPeeringStack2(scope constructs.Construct, id string, props *VpcPeerin
 		sprops = props.StackProps
 	}
 	stack := awscdk.NewStack(scope, &id, &sprops)
-	subnetConfiguration := []*awsec2.SubnetConfiguration{
-		{
-			CidrMask:   aws.Float64(24),
-			Name:       aws.String("public"),
-			SubnetType: awsec2.SubnetType_PUBLIC,
-		},
-	}
 
-	pVpc2 = awsec2.NewVpc(stack, aws.String(vpcName2), &awsec2.VpcProps{
-		IpAddresses:         awsec2.IpAddresses_Cidr(jsii.String("10.77.0.0/16")),
-		MaxAzs:              aws.Float64(2),
-		EnableDnsHostnames:  aws.Bool(true),
-		EnableDnsSupport:    aws.Bool(true),
-		NatGateways:         aws.Float64(0),
-		SubnetConfiguration: &subnetConfiguration,
-		VpcName:             &vpcName2,
-	})
+	pVpc2 = vpcpeering.NewVpc(stack, vpcName2, "10.77.0.0/16")
+	pVpc2.VpcId()
 
 	return stack
 }
@@ -55,30 +44,10 @@ func NewVpcPeeringStack(scope constructs.Construct, id string, props *VpcPeering
 	}
 	stack := awscdk.NewStack(scope, &id, &sprops)
 
-	subnetConfiguration := []*awsec2.SubnetConfiguration{
-		{
-			CidrMask:   aws.Float64(24),
-			Name:       aws.String("public"),
-			SubnetType: awsec2.SubnetType_PUBLIC,
-		},
-	}
+	pVpc1 = vpcpeering.NewVpc(stack, vpcName1, "172.31.0.0/16")
+	fmt.Println(pVpc1.VpcId())
 
-	pVpc1 = awsec2.NewVpc(stack, aws.String(vpcName1), &awsec2.VpcProps{
-		IpAddresses:         awsec2.IpAddresses_Cidr(jsii.String("172.31.0.0/16")),
-		MaxAzs:              aws.Float64(2),
-		EnableDnsHostnames:  aws.Bool(true),
-		EnableDnsSupport:    aws.Bool(true),
-		NatGateways:         aws.Float64(0),
-		SubnetConfiguration: &subnetConfiguration,
-		VpcName:             &vpcName1,
-	})
-
-	peeringConn := awsec2.NewCfnVPCPeeringConnection(stack, aws.String("europe-to-asia"), &awsec2.CfnVPCPeeringConnectionProps{
-		PeerVpcId:  pVpc2.VpcId(),
-		VpcId:      pVpc1.VpcId(),
-		PeerRegion: pVpc2.Stack().Region(),
-	})
-	peeringConn.UpdatedProperties()
+	vpcpeering.NewPeering(pVpc1, aws.String("vpc-01b578200b6419999"), stack)
 
 	return stack
 }
@@ -94,7 +63,7 @@ func main() {
 		},
 	})
 
-	NewVpcPeeringStack2(app, "VpcPeeringStack", &VpcPeeringStackProps2{
+	NewVpcPeeringStack2(app, "VpcPeeringStack2", &VpcPeeringStackProps2{
 		awscdk.StackProps{
 			Env: env2(),
 		},
@@ -142,7 +111,7 @@ func env2() *awscdk.Environment {
 	//---------------------------------------------------------------------------
 	return &awscdk.Environment{
 		//  Account: jsii.String("123456789012"),
-		Region: jsii.String("us-asia-1"),
+		Region: jsii.String("ap-south-1"),
 	}
 
 	// Uncomment to specialize this stack for the AWS Account and Region that are

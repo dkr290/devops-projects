@@ -1,0 +1,226 @@
+{
+  "version": "34.0.0",
+  "artifacts": {
+    "VpcTestStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "VpcTestStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "VpcTestStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "VpcTestStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6afa78aef91f7038ac2dfca0298f22d4363429d47210db9a75181d4e3cdf4af9.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "VpcTestStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "VpcTestStack.assets"
+      ],
+      "metadata": {
+        "/VpcTestStack/qa-vpc1/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "qavpc1318F264C"
+          }
+        ],
+        "/VpcTestStack/qa-vpc1/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "qavpc1IGW2ABDC2CC"
+          }
+        ],
+        "/VpcTestStack/qa-vpc1/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "qavpc1VPCGWF2E6EBFC"
+          }
+        ],
+        "/VpcTestStack/qa-vpc1/RestrictDefaultSecurityGroupCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "qavpc1RestrictDefaultSecurityGroupCustomResourceA52FE3D1"
+          }
+        ],
+        "/VpcTestStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+          }
+        ],
+        "/VpcTestStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E"
+          }
+        ],
+        "/VpcTestStack/App1-QA-Web-Pub/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App1QAWebPubSubnet3E6A7D1B"
+          }
+        ],
+        "/VpcTestStack/App1-QA-Web-Pub/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App1QAWebPubRouteTableC0A24550"
+          }
+        ],
+        "/VpcTestStack/App1-QA-Web-Pub/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App1QAWebPubRouteTableAssociationF7C873A7"
+          }
+        ],
+        "/VpcTestStack/App1-QA-Web-Pub/to-internet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App1QAWebPubtointernet5BC83FB3"
+          }
+        ],
+        "/VpcTestStack/App2-QA-Web-Pub/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App2QAWebPubSubnet201E9623"
+          }
+        ],
+        "/VpcTestStack/App2-QA-Web-Pub/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App2QAWebPubRouteTable9053AD40"
+          }
+        ],
+        "/VpcTestStack/App2-QA-Web-Pub/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App2QAWebPubRouteTableAssociationC0C4B972"
+          }
+        ],
+        "/VpcTestStack/App2-QA-Web-Pub/to-internet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App2QAWebPubtointernet1BCB3F9F"
+          }
+        ],
+        "/VpcTestStack/App1-QA-App/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App1QAAppSubnet6BB379BC"
+          }
+        ],
+        "/VpcTestStack/App1-QA-App/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App1QAAppRouteTableA0446407"
+          }
+        ],
+        "/VpcTestStack/App1-QA-App/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App1QAAppRouteTableAssociation34C72138"
+          }
+        ],
+        "/VpcTestStack/App2-QA-App/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App2QAAppSubnetFE5DAB2E"
+          }
+        ],
+        "/VpcTestStack/App2-QA-App/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App2QAAppRouteTable080F3F93"
+          }
+        ],
+        "/VpcTestStack/App2-QA-App/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App2QAAppRouteTableAssociation8B3EED38"
+          }
+        ],
+        "/VpcTestStack/App1-QA-DB/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App1QADBSubnet0C07D589"
+          }
+        ],
+        "/VpcTestStack/App1-QA-DB/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App1QADBRouteTableEE3853B1"
+          }
+        ],
+        "/VpcTestStack/App1-QA-DB/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App1QADBRouteTableAssociation3E8DADD6"
+          }
+        ],
+        "/VpcTestStack/App2-QA-DB/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App2QADBSubnet95F5C098"
+          }
+        ],
+        "/VpcTestStack/App2-QA-DB/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App2QADBRouteTable93B985AF"
+          }
+        ],
+        "/VpcTestStack/App2-QA-DB/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "App2QADBRouteTableAssociationEBB3B4EE"
+          }
+        ],
+        "/VpcTestStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/VpcTestStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/VpcTestStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/VpcTestStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "VpcTestStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,557 @@
+{
+  "version": "34.0.0",
+  "artifacts": {
+    "EksStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "EksStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "EksStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://506564311551/eu-central-1",
+      "properties": {
+        "templateFile": "EksStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::506564311551:role/cdk-hnb659fds-deploy-role-506564311551-eu-central-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::506564311551:role/cdk-hnb659fds-cfn-exec-role-506564311551-eu-central-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-506564311551-eu-central-1/199f95bb5cc7d903e986091fa37fd20e93bb47609c70f98d162692cad72873c8.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "EksStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::506564311551:role/cdk-hnb659fds-lookup-role-506564311551-eu-central-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "EksStack.assets"
+      ],
+      "metadata": {
+        "/EksStack/EKSWorkerRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EKSWorkerRole2A87069F"
+          }
+        ],
+        "/EksStack/eks-dev-cluster": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "You created a cluster with Kubernetes Version 1.27 without specifying the kubectlLayer property. This may cause failures as the kubectl version provided with aws-cdk-lib is 1.20, which is only guaranteed to be compatible with Kubernetes versions 1.19-1.21. Please provide a kubectlLayer from @aws-cdk/lambda-layer-kubectl-v27. [ack: @aws-cdk/aws-eks:clusterKubectlLayerNotSpecified]",
+            "trace": [
+              "Annotations.addMessage (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1392)",
+              "Annotations.addWarningV2 (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/core/lib/annotations.js:1:699)",
+              "new Cluster (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:8143)",
+              "Kernel._Kernel_create (/tmp/jsii-runtime.2706597906/lib/program.js:10071:25)",
+              "Kernel.create (/tmp/jsii-runtime.2706597906/lib/program.js:9742:93)",
+              "KernelHost.processRequest (/tmp/jsii-runtime.2706597906/lib/program.js:11658:36)",
+              "KernelHost.run (/tmp/jsii-runtime.2706597906/lib/program.js:11618:22)",
+              "Immediate._onImmediate (/tmp/jsii-runtime.2706597906/lib/program.js:11619:46)",
+              "process.processImmediate (node:internal/timers:476:21)"
+            ]
+          },
+          {
+            "type": "aws:cdk:warning",
+            "data": "Could not auto-tag private subnet subnet-0aa49c14d818efb98 with \"kubernetes.io/role/internal-elb=1\", please remember to do this manually [ack: @aws-cdk/aws-eks:clusterMustManuallyTagSubnet]",
+            "trace": [
+              "Annotations.addMessage (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1392)",
+              "Annotations.addWarningV2 (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/core/lib/annotations.js:1:699)",
+              "tagAllSubnets (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:20798)",
+              "Cluster.tagSubnets (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:21007)",
+              "new Cluster (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:8887)",
+              "Kernel._Kernel_create (/tmp/jsii-runtime.2706597906/lib/program.js:10071:25)",
+              "Kernel.create (/tmp/jsii-runtime.2706597906/lib/program.js:9742:93)",
+              "KernelHost.processRequest (/tmp/jsii-runtime.2706597906/lib/program.js:11658:36)",
+              "KernelHost.run (/tmp/jsii-runtime.2706597906/lib/program.js:11618:22)",
+              "Immediate._onImmediate (/tmp/jsii-runtime.2706597906/lib/program.js:11619:46)",
+              "process.processImmediate (node:internal/timers:476:21)"
+            ]
+          },
+          {
+            "type": "aws:cdk:warning",
+            "data": "Could not auto-tag private subnet subnet-06cd3a116c77e0413 with \"kubernetes.io/role/internal-elb=1\", please remember to do this manually [ack: @aws-cdk/aws-eks:clusterMustManuallyTagSubnet]",
+            "trace": [
+              "Annotations.addMessage (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1392)",
+              "Annotations.addWarningV2 (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/core/lib/annotations.js:1:699)",
+              "tagAllSubnets (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:20798)",
+              "Cluster.tagSubnets (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:21007)",
+              "new Cluster (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:8887)",
+              "Kernel._Kernel_create (/tmp/jsii-runtime.2706597906/lib/program.js:10071:25)",
+              "Kernel.create (/tmp/jsii-runtime.2706597906/lib/program.js:9742:93)",
+              "KernelHost.processRequest (/tmp/jsii-runtime.2706597906/lib/program.js:11658:36)",
+              "KernelHost.run (/tmp/jsii-runtime.2706597906/lib/program.js:11618:22)",
+              "Immediate._onImmediate (/tmp/jsii-runtime.2706597906/lib/program.js:11619:46)",
+              "process.processImmediate (node:internal/timers:476:21)"
+            ]
+          },
+          {
+            "type": "aws:cdk:warning",
+            "data": "Could not auto-tag public subnet subnet-048011ce3cfaaa380 with \"kubernetes.io/role/elb=1\", please remember to do this manually [ack: @aws-cdk/aws-eks:clusterMustManuallyTagSubnet]",
+            "trace": [
+              "Annotations.addMessage (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1392)",
+              "Annotations.addWarningV2 (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/core/lib/annotations.js:1:699)",
+              "tagAllSubnets (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:20798)",
+              "Cluster.tagSubnets (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:21090)",
+              "new Cluster (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:8887)",
+              "Kernel._Kernel_create (/tmp/jsii-runtime.2706597906/lib/program.js:10071:25)",
+              "Kernel.create (/tmp/jsii-runtime.2706597906/lib/program.js:9742:93)",
+              "KernelHost.processRequest (/tmp/jsii-runtime.2706597906/lib/program.js:11658:36)",
+              "KernelHost.run (/tmp/jsii-runtime.2706597906/lib/program.js:11618:22)",
+              "Immediate._onImmediate (/tmp/jsii-runtime.2706597906/lib/program.js:11619:46)",
+              "process.processImmediate (node:internal/timers:476:21)"
+            ]
+          },
+          {
+            "type": "aws:cdk:warning",
+            "data": "Could not auto-tag public subnet subnet-08b1877cb1040a010 with \"kubernetes.io/role/elb=1\", please remember to do this manually [ack: @aws-cdk/aws-eks:clusterMustManuallyTagSubnet]",
+            "trace": [
+              "Annotations.addMessage (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1392)",
+              "Annotations.addWarningV2 (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/core/lib/annotations.js:1:699)",
+              "tagAllSubnets (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:20798)",
+              "Cluster.tagSubnets (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:21090)",
+              "new Cluster (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:8887)",
+              "Kernel._Kernel_create (/tmp/jsii-runtime.2706597906/lib/program.js:10071:25)",
+              "Kernel.create (/tmp/jsii-runtime.2706597906/lib/program.js:9742:93)",
+              "KernelHost.processRequest (/tmp/jsii-runtime.2706597906/lib/program.js:11658:36)",
+              "KernelHost.run (/tmp/jsii-runtime.2706597906/lib/program.js:11618:22)",
+              "Immediate._onImmediate (/tmp/jsii-runtime.2706597906/lib/program.js:11619:46)",
+              "process.processImmediate (node:internal/timers:476:21)"
+            ]
+          }
+        ],
+        "/EksStack/eks-dev-cluster/KubectlHandlerRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterKubectlHandlerRoleB4AC09C8"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/KubectlHandlerRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterKubectlHandlerRoleDefaultPolicy30DC964A"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterRole71A44167"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/ControlPlaneSecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterControlPlaneSecurityGroupB8214091"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/ControlPlaneSecurityGroup/from EksStackOnDemandASGInstanceSecurityGroup219E783C:443": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterControlPlaneSecurityGroupfromEksStackOnDemandASGInstanceSecurityGroup219E783C44366652180"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/ControlPlaneSecurityGroup/from EksStackeksdevclusterClusterSecurityGroupB23405BD:443": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterControlPlaneSecurityGroupfromEksStackeksdevclusterClusterSecurityGroupB23405BD44361C55574"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/Resource/CreationRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterCreationRole1CB29D54"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/Resource/CreationRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterCreationRoleDefaultPolicy489D6D83"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/Resource/Resource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevcluster070A96D9"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/KubectlReadyBarrier": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterKubectlReadyBarrier09858EE1"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/ClusterSecurityGroup/from EksStackOnDemandASGInstanceSecurityGroup219E783C:443": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterClusterSecurityGroupfromEksStackOnDemandASGInstanceSecurityGroup219E783C443AEDE9B8A"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/ClusterSecurityGroup/from EksStackOnDemandASGInstanceSecurityGroup219E783C:ALL TRAFFIC": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterClusterSecurityGroupfromEksStackOnDemandASGInstanceSecurityGroup219E783CALLTRAFFIC10D28A1A"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/ClusterSecurityGroup/from EksStackeksdevclusterClusterSecurityGroupB23405BD:443": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterClusterSecurityGroupfromEksStackeksdevclusterClusterSecurityGroupB23405BD4437E103CC1"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/ClusterSecurityGroup/from EksStackeksdevclusterControlPlaneSecurityGroup117DEDD4:443": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterClusterSecurityGroupfromEksStackeksdevclusterControlPlaneSecurityGroup117DEDD44438A1F0D9F"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/ClusterSecurityGroup/from EksStackeksdevclusterClusterSecurityGroupB23405BD:1025-65535": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterClusterSecurityGroupfromEksStackeksdevclusterClusterSecurityGroupB23405BD10256553529E30FB5"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/ClusterSecurityGroup/from EksStackeksdevclusterControlPlaneSecurityGroup117DEDD4:1025-65535": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterClusterSecurityGroupfromEksStackeksdevclusterControlPlaneSecurityGroup117DEDD4102565535B402668F"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/ClusterSecurityGroup/from EksStackeksdevclusterClusterSecurityGroupB23405BD:ALL TRAFFIC": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterClusterSecurityGroupfromEksStackeksdevclusterClusterSecurityGroupB23405BDALLTRAFFIC8BC4446D"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/HasEcrPublic": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterHasEcrPublic5293974F"
+          }
+        ],
+        "/EksStack/eks-dev-cluster/AwsAuth/manifest/Resource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "eksdevclusterAwsAuthmanifest200DE285"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/NodeProxyAgentLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NodeProxyAgentLayer924C1971"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/OnEventHandler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnEventHandlerServiceRole15A26729"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/OnEventHandler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnEventHandler42BEBAE0"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/IsCompleteHandler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IsCompleteHandlerServiceRole5810CC58"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/IsCompleteHandler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IsCompleteHandler7073F4DA"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/Provider/framework-onEvent/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderframeworkonEventServiceRole9FF04296"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/Provider/framework-onEvent/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderframeworkonEventServiceRoleDefaultPolicy48CD2133"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/Provider/framework-onEvent/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderframeworkonEvent83C1D0A7"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/Provider/framework-isComplete/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderframeworkisCompleteServiceRoleB1087139"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/Provider/framework-isComplete/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderframeworkisCompleteServiceRoleDefaultPolicy2E7140AC"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/Provider/framework-isComplete/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderframeworkisComplete26D7B0CB"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/Provider/framework-onTimeout/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderframeworkonTimeoutServiceRole28643D26"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/Provider/framework-onTimeout/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderframeworkonTimeoutServiceRoleDefaultPolicy2688969F"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/Provider/framework-onTimeout/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderframeworkonTimeout0B47CA38"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/Provider/waiter-state-machine/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderwaiterstatemachineRole0C7159F9"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/Provider/waiter-state-machine/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderwaiterstatemachineRoleDefaultPolicyD3C3DA1A"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/Provider/waiter-state-machine/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Providerwaiterstatemachine5D4A9DF0"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/EksStackawscdkawseksClusterResourceProviderOnEventHandlerServiceRole1469AC1FArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EksStackawscdkawseksClusterResourceProviderOnEventHandlerServiceRole1469AC1FArn"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/EksStackawscdkawseksClusterResourceProviderIsCompleteHandlerServiceRole616EE428Arn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EksStackawscdkawseksClusterResourceProviderIsCompleteHandlerServiceRole616EE428Arn"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider/EksStackawscdkawseksClusterResourceProviderframeworkonEvent7CA25C3FArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EksStackawscdkawseksClusterResourceProviderframeworkonEvent7CA25C3FArn"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.ClusterResourceProvider.NestedStack/@aws-cdk--aws-eks.ClusterResourceProvider.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awscdkawseksClusterResourceProviderNestedStackawscdkawseksClusterResourceProviderNestedStackResource9827C454"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.KubectlProvider/Handler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Handler886CB40B"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.KubectlProvider/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AwsCliLayerF44AAF94"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.KubectlProvider/KubectlLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "KubectlLayer600207B5"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.KubectlProvider/Provider/framework-onEvent/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderframeworkonEventServiceRole9FF04296"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.KubectlProvider/Provider/framework-onEvent/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderframeworkonEventServiceRoleDefaultPolicy48CD2133"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.KubectlProvider/Provider/framework-onEvent/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProviderframeworkonEvent83C1D0A7"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.KubectlProvider/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.KubectlProvider/EksStackawscdkawseksKubectlProviderframeworkonEvent47AB1AD9Arn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EksStackawscdkawseksKubectlProviderframeworkonEvent47AB1AD9Arn"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.KubectlProvider/reference-to-EksStackeksdevclusterKubectlHandlerRole1285E761Arn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoEksStackeksdevclusterKubectlHandlerRole1285E761Arn"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.KubectlProvider/reference-to-EksStackeksdevcluster3814DF4BClusterSecurityGroupId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoEksStackeksdevcluster3814DF4BClusterSecurityGroupId"
+          }
+        ],
+        "/EksStack/@aws-cdk--aws-eks.KubectlProvider.NestedStack/@aws-cdk--aws-eks.KubectlProvider.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awscdkawseksKubectlProviderNestedStackawscdkawseksKubectlProviderNestedStackResourceA7AEBA6B"
+          }
+        ],
+        "/EksStack/OnDemandASG/InstanceSecurityGroup": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "Ignoring Egress rule since 'allowAllOutbound' is set to true; To add customized rules, set allowAllOutbound=false on the SecurityGroup [ack: @aws-cdk/aws-ec2:ipv4IgnoreEgressRule]",
+            "trace": [
+              "Annotations.addMessage (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1392)",
+              "Annotations.addWarningV2 (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/core/lib/annotations.js:1:699)",
+              "SecurityGroup.addEgressRule (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-ec2/lib/security-group.js:1:7237)",
+              "/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-ec2/lib/connections.js:1:3083",
+              "ReactiveList.forEachAndForever (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-ec2/lib/connections.js:1:5789)",
+              "/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-ec2/lib/connections.js:1:2987",
+              "ReactiveList.forEachAndForever (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-ec2/lib/connections.js:1:5789)",
+              "Connections.allowInternally (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-ec2/lib/connections.js:1:2928)",
+              "Cluster.connectAutoScalingGroupCapacity (/tmp/jsii-kernel-VVUsu9/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:4980)",
+              "/tmp/jsii-runtime.2706597906/lib/program.js:9818:172",
+              "Kernel._Kernel_ensureSync (/tmp/jsii-runtime.2706597906/lib/program.js:10443:24)",
+              "Kernel.invoke (/tmp/jsii-runtime.2706597906/lib/program.js:9818:102)",
+              "KernelHost.processRequest (/tmp/jsii-runtime.2706597906/lib/program.js:11658:36)",
+              "KernelHost.run (/tmp/jsii-runtime.2706597906/lib/program.js:11618:22)",
+              "Immediate._onImmediate (/tmp/jsii-runtime.2706597906/lib/program.js:11619:46)",
+              "process.processImmediate (node:internal/timers:476:21)"
+            ]
+          }
+        ],
+        "/EksStack/OnDemandASG/InstanceSecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnDemandASGInstanceSecurityGroup58386299"
+          }
+        ],
+        "/EksStack/OnDemandASG/InstanceSecurityGroup/from EksStackOnDemandASGInstanceSecurityGroup219E783C:ALL TRAFFIC": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnDemandASGInstanceSecurityGroupfromEksStackOnDemandASGInstanceSecurityGroup219E783CALLTRAFFIC5AB8C72B"
+          }
+        ],
+        "/EksStack/OnDemandASG/InstanceSecurityGroup/from EksStackeksdevclusterClusterSecurityGroupB23405BD:443": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnDemandASGInstanceSecurityGroupfromEksStackeksdevclusterClusterSecurityGroupB23405BD443C1EDA5AE"
+          }
+        ],
+        "/EksStack/OnDemandASG/InstanceSecurityGroup/from EksStackeksdevclusterControlPlaneSecurityGroup117DEDD4:443": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnDemandASGInstanceSecurityGroupfromEksStackeksdevclusterControlPlaneSecurityGroup117DEDD4443CBFF91B8"
+          }
+        ],
+        "/EksStack/OnDemandASG/InstanceSecurityGroup/from EksStackeksdevclusterClusterSecurityGroupB23405BD:1025-65535": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnDemandASGInstanceSecurityGroupfromEksStackeksdevclusterClusterSecurityGroupB23405BD10256553569292BEF"
+          }
+        ],
+        "/EksStack/OnDemandASG/InstanceSecurityGroup/from EksStackeksdevclusterControlPlaneSecurityGroup117DEDD4:1025-65535": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnDemandASGInstanceSecurityGroupfromEksStackeksdevclusterControlPlaneSecurityGroup117DEDD410256553547431E24"
+          }
+        ],
+        "/EksStack/OnDemandASG/InstanceSecurityGroup/from EksStackeksdevclusterClusterSecurityGroupB23405BD:ALL TRAFFIC": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnDemandASGInstanceSecurityGroupfromEksStackeksdevclusterClusterSecurityGroupB23405BDALLTRAFFICF2CC8003"
+          }
+        ],
+        "/EksStack/OnDemandASG/InstanceProfile": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnDemandASGInstanceProfile0FD1CDE0"
+          }
+        ],
+        "/EksStack/OnDemandASG/LaunchTemplate/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnDemandASGLaunchTemplate13E75A53"
+          }
+        ],
+        "/EksStack/OnDemandASG/ASG": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnDemandASGC62213FE"
+          }
+        ],
+        "/EksStack/SsmParameterValue:--aws--service--eks--optimized-ami--1.27--amazon-linux-2--recommended--image_id:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SsmParameterValueawsserviceeksoptimizedami127amazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter"
+          }
+        ],
+        "/EksStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/EksStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/EksStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "EksStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

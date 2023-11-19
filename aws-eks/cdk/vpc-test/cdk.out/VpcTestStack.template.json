@@ -1,0 +1,751 @@
+{
+ "Resources": {
+  "qavpc1318F264C": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "192.168.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "qa-vpc1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/qa-vpc1/Resource"
+   }
+  },
+  "qavpc1IGW2ABDC2CC": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "qa-vpc1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/qa-vpc1/IGW"
+   }
+  },
+  "qavpc1VPCGWF2E6EBFC": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "qavpc1IGW2ABDC2CC"
+    },
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/qa-vpc1/VPCGW"
+   }
+  },
+  "qavpc1RestrictDefaultSecurityGroupCustomResourceA52FE3D1": {
+   "Type": "Custom::VpcRestrictDefaultSG",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E",
+      "Arn"
+     ]
+    },
+    "DefaultSecurityGroupId": {
+     "Fn::GetAtt": [
+      "qavpc1318F264C",
+      "DefaultSecurityGroup"
+     ]
+    },
+    "Account": {
+     "Ref": "AWS::AccountId"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/qa-vpc1/RestrictDefaultSecurityGroupCustomResource/Default"
+   }
+  },
+  "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Version": "2012-10-17",
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ]
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+     }
+    ],
+    "Policies": [
+     {
+      "PolicyName": "Inline",
+      "PolicyDocument": {
+       "Version": "2012-10-17",
+       "Statement": [
+        {
+         "Effect": "Allow",
+         "Action": [
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:AuthorizeSecurityGroupEgress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupEgress"
+         ],
+         "Resource": [
+          {
+           "Fn::Join": [
+            "",
+            [
+             "arn:",
+             {
+              "Ref": "AWS::Partition"
+             },
+             ":ec2:",
+             {
+              "Ref": "AWS::Region"
+             },
+             ":",
+             {
+              "Ref": "AWS::AccountId"
+             },
+             ":security-group/",
+             {
+              "Fn::GetAtt": [
+               "qavpc1318F264C",
+               "DefaultSecurityGroup"
+              ]
+             }
+            ]
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role"
+   }
+  },
+  "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "4b996a3e5a083d5c78c6f30a8571a94fb7ec557eecbe54dbc065faba0d9076e6.zip"
+    },
+    "Timeout": 900,
+    "MemorySize": 128,
+    "Handler": "__entrypoint__.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Description": "Lambda function for removing all inbound/outbound rules from the VPC default security group"
+   },
+   "DependsOn": [
+    "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler",
+    "aws:asset:path": "asset.4b996a3e5a083d5c78c6f30a8571a94fb7ec557eecbe54dbc065faba0d9076e6",
+    "aws:asset:property": "Code"
+   }
+  },
+  "App1QAWebPubSubnet3E6A7D1B": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "eu-central-1a",
+    "CidrBlock": "192.168.0.0/22",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "VpcTestStack/App1-QA-Web-Pub"
+     }
+    ],
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App1-QA-Web-Pub/Subnet"
+   }
+  },
+  "App1QAWebPubRouteTableC0A24550": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "VpcTestStack/App1-QA-Web-Pub"
+     }
+    ],
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App1-QA-Web-Pub/RouteTable"
+   }
+  },
+  "App1QAWebPubRouteTableAssociationF7C873A7": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "App1QAWebPubRouteTableC0A24550"
+    },
+    "SubnetId": {
+     "Ref": "App1QAWebPubSubnet3E6A7D1B"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App1-QA-Web-Pub/RouteTableAssociation"
+   }
+  },
+  "App1QAWebPubtointernet5BC83FB3": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "qavpc1IGW2ABDC2CC"
+    },
+    "RouteTableId": {
+     "Ref": "App1QAWebPubRouteTableC0A24550"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App1-QA-Web-Pub/to-internet"
+   }
+  },
+  "App2QAWebPubSubnet201E9623": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "eu-central-1b",
+    "CidrBlock": "192.168.12.0/22",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "VpcTestStack/App2-QA-Web-Pub"
+     }
+    ],
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App2-QA-Web-Pub/Subnet"
+   }
+  },
+  "App2QAWebPubRouteTable9053AD40": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "VpcTestStack/App2-QA-Web-Pub"
+     }
+    ],
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App2-QA-Web-Pub/RouteTable"
+   }
+  },
+  "App2QAWebPubRouteTableAssociationC0C4B972": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "App2QAWebPubRouteTable9053AD40"
+    },
+    "SubnetId": {
+     "Ref": "App2QAWebPubSubnet201E9623"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App2-QA-Web-Pub/RouteTableAssociation"
+   }
+  },
+  "App2QAWebPubtointernet1BCB3F9F": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "qavpc1IGW2ABDC2CC"
+    },
+    "RouteTableId": {
+     "Ref": "App2QAWebPubRouteTable9053AD40"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App2-QA-Web-Pub/to-internet"
+   }
+  },
+  "App1QAAppSubnet6BB379BC": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "eu-central-1c",
+    "CidrBlock": "192.168.4.0/22",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "VpcTestStack/App1-QA-App"
+     }
+    ],
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App1-QA-App/Subnet"
+   }
+  },
+  "App1QAAppRouteTableA0446407": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "VpcTestStack/App1-QA-App"
+     }
+    ],
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App1-QA-App/RouteTable"
+   }
+  },
+  "App1QAAppRouteTableAssociation34C72138": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "App1QAAppRouteTableA0446407"
+    },
+    "SubnetId": {
+     "Ref": "App1QAAppSubnet6BB379BC"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App1-QA-App/RouteTableAssociation"
+   }
+  },
+  "App2QAAppSubnetFE5DAB2E": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "eu-central-1c",
+    "CidrBlock": "192.168.16.0/22",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "VpcTestStack/App2-QA-App"
+     }
+    ],
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App2-QA-App/Subnet"
+   }
+  },
+  "App2QAAppRouteTable080F3F93": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "VpcTestStack/App2-QA-App"
+     }
+    ],
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App2-QA-App/RouteTable"
+   }
+  },
+  "App2QAAppRouteTableAssociation8B3EED38": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "App2QAAppRouteTable080F3F93"
+    },
+    "SubnetId": {
+     "Ref": "App2QAAppSubnetFE5DAB2E"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App2-QA-App/RouteTableAssociation"
+   }
+  },
+  "App1QADBSubnet0C07D589": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "eu-central-1a",
+    "CidrBlock": "192.168.8.0/22",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "VpcTestStack/App1-QA-DB"
+     }
+    ],
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App1-QA-DB/Subnet"
+   }
+  },
+  "App1QADBRouteTableEE3853B1": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "VpcTestStack/App1-QA-DB"
+     }
+    ],
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App1-QA-DB/RouteTable"
+   }
+  },
+  "App1QADBRouteTableAssociation3E8DADD6": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "App1QADBRouteTableEE3853B1"
+    },
+    "SubnetId": {
+     "Ref": "App1QADBSubnet0C07D589"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App1-QA-DB/RouteTableAssociation"
+   }
+  },
+  "App2QADBSubnet95F5C098": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "eu-central-1b",
+    "CidrBlock": "192.168.20.0/22",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "VpcTestStack/App2-QA-DB"
+     }
+    ],
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App2-QA-DB/Subnet"
+   }
+  },
+  "App2QADBRouteTable93B985AF": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "VpcTestStack/App2-QA-DB"
+     }
+    ],
+    "VpcId": {
+     "Ref": "qavpc1318F264C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App2-QA-DB/RouteTable"
+   }
+  },
+  "App2QADBRouteTableAssociationEBB3B4EE": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "App2QADBRouteTable93B985AF"
+    },
+    "SubnetId": {
+     "Ref": "App2QADBSubnet95F5C098"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/App2-QA-DB/RouteTableAssociation"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WPQQ+CMAyFf4v3MZUYEo+Gg/FG0Hg1Y1SsQGe2DjTG/+5QI3p67ev32jSWy0TGE9W7SJd11GAh71tWuhbBOoCO5X1/0SI90j5LB9kQgyXgtWLo1e0z+XQrDtFTC8Qi80WDeuuLwA7QWOXGM+xU0cDoj97KOaNRMRr6wiKz2IULb/YhUu/YtDk4461+bRnrv1FmTYclWBG2Aoe/KqRK/AZTQyUOxx6iMnMZz2QybZD8daraMllMzg4xsp4YW5D5W5/g/HZ5NAEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "VpcTestStack/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Conditions": {
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-2"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
