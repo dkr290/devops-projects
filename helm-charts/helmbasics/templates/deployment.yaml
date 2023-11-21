@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}
+  labels:
+    app: nginx
+  annotations: 
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    # quote functions 
+    app.kubernetes.io/managed-by: {{ quote .Release.Service }}
+    # pipeline 
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote | upper }}
+    #default function 
+    app.kubernetes.io/name: {{  default "MYRELEASE101"  .Values.releaseName  | quote  }}
+spec:
+  replicas: {{ default 2 .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80

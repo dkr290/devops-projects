@@ -1,0 +1,39 @@
+{{/*  any comment goes here   */}}
+
+Root Object: {{ . }}
+
+{{/* other parts of release object */}}
+Release Name: {{ .Release.Name }}
+Release Namespace: {{ .Release.Namespace }}
+Release IsUpgrade: {{ .Release.IsUpgrade }} 
+Release IsInstall: {{ .Release.IsInstall}}
+Release Revision: {{ .Release.Revision }}
+Release Service: {{ .Release.Service }}
+
+
+{{/* Chart object */}}
+
+Chart Name: {{.Chart.Name}}
+Chart Version: {{ .Chart.Version }}
+Chart AppVersion {{ .Chart.AppVersion }}
+
+
+Replica Count: {{ .Values.replicaCount }}
+Image Repositoy: {{ .Values.image.repository }}
+Service Type: {{ .Values.service.type }}
+
+Kubernetes Cluster Version: {{ .Capabilities.KubeVersion }} 
+Major: {{ .Capabilities.KubeVersion.Major }}
+Minor: {{ .Capabilities.KubeVersion.Minor }}
+Helm Version: {{ .Capabilities.HelmVersion }}
+
+
+Template Name: {{ .Template.name }}
+Template Base Path: {{ .Template.BasePath }}
+
+Testfile content: {{ .Files.Get "testfile.txt" }}
+Files Glob as config: 
+{{ (.Files.Glob "config-files/*").AsConfig }} 
+
+File Glob as secrets: 
+{{ (.Files.Glob "config-files/*").AsSecrets }} 
