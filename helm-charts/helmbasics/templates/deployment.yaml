@@ -22,11 +22,20 @@ metadata:
     identtest: "   {{- .Chart.Name | indent 4 -}}  " 
     # new line ident   
     nidenttest: "   {{- .Chart.Name | nindent 10 -}}  "   
-spec:
-  {{- if eq .Values.myapp.env "prod"}}
-  replicas: {{ default 4 .Values.replicaCount }}
-  {{- else if eq .Values.myapp.env "uat"}}
-  replicas: {{ default 2 .Values.replicaCount }}
+spec: 
+  # {{- if and .Values.myapp.retail.enableFeature (eq .Values.myapp.env "prod") }}
+  # replicas: 6
+  # {{- else if or (eq .Values.myapp.env "qa") (eq .Values.myapp.env "dev") }}
+  # replicas: 10
+  # {{- else if eq .Values.myapp.env "prod"}}
+  # replicas: {{ default 4 .Values.replicaCount }}
+  # {{- else if eq .Values.myapp.env "uat"}}
+  # replicas: {{ default 2 .Values.replicaCount }}
+  # {{- else }}
+  # replicas: 1
+  # {{- end }}
+  {{- if not (eq .Values.myapp.env "prod") }}
+  replicas: 2
   {{- else }}
   replicas: 1
   {{- end }}
@@ -35,6 +44,12 @@ spec:
       app: nginx
   template:
     metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}  
+        appManagedBy: {{ $.Release.Service }} 
+        chartName: {{ $.Chart.Name }}
+    {{- end }}
       labels:
         app: nginx
     spec:

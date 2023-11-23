@@ -16,3 +16,10 @@ resources:
 
 myapp:
   env: prod
+  retail:
+    enableFeature: true
+
+podAnnotations:
+  appName: myapp1
+  appType: apiserver
+  appTech: golang
