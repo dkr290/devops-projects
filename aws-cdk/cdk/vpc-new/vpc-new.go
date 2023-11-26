@@ -1,6 +1,7 @@
 package main
 
 import (
+	"vpc-new/instance"
 	"vpc-new/nacl"
 	"vpc-new/vpc"
 
@@ -32,6 +33,17 @@ func NewVpcNewStack(scope constructs.Construct, id string, props *VpcNewStackPro
 	})
 	nacl.NaclRules(acl)
 	app1Subnet.AssociateNetworkAcl(aws.String("App1-QA-APP-Associate"), acl)
+	//if we need to create Instance if not we can comment out
+	securityGroup := map[string]map[string]int{
+		"InstanceSG1": {
+			"allow port ingress 22": 22,
+		},
+	}
+
+	var amiImage = make(map[string]*string)
+	amiImage["eu-central-1"] = jsii.String("ami-04e601abe3e1a910f")
+	inst := instance.NewInstanceStack(stack, pVpc)
+	inst.NewInstance("instance-base", securityGroup, amiImage, app1Subnet)
 
 	return stack
 }
