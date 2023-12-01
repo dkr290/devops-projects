@@ -1,3 +1,4 @@
+{{- $chartname := .Chart.Name | quote | upper -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,11 +35,14 @@ spec:
   # {{- else }}
   # replicas: 1
   # {{- end }}
-  {{- if not (eq .Values.myapp.env "prod") }}
+  {{- with .Values.myapp }}
+  {{- if not (eq .env "prod") }}
   replicas: 2
   {{- else }}
   replicas: 1
   {{- end }}
+  {{- end }}
+ 
   selector:
     matchLabels:
       app: nginx
@@ -48,7 +52,7 @@ spec:
       annotations:
         {{- toYaml . | nindent 8 }}  
         appManagedBy: {{ $.Release.Service }} 
-        chartName: {{ $.Chart.Name }}
+        chartName: {{ $chartname }}
     {{- end }}
       labels:
         app: nginx

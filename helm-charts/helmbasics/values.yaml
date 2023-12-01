@@ -18,8 +18,28 @@ myapp:
   env: prod
   retail:
     enableFeature: true
+  data:
+    config:
+      appName: myapp1
+      appType: webserver
+      appTech: HTML
+      appDb: mysql
 
 podAnnotations:
   appName: myapp1
   appType: apiserver
   appTech: golang
+
+namespaceArray:
+  - name: myapp1
+  - name: myapp2
+  - name: myapp3
+  - name: myapp4
+
+
+environments:
+  - name: dev
+  - name: qa
+  - name: uat
+  - name: prod
+  
