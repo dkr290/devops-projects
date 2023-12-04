@@ -1,10 +1,13 @@
+
+
 {{- $chartname := .Chart.Name | quote | upper -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Chart.Name }}
+  name: {{ include "helmbasics.resourceName" . }}-deployment
   labels:
-    app: nginx
+    {{/*- template "helmbasics.labels" . */}} 
+    {{- include "helmbasics.labels" . | upper }}
   annotations: 
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     # quote functions 
