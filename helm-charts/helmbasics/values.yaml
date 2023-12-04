@@ -43,3 +43,14 @@ environments:
   - name: uat
   - name: prod
   
+myapps:
+  config1:
+    appName: myapp1
+    appType: webserver
+    appTech: HTML
+    appDB: mysql
+  config2:
+    appName: myapp2
+    appType: webserver
+    appTech: HTML
+    appDB: Postgresql  
