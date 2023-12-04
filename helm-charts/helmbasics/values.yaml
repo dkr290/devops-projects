@@ -53,4 +53,4 @@ myapps:
     appName: myapp2
     appType: webserver
     appTech: HTML
-    appDB: Postgresql  
+    appDB: Postgresql
