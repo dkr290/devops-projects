@@ -12,3 +12,4 @@ dependencies:
     #version: "^9.10.1"
     version: "~9.10.1"
     repository: "https://charts.bitnami.com/bitnami"
+
