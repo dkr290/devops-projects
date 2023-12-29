@@ -1,6 +1,8 @@
 package instances
 
 import (
+	"fmt"
+
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsec2"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -27,6 +29,19 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc) {
 		ToPort:               jsii.Number(65535),
 	}), aws.String("Allow from Internal-SG all"))
 
+	// creating the block device of 50 GB
+	pubEC2BlockDevice := []*awsec2.BlockDevice{
+		{
+
+			DeviceName: aws.String("/dev/sdf"),
+			Volume: awsec2.BlockDeviceVolume_Ebs(aws.Float64(50), &awsec2.EbsDeviceOptions{
+				DeleteOnTermination: aws.Bool(true),
+				VolumeType:          awsec2.EbsDeviceVolumeType_GP3,
+			}),
+		},
+	}
+	fmt.Print(pubEC2BlockDevice)
+
 	awsec2.NewInstance(stack, jsii.String("server01-pub"), &awsec2.InstanceProps{
 		Vpc:          vpc,
 		InstanceType: awsec2.InstanceType_Of(awsec2.InstanceClass_BURSTABLE2, awsec2.InstanceSize_SMALL),
@@ -40,21 +55,28 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc) {
 		VpcSubnets: &awsec2.SubnetSelection{
 			SubnetType: awsec2.SubnetType_PUBLIC,
 		},
+		// attach additional disk
+		BlockDevices: &pubEC2BlockDevice,
 	})
 
-	awsec2.NewInstance(stack, jsii.String("server01-priv"), &awsec2.InstanceProps{
-		Vpc:          vpc,
-		InstanceType: awsec2.InstanceType_Of(awsec2.InstanceClass_BURSTABLE2, awsec2.InstanceSize_SMALL),
-		MachineImage: awsec2.MachineImage_GenericLinux(
-			&amiImage,
-			&awsec2.GenericLinuxImageProps{},
-		),
-		InstanceName:  aws.String("server01-priv"),
-		KeyName:       aws.String("ec2-key"),
-		SecurityGroup: internalSG,
-		VpcSubnets: &awsec2.SubnetSelection{
-			SubnetType: awsec2.SubnetType_PRIVATE_WITH_EGRESS,
-		},
-	})
+	privServers := []string{"server01-priv", "server02-priv"}
+
+	for _, srv := range privServers {
+
+		awsec2.NewInstance(stack, jsii.String(srv), &awsec2.InstanceProps{
+			Vpc:          vpc,
+			InstanceType: awsec2.InstanceType_Of(awsec2.InstanceClass_BURSTABLE2, awsec2.InstanceSize_SMALL),
+			MachineImage: awsec2.MachineImage_GenericLinux(
+				&amiImage,
+				&awsec2.GenericLinuxImageProps{},
+			),
+			InstanceName:  aws.String(srv),
+			KeyName:       aws.String("ec2-key"),
+			SecurityGroup: internalSG,
+			VpcSubnets: &awsec2.SubnetSelection{
+				SubnetType: awsec2.SubnetType_PRIVATE_WITH_EGRESS,
+			},
+		})
+	}
 
 }
