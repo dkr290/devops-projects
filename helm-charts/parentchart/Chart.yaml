@@ -31,23 +31,28 @@ dependencies:
     #version: "^9.10.1"
     version: "~9.10.1"
     repository: "https://charts.bitnami.com/bitnami"
-    condition: mysqlChart.enabled
+    condition: mysql.enabled
   - name: redis
     version: "18.3.0"
     repository: "https://charts.bitnami.com/bitnami"
-    condition: redisChart.enabled
+    condition: redis.enabled
   - name: common
     version: ">=2.10.0"
     repository: "https://charts.bitnami.com/bitnami"
+  - name: nginx
+    version: ">=15.5.0"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: nginx.enabled
   - name: vault
     version: ">=0.4.2"
     alias: mychartvault
     repository: "https://charts.bitnami.com/bitnami"
-    condition: mychartvault.enabled
+    condition: vault.enabled
   - name: redis
     version: "18.1.0"
     alias: redistag
     repository: "https://charts.bitnami.com/bitnami"
+
     tags:
       - backend
     

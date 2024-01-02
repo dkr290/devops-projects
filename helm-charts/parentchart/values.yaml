@@ -98,11 +98,14 @@ tolerations: []
 affinity: {}
 
 
-mysqlChart:
+mysql:
   enabled: false
-redisChart: 
+redis: 
   enabled: false
-mychartvault:
+vault:
+  enabled: false
+nginx:
   enabled: true
+  replicaCount: 5
 tags:
   backend: false
