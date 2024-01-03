@@ -20,3 +20,5 @@ dependencies:
   alias: childmysql
   tags:
   - backend
+  import-values:
+  - mychartmysqlData

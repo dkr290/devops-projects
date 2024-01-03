@@ -1246,3 +1246,11 @@ metrics:
     ##      summary: MariaDB instance is down
     ##
     rules: []
+
+## export values from child chart
+exports:
+  mychartmysqlData:
+    mychartmysqlcreds:
+      username: admin
+      password: pass123 
+      host: host01  
