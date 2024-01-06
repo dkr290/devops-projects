@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsec2"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsiam"
 	"github.com/aws/aws-sdk-go-v2/aws"
 
 	// "github.com/aws/aws-cdk-go/awscdk/v2/awssqs"
@@ -19,7 +20,7 @@ type VpcEc2S3StackProps struct {
 
 var vpcName string = "custom-vpc"
 var pVpc awsec2.Vpc
-var instanceCreate = false
+var instanceCreate = true
 
 func NewVpcEc2S3Stack(scope constructs.Construct, id string, props *VpcEc2S3StackProps) awscdk.Stack {
 	var sprops awscdk.StackProps
@@ -50,9 +51,17 @@ func NewVpcEc2S3Stack(scope constructs.Construct, id string, props *VpcEc2S3Stac
 		SubnetConfiguration: &subnetConfiguration,
 		VpcName:             &vpcName,
 	})
+	//IAM role for s3
+	iamFullAccess := awsiam.NewRole(stack, aws.String("Ec2S3Access"), &awsiam.RoleProps{
+		AssumedBy: awsiam.NewServicePrincipal(aws.String("ec2.amazonaws.com"), nil),
+		RoleName:  aws.String("Ec2S3Access"),
+		ManagedPolicies: &[]awsiam.IManagedPolicy{
+			awsiam.ManagedPolicy_FromAwsManagedPolicyName(aws.String("AmazonS3FullAccess")), // Attach AmazonS3FullAccess policy
+		},
+	})
 
 	if instanceCreate {
-		instances.InstanceCreation(stack, pVpc)
+		instances.InstanceCreation(stack, pVpc, iamFullAccess)
 	}
 
 	s3b.S3Creation(stack)

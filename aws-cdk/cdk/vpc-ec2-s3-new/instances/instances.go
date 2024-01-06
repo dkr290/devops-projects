@@ -3,12 +3,13 @@ package instances
 import (
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsec2"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsiam"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/jsii-runtime-go"
 )
 
 // ##
-func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc) {
+func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc, iamRole awsiam.Role) {
 
 	var amiImage = make(map[string]*string)
 
@@ -41,8 +42,8 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc) {
 	}
 
 	pubInstances := []PubInstance{
-		{Name: "server01-pub", KeyName: "ec2-key", SupplDisk: SupplDisk{DeviceName: "/dev/sdf", DeviceSize: 10, VolumeType: awsec2.EbsDeviceVolumeType_GP3}},
-		{Name: "server02-pub", KeyName: "ec2-key", SupplDisk: SupplDisk{DeviceName: "/dev/sdg", DeviceSize: 10, VolumeType: awsec2.EbsDeviceVolumeType_GP3}},
+		{Name: "server01-pub", KeyName: "ec2-key2", SupplDisk: SupplDisk{DeviceName: "/dev/sdf", DeviceSize: 10, VolumeType: awsec2.EbsDeviceVolumeType_GP3}},
+		{Name: "server02-pub", KeyName: "ec2-key2", SupplDisk: SupplDisk{DeviceName: "/dev/sdg", DeviceSize: 10, VolumeType: awsec2.EbsDeviceVolumeType_GP3}},
 	}
 
 	for _, srv := range pubInstances {
@@ -60,13 +61,15 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc) {
 
 		awsec2.NewInstance(stack, jsii.String(srv.Name), &awsec2.InstanceProps{
 			Vpc:          vpc,
-			InstanceType: awsec2.InstanceType_Of(awsec2.InstanceClass_BURSTABLE2, awsec2.InstanceSize_SMALL),
+			InstanceType: awsec2.InstanceType_Of(awsec2.InstanceClass_BURSTABLE2, awsec2.InstanceSize_MICRO),
+			Role:         iamRole,
 			MachineImage: awsec2.MachineImage_GenericLinux(
 				&amiImage,
 				&awsec2.GenericLinuxImageProps{},
 			),
-			InstanceName:  aws.String(srv.Name),
-			KeyName:       aws.String(srv.KeyName),
+			InstanceName: aws.String(srv.Name),
+			KeyName:      aws.String(srv.KeyName),
+			//KeyPair:       awsec2.KeyPair_FromKeyPairName(stack, aws.String(srv.KeyName), &srv.KeyName),
 			SecurityGroup: internalSG,
 			VpcSubnets: &awsec2.SubnetSelection{
 				SubnetType: awsec2.SubnetType_PUBLIC,

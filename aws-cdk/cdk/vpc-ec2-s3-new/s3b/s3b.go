@@ -82,13 +82,14 @@ func S3Creation(stack awscdk.Stack) {
 		},
 	}
 
-	bucket_another := awss3.NewBucket(stack, aws.String("thisisanother20fgb"), &awss3.BucketProps{
+	bucket_another := awss3.NewBucket(stack, aws.String("thisisanother21fgb"), &awss3.BucketProps{
 
-		BucketName:        aws.String("thisisanotherbucket20fgb"),
+		BucketName:        aws.String("thisisanotherbucket21fgb"),
 		Versioned:         aws.Bool(true), // Enable versioning
 		PublicReadAccess:  aws.Bool(false),
 		AutoDeleteObjects: aws.Bool(true),
 		RemovalPolicy:     awscdk.RemovalPolicy_DESTROY,
+		ObjectLockEnabled: aws.Bool(true),
 
 		LifecycleRules: &lifeCycleRule1,
 	})
