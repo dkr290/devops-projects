@@ -14,6 +14,11 @@ dependencies:
   alias: childnginx
   tags:
   - frontend
+  import-values:
+  - child: service
+    parent: nginx2service
+  - child: image
+    parent: nginx2image
 - name: mysql
   version: "~9.10.1"
   repository: "file://charts/mysql"
