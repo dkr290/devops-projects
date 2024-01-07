@@ -1,6 +1,7 @@
 package main
 
 import (
+	"vpc-ec2-s3/efs"
 	"vpc-ec2-s3/instances"
 	"vpc-ec2-s3/s3b"
 
@@ -20,7 +21,7 @@ type VpcEc2S3StackProps struct {
 
 var vpcName string = "custom-vpc"
 var pVpc awsec2.Vpc
-var instanceCreate = true
+var instEfsCreate = true
 
 func NewVpcEc2S3Stack(scope constructs.Construct, id string, props *VpcEc2S3StackProps) awscdk.Stack {
 	var sprops awscdk.StackProps
@@ -60,8 +61,9 @@ func NewVpcEc2S3Stack(scope constructs.Construct, id string, props *VpcEc2S3Stac
 		},
 	})
 
-	if instanceCreate {
-		instances.InstanceCreation(stack, pVpc, iamFullAccess)
+	if instEfsCreate {
+		efsVolume := efs.CreasteEFS(stack, pVpc)
+		instances.InstanceCreation(stack, pVpc, iamFullAccess, efsVolume)
 	}
 
 	s3b.S3Creation(stack)

@@ -3,13 +3,14 @@ package instances
 import (
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsec2"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsefs"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsiam"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/jsii-runtime-go"
 )
 
 // ##
-func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc, iamRole awsiam.Role) {
+func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc, iamRole awsiam.Role, efssystem awsefs.FileSystem) {
 
 	var amiImage = make(map[string]*string)
 
@@ -22,6 +23,7 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc, iamRole awsiam.Role) {
 	})
 
 	internalSG.AddIngressRule(awsec2.Peer_AnyIpv4(), awsec2.Port_Tcp(jsii.Number(22)), aws.String("allow port 22"), aws.Bool(false))
+	internalSG.AddIngressRule(awsec2.Peer_AnyIpv4(), awsec2.Port_Tcp(jsii.Number(2049)), aws.String("Allow NFS"), aws.Bool(false))
 	internalSG.Connections().AllowFrom(internalSG, awsec2.NewPort(&awsec2.PortProps{
 		Protocol:             awsec2.Protocol_ALL,
 		StringRepresentation: aws.String("Internal-FromItselfAllow"),
@@ -46,6 +48,7 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc, iamRole awsiam.Role) {
 		{Name: "server02-pub", KeyName: "ec2-key2", SupplDisk: SupplDisk{DeviceName: "/dev/sdg", DeviceSize: 10, VolumeType: awsec2.EbsDeviceVolumeType_GP3}},
 	}
 
+	var allInstances []awsec2.Instance
 	for _, srv := range pubInstances {
 		// creating the block device of 50 GB
 		pubEC2BlockDevice := []*awsec2.BlockDevice{
@@ -59,7 +62,7 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc, iamRole awsiam.Role) {
 			},
 		}
 
-		awsec2.NewInstance(stack, jsii.String(srv.Name), &awsec2.InstanceProps{
+		allInstances = append(allInstances, awsec2.NewInstance(stack, jsii.String(srv.Name), &awsec2.InstanceProps{
 			Vpc:          vpc,
 			InstanceType: awsec2.InstanceType_Of(awsec2.InstanceClass_BURSTABLE2, awsec2.InstanceSize_MICRO),
 			Role:         iamRole,
@@ -76,7 +79,12 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc, iamRole awsiam.Role) {
 			},
 			// attach additional disk
 			BlockDevices: &pubEC2BlockDevice,
-		})
+		}))
+
+	}
+	// Mount the EFS filesystem on the EC2 instance
+	for _, inst := range allInstances {
+		inst.Connections().AllowFrom(efssystem, awsec2.Port_AllTraffic(), aws.String("Allow NFS Inbound"))
 
 	}
 

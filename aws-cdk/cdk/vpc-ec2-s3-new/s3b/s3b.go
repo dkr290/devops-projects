@@ -89,7 +89,7 @@ func S3Creation(stack awscdk.Stack) {
 		PublicReadAccess:  aws.Bool(false),
 		AutoDeleteObjects: aws.Bool(true),
 		RemovalPolicy:     awscdk.RemovalPolicy_DESTROY,
-		ObjectLockEnabled: aws.Bool(true),
+		ObjectLockEnabled: aws.Bool(false),
 
 		LifecycleRules: &lifeCycleRule1,
 	})
