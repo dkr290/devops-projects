@@ -23,7 +23,6 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc, iamRole awsiam.Role, e
 	})
 
 	internalSG.AddIngressRule(awsec2.Peer_AnyIpv4(), awsec2.Port_Tcp(jsii.Number(22)), aws.String("allow port 22"), aws.Bool(false))
-	internalSG.AddIngressRule(awsec2.Peer_AnyIpv4(), awsec2.Port_Tcp(jsii.Number(2049)), aws.String("Allow NFS"), aws.Bool(false))
 	internalSG.Connections().AllowFrom(internalSG, awsec2.NewPort(&awsec2.PortProps{
 		Protocol:             awsec2.Protocol_ALL,
 		StringRepresentation: aws.String("Internal-FromItselfAllow"),
@@ -72,7 +71,7 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc, iamRole awsiam.Role, e
 			),
 			InstanceName: aws.String(srv.Name),
 			KeyName:      aws.String(srv.KeyName),
-			//KeyPair:       awsec2.KeyPair_FromKeyPairName(stack, aws.String(srv.KeyName), &srv.KeyName),
+			//KeyPair:       awsec2.KeyPair_FromKeyPairName(stack, aws.String("ec2KeyPair"+strconv.Itoa(i)), &srv.KeyName),
 			SecurityGroup: internalSG,
 			VpcSubnets: &awsec2.SubnetSelection{
 				SubnetType: awsec2.SubnetType_PUBLIC,
@@ -84,7 +83,8 @@ func InstanceCreation(stack awscdk.Stack, vpc awsec2.Vpc, iamRole awsiam.Role, e
 	}
 	// Mount the EFS filesystem on the EC2 instance
 	for _, inst := range allInstances {
-		inst.Connections().AllowFrom(efssystem, awsec2.Port_AllTraffic(), aws.String("Allow NFS Inbound"))
+
+		efssystem.Connections().AllowDefaultPortFrom(inst, aws.String("allow from EC2"))
 
 	}
 
