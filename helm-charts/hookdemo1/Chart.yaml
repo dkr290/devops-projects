@@ -1,6 +1,0 @@
-apiVersion: v2
-appVersion: 1.18.0
-description: A Helm chart for Kubernetes
-name: hookdemo1
-type: application
-version: 1.18.0
