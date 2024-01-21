@@ -22,6 +22,7 @@ func NewInstanceVars(uSt models.StackVars, vpc awsec2.Vpc) *CommonStructs {
 		vpc:       vpc,
 	}
 }
+
 func (m *CommonStructs) InstanceCreation(iamRole awsiam.Role) {
 
 	var amiImage = make(map[string]*string)
@@ -113,6 +114,8 @@ func (m *CommonStructs) InstanceCreation(iamRole awsiam.Role) {
 		}
 
 	}
+
+	m.NetALB(allInstances)
 
 }
 

@@ -3,6 +3,7 @@ module vpc-ec2-lb
 go 1.18
 
 require (
+	github.com/aws/aws-cdk-go/awscdk v1.204.0-devpreview
 	github.com/aws/aws-cdk-go/awscdk/v2 v2.117.0
 	github.com/aws/aws-sdk-go-v2 v1.24.1
 	github.com/aws/constructs-go/constructs/v10 v10.3.0
@@ -11,6 +12,7 @@ require (
 
 require (
 	github.com/Masterminds/semver/v3 v3.2.1 // indirect
+	github.com/aws/constructs-go/constructs/v3 v3.4.232 // indirect
 	github.com/aws/smithy-go v1.19.0 // indirect
 	github.com/cdklabs/awscdk-asset-awscli-go/awscliv1/v2 v2.2.201 // indirect
 	github.com/cdklabs/awscdk-asset-kubectl-go/kubectlv20/v2 v2.1.2 // indirect
