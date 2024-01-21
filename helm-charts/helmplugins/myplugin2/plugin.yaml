@@ -1,6 +1,0 @@
-name: "myplugin2"
-version: "0.1.0"
-usage: "helm plugin2"
-description: -|
-  Print Helm plugin directory with app.sh
-command: "$HELM_PLUGIN_DIR/app.sh"

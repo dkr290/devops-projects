@@ -1,2 +1,0 @@
-message1 =" simple text"
-message2 = "simple text2
