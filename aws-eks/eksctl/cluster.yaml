@@ -1,0 +1,35 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: demo-eks-cluster
+  region: eu-central-1
+  version: "1.28"
+
+vpc:
+  cidr: 10.10.0.0/16
+  hostnameType: resource-name
+  nat:
+    gateway: Single #HighlyAvailable # other options: Disable, Single (default)
+  clusterEndpoints:
+    publicAccess: true
+    privateAccess: true
+
+nodeGroups: 
+  - name: ng-1
+    instanceType: t2.medium
+    instanceName: ng-1
+    minSize: 1
+    maxSize: 3
+    volumeSize: 50
+    volumeType: gp2
+    ssh: # import public key from file
+      publicKeyPath: ./kops.pub
+    labels:
+      nodegroup-type: frontend-workloads
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        ebs: true
+        fsx: true
+        efs: true
