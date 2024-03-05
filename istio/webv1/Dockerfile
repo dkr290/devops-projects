@@ -1,4 +1,4 @@
-FROM golang:1.20.13-alpine3.19 as builder
+FROM golang:1.21.8-alpine3.18 as builder
 
 WORKDIR /build
 COPY go.mod ./
@@ -14,7 +14,7 @@ RUN go build cmd/app/main.go
 
 
 
-FROM golang:1.20.13-alpine3.19
+FROM golang:1.21.8-alpine3.18
 # Add maintainer info
 LABEL maintainer="Danail Surudzhiyski"
 RUN addgroup -S pipeline && adduser -S  k8s-pipeline --uid 1500 -G pipeline
