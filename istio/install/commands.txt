@@ -1,0 +1,18 @@
+helm repo add istio https://istio-release.storage.googleapis.com/charts
+helm repo update
+helm install istio-base istio/base -n istio-system --set defaultRevision=default
+helm install istiod istio/istiod -n istio-system --wait
+ 
+helm install istio-ingressgateway istio/gateway -n istio-ingress
+helm install istio-egressgateway istio/gateway --set service.type=ClusterIP -n istio-ingress
+helm search repo prometheus-community
+helm install monitoring prometheus-community/kube-prometheus-stack -n prometheus
+helm repo add kiali https://kiali.org/helm-charts
+helm install     --set cr.create=true     --set cr.namespace=istio-system     --namespace kiali-operator     --create-namespace     kiali-operator     kiali/kiali-operator
+
+helm upgrade monitoring prometheus-community/kube-prometheus-stack -n prometheus -f prometheus-values.yaml 
+
+
+helm upgrade istiod istio/istiod -n istio-system --set global.defaultPodDisruptionBudget.enabled=false
+helm upgrade istiod istio/istiod -n istio-system -f istiod-values.yaml 
+helm upgrade istiod istio/istiod -n istio-system -f istiod-values.yaml 
