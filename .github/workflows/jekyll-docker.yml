@@ -72,8 +72,8 @@ jobs:
           docker push $DOCKER_IMAGE_APP2:$VERSION
           docker push $DOCKER_IMAGE_APP2
  
-          docker tag $DOCKER_IMAGE_WEBV1 $DOCKER_IMAGE_APP2:$VERSION 
-          docker push $DOCKER_IMAGE_WEBV1:$VERSION
+          docker tag $DOCKER_IMAGE_WEBV1 $DOCKER_IMAGE_WEBV1:$VERSION 
+          docker push $DOCKER_IMAGE_WEBV1:v1
           docker push $DOCKER_IMAGE_WEBV1
 
       
