@@ -48,6 +48,13 @@ jobs:
           docker -v
           docker build . -f Dockerfile -t $DOCKER_IMAGE_APP2
           docker images -a
+
+      - name: docker version and build webv1
+        run: |
+          cd istio/webv1/ 
+          docker -v
+          docker build . -f Dockerfile -t $DOCKER_IMAGE_WEBV1
+          docker images -a
           
       - if: github.event_name != 'pull_request'
         name: docker login and push
