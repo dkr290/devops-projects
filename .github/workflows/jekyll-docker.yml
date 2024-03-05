@@ -5,6 +5,7 @@ on:
     paths:
     - 'istio/goappv1/**'
     - 'istio/goappv2/**'
+    - 'istio/webv1/**'
   
     branches:
       - main
