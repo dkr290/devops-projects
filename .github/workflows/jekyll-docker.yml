@@ -17,6 +17,7 @@ env:
   DOCKER_IMAGE_APP1: ghcr.io/${{ github.repository }}/goappv1
   DOCKER_IMAGE_APP2: ghcr.io/${{ github.repository }}/goappv2
   DOCKER_IMAGE_WEBV1: ghcr.io/${{ github.repository }}/webv1
+  DOCKER_IMAGE_WEBV2: ghcr.io/${{ github.repository }}/webv2
 
 
 jobs:
@@ -55,6 +56,13 @@ jobs:
           docker -v
           docker build . -f Dockerfile -t $DOCKER_IMAGE_WEBV1
           docker images -a
+      
+      - name: docker version and build webv2
+        run: |
+          cd istio/webv2/ 
+          docker -v
+          docker build . -f Dockerfile -t $DOCKER_IMAGE_WEBV2
+          docker images -a
           
       - if: github.event_name != 'pull_request'
         name: docker login and push
@@ -75,6 +83,11 @@ jobs:
           docker tag $DOCKER_IMAGE_WEBV1 $DOCKER_IMAGE_WEBV1:v1
           docker push $DOCKER_IMAGE_WEBV1:v1
           docker push $DOCKER_IMAGE_WEBV1
+
+          docker tag $DOCKER_IMAGE_WEBV2 $DOCKER_IMAGE_WEBV2:v2
+          docker push $DOCKER_IMAGE_WEBV2:v2
+          docker push $DOCKER_IMAGE_WEBV2
+
 
       
   
