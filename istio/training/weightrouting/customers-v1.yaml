@@ -10,7 +10,7 @@ spec:
   selector:
     matchLabels:
       app: customers
-      version: v1
+      #version: v1  for blue green to be able to change only version dynamically
   template:
     metadata:
       labels:
