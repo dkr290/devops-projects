@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: web-frontend
+spec:
+  hosts:
+    - 'frontend.172.19.8.2.nip.io'
+  gateways:
+    - ingressgateway
+  http:
+    - route:
+        - destination:
+            host: web-frontend.default.svc.cluster.local
+            port:
+              number: 80
