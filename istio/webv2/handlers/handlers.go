@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	
+
 )
 
 // PageData represents the data structure for the HTML template
@@ -27,6 +29,19 @@ func NewHandlers(r *gin.Engine) *Handlers {
 		r: r,
 	}
 }
+// var (
+// 	httpRequestsTotal = prometheus.NewCounterVec(
+// 		prometheus.CounterOpts{
+// 			Name: "http_requests_total",
+// 			Help: "Total number of HTTP requests",
+// 		},
+// 		[]string{"method", "status"},
+// 	)
+// )
+
+// func init(){
+// 	prometheus.MustRegister(httpRequestsTotal)
+// }
 
 // Define routes
 func (h *Handlers) GetHandler(c *gin.Context) {
@@ -41,10 +56,11 @@ func (h *Handlers) GetHandler(c *gin.Context) {
 	pageData := PageData{
 		PageDataArray: kvkeys,
 	}
-
+     //httpRequestsTotal.WithLabelValues("GET", "200").Inc()
 	// Render the HTML page with the PageData struct
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"PageData": pageData,
 	})
 
 }
+
