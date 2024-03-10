@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    team: devops
+  name: webaap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webaap
+  template:
+    metadata:
+      labels:
+        app: webaap
+    spec:
+      containers:
+      - image: ghcr.io/dkr290/devops-projects/webv2:latest
+        name: webapp
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+        resources: {}
+status: {}

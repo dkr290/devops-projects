@@ -1,0 +1,44 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+
+resources:
+  - ../../base/
+patches:
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        labels:
+          team: devops
+        name: webaap
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: webaap
+        template:
+          metadata:
+            labels:
+              app: webaap
+          spec:
+            containers:
+            - image: ghcr.io/dkr290/devops-projects/webv1:latest
+              name: webapp
+  - patch: |-
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: web-frontend
+      spec:
+        hosts:
+          - '*'
+        gateways:
+          - ingressgateway
+        http:
+          - route:
+              - destination:
+                  host: webapp-service.dev.svc.cluster.local
+                  port:
+                    number: 8080
