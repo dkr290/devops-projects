@@ -20,7 +20,7 @@ env:
   DOCKER_IMAGE_APP2: ghcr.io/${{ github.repository }}/goappv2
   DOCKER_IMAGE_WEBV1: ghcr.io/${{ github.repository }}/webv1
   DOCKER_IMAGE_WEBV2: ghcr.io/${{ github.repository }}/webv2
-  DOCKER_IMAGE_WEBV2: ghcr.io/${{ github.repository }}/webv3
+  DOCKER_IMAGE_WEBV3: ghcr.io/${{ github.repository }}/webv3
 
 
 jobs:
