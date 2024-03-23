@@ -16,3 +16,7 @@ helm upgrade monitoring prometheus-community/kube-prometheus-stack -n prometheus
 helm upgrade istiod istio/istiod -n istio-system --set global.defaultPodDisruptionBudget.enabled=false
 helm upgrade istiod istio/istiod -n istio-system -f istiod-values.yaml 
 helm upgrade istiod istio/istiod -n istio-system -f istiod-values.yaml 
+
+FOR kiali 
+helm upgrade --install  -n istio-system kiali-server kiali/kiali-server -f helm-kial
+i-values.yaml

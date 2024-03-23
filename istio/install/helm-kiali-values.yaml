@@ -1,0 +1,117 @@
+additional_display_details:
+- annotation: kiali.io/api-spec
+  icon_annotation: kiali.io/api-type
+  title: API Documentation
+auth:
+  openid: {}
+  openshift: {}
+  strategy: anonymous
+clustering:
+  autodetect_secrets:
+    enabled: true
+    label: kiali.io/multiCluster=true
+  clusters: []
+deployment:
+  accessible_namespaces:
+  - '**'
+  additional_service_yaml: {}
+  affinity:
+    node: {}
+    pod: {}
+    pod_anti: {}
+  configmap_annotations: {}
+  custom_secrets: []
+  host_aliases: []
+  hpa:
+    api_version: autoscaling/v2
+    spec: {}
+  image_digest: ""
+  image_name: quay.io/kiali/kiali
+  image_pull_policy: Always
+  image_pull_secrets: []
+  image_version: latest
+  ingress:
+    additional_labels: {}
+    class_name: nginx
+    override_yaml:
+      metadata: {}
+  instance_name: kiali
+  logger:
+    log_format: text
+    log_level: info
+    sampler_rate: "1"
+    time_field_format: 2006-01-02T15:04:05Z07:00
+  node_selector: {}
+  pod_annotations: {}
+  pod_labels: {}
+  priority_class_name: ""
+  replicas: 1
+  resources:
+    limits:
+      memory: 1Gi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+  secret_name: kiali
+  security_context: {}
+  service_annotations: {}
+  service_type: ""
+  tolerations: []
+  version_label: v1.81.0
+  view_only_mode: false
+external_services:
+  prometheus:
+      # Prometheus service name is "metrics" and is in the "telemetry" namespace
+    url: "http://monitoring-kube-prometheus-prometheus.prometheus:9090/"
+  grafana:
+  auth:
+    username: admin
+    password: prom-operator
+    type: basic
+  enabled: true
+  # Grafana service name is "grafana" and is in the "telemetry" namespace.
+  in_cluster_url: "http://monitoring-grafana.prometheus.svc.cluster.local:80"
+  # Public facing URL of Grafana
+  url: "http://grafana.172.19.8.2.nip.io/"
+  dashboards:
+    - name: "Istio Service Dashboard"
+      variables:
+        namespace: "var-namespace"
+        service: "var-service"
+    - name: "Istio Workload Dashboard"
+      variables:
+        namespace: "var-namespace"
+        workload: "var-workload"
+    - name: "Istio Mesh Dashboard"
+    - name: "Istio Control Plane Dashboard"
+    - name: "Istio Performance Dashboard"
+    - name: "Istio Wasm Extension Dashboard"
+  custom_dashboards:
+    enabled: true
+  custom_dashboards:
+    enabled: true
+  istio:
+    root_namespace: ""
+fullnameOverride: kiali
+identity: {}
+istio_namespace: ""
+kiali_feature_flags:
+  certificates_information_indicators:
+    enabled: true
+    secrets:
+    - cacerts
+    - istio-ca-secret
+  disabled_features: []
+  validations:
+    ignore:
+    - KIA1301
+kiali_route_url: ""
+login_token:
+  signing_key: ""
+server:
+  observability:
+    metrics:
+      enabled: true
+      port: 9090
+  port: 20001
+  web_root: ""

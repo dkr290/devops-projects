@@ -1,0 +1,20 @@
+apiVersion: v1
+items:
+- apiVersion: networking.istio.io/v1beta1
+  kind: Gateway
+  metadata:
+    name: jaeger-gateway
+    namespace: istio-system
+  spec:
+    selector:
+      istio: ingressgateway
+    servers:
+    - hosts:
+      - jaeger.172.19.8.2.nip.io
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+kind: List
+metadata:
+  resourceVersion: ""

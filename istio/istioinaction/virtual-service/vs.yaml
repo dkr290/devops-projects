@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: webapp-virtualservice
+  namespace: istio-demo
+spec:
+  hosts:
+  - "webapp.172.19.8.2.nip.io"
+  gateways:
+  - outfitters-gateway
+  http:
+  - route:
+    - destination:
+        host: webapp
+        port:
+          number: 80
