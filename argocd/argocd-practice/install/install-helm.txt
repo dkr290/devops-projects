@@ -1,0 +1,3 @@
+https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd
+helm install argo --namespace argocd argo/argo-cd
+helm upgrade --install argo --namespace argocd argo/argo-cd --set configs.params.server.insecure=true

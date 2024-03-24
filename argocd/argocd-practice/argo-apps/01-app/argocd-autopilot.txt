@@ -1,0 +1,6 @@
+export GIT_TOKEN=<your-personal-access-token>
+export GIT_REPO=https://<your-git-repo-url>
+argocd-autopilot repo bootstrap
+argocd-autopilot project create testing
+argocd-autopilot app create hello-world --app github.com/argoproj-labs/argocd-autopilot/examples/demo-app/ -p testing --wait-timeout 2m
+argocd-autopilot app create hello-world2 --app github.com/argoproj-labs/argocd-autopilot/examples/demo-app/ -p testing --wait-timeout 2m
