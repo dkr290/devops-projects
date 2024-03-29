@@ -1,18 +1,20 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: webapp-httproute
+  name: catalog-httprouite
   namespace: istio-demo
 spec:
   parentRefs:
   - name: webapp-gateway
     namespace: istio-ingress
-  hostnames: ["webapp.172.19.8.1.nip.io"]
+  hostnames: ["catalog.172.19.8.1.nip.io"]
   rules:
   - matches:
-    - path:
-        type: PathPrefix
-        value: /
+    - headers:
+      - name: x-dark-launch
+        value: "v2"
     backendRefs:
-    - name: webapp
+    - name: catalog-version-v1
+      port: 80
+    - name: catalog-version-v2
       port: 80
