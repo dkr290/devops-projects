@@ -1,5 +1,7 @@
 #some commands
-
+```
+eksctl create cluster -f cluster-01.yaml
+```
 #to delete the cluster
 ```
 eksctl delete cluster -f cluster.yaml --disable-nodegroup-eviction
@@ -26,5 +28,11 @@ sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --u
 
 ```
 eksctl utils update-cluster-vpc-config -f cluster.yaml --approve
+
+```
+
+```
+
+eksctl delete cluster $EKS_CLUSTER_NAME --wait
 
 ```
