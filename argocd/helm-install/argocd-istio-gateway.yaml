@@ -1,0 +1,14 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+  name: argocd-gateway
+  namespace: argocd
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - '*.172.19.8.2.nip.io'
+    port:
+      name: http
+      number: 80
+      protocol: HTTP
