@@ -95,7 +95,12 @@ configs:
     policy.matchMode: "glob"
 
 
+## Application controller
+controller:
+  # -- Application controller name string
+  name: application-controller
   # -- Resource limits and requests for the application controller pods
+  replicas: 1
   resources: 
     limits:
       cpu: 1000m
@@ -103,7 +108,16 @@ configs:
     requests:
       cpu: 250m
       memory: 256Mi
-   
+   ## Application controller metrics configuration
+  metrics:
+    # -- Deploy metrics service
+    enabled: true
+    serviceMonitor:
+      # -- Enable a prometheus ServiceMonitor
+      enabled: true
+      # -- Prometheus ServiceMonitor interval
+      interval: 30s
+      # -- Prometheus [RelabelConfigs] to apply to samples before scraping
 
 ## Dex
 dex:
@@ -111,6 +125,16 @@ dex:
   enabled: true
   # -- Dex name
   name: dex-server
+  metrics:
+    # -- Deploy metrics service
+    enabled: true
+    service:
+      portName: http-metrics
+    serviceMonitor:
+      # -- Enable a prometheus ServiceMonitor
+      enabled: true
+      # -- Prometheus ServiceMonitor interval
+      interval: 30s
 
   ## Dex image
   image:
@@ -147,6 +171,16 @@ redis:
     requests:
       cpu: 100m
       memory: 64Mi
+  metrics:
+    # -- Deploy metrics service
+    enabled: true
+    serviceMonitor:
+      # -- Enable a prometheus ServiceMonitor
+      enabled: true
+      # -- Interval at which metrics should be scraped
+      interval: 30s
+    
+
 
 
 ## Server
@@ -182,17 +216,6 @@ server:
     # -- Deploy metrics service
     enabled: true
     service:
-      # -- Metrics service type
-      type: ClusterIP
-      # -- Metrics service clusterIP. `None` makes a "headless service" (no virtual IP)
-      clusterIP: ""
-      # -- Metrics service annotations
-      annotations: {}
-      # -- Metrics service labels
-      labels: {}
-      # -- Metrics service port
-      servicePort: 8083
-      # -- Metrics service port name
       portName: http-metrics
     serviceMonitor:
       # -- Enable a prometheus ServiceMonitor
@@ -203,7 +226,7 @@ server:
   # Argo CD server ingress configuration
   ingress:
     # -- Enable an ingress resource for the Argo CD server
-    enabled: true
+    enabled: false
     # -- Additional ingress annotations
     ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#option-1-ssl-passthrough
     annotations: 
@@ -278,7 +301,14 @@ repoServer:
       #     periodSeconds: 60
     # -- Configures custom HPA metrics for the Argo CD repo server
     # Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
-   
+  metrics:
+    # -- Deploy metrics service
+    enabled: true
+    serviceMonitor:
+      # -- Enable a prometheus ServiceMonitor
+      enabled: false
+      # -- Prometheus ServiceMonitor interval
+      interval: 30s
  
 
   
@@ -300,6 +330,15 @@ applicationSet:
     requests:
       cpu: 100m
       memory: 128Mi
+  metrics:
+    # -- Deploy metrics service
+    enabled: true
+    serviceMonitor:
+      # -- Enable a prometheus ServiceMonitor
+      enabled: true
+      # -- Prometheus ServiceMonitor interval
+      interval: 30s
+
 
  
 ## Notifications controller
@@ -318,5 +357,13 @@ notifications:
     requests:
       cpu: 100m
       memory: 128Mi
+  metrics:
+    # -- Enables prometheus metrics server
+    enabled: true
+    serviceMonitor:
+      # -- Enable a prometheus ServiceMonitor
+      enabled: true
+
+
 
 
