@@ -48,7 +48,7 @@ kubeseal --fetch-cert > publickey.pem
 Encrypt the contents of the secret using the following command:
 
 ```
-kubeseal --format=yaml --cert=publickey.pem < secret.yaml > sealedsecret.yaml
+kubeseal --format=yaml --cert=publickey.pem -n test < secret.yaml > sealedsecret.yaml
 ```
 View the file contents:
 
