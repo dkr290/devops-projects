@@ -13,7 +13,7 @@ spec:
       releaseName: httpbin
   destination:
     server: {{ .Values.spec.destination.server }}
-    namespace: httpbin
+    namespace: test
   syncPolicy:
     automated:
       selfHeal: true
