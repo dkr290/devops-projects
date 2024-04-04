@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp
+  namespace: argocd
+spec:
+  project: myproject
+  source:
+    repoURL: https://github.com/dkr290/helm-charts.git
+    path: myapp  
+    helm:
+      releaseName: myapp
+      values:
+      - values.yaml
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: test
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
