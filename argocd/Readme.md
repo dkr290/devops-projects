@@ -29,4 +29,27 @@ in kustomization.yaml file
 then with the command 
 `
 kubectl apply -k . -n argocd from inside the folder
+
 `
+
+for seled secrets
+```
+https://github.com/bitnami-labs/sealed-secrets/releases
+wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.26.2/kubeseal-0.26.2-linux-amd64.tar.gz
+tar -xvf kubeseal-0.26.2-linux-amd64.tar.gz
+sudo mv kubeseal /usr/local/bin
+sudo chmod +x /usr/local/bin/kubeseal
+```
+
+Get the public key using
+```
+kubeseal --fetch-cert > publickey.pem
+```
+Encrypt the contents of the secret using the following command:
+
+```
+kubeseal --format=yaml --cert=publickey.pem < secret.yaml > sealedsecret.yaml
+```
+View the file contents:
+
+cat sealedsecret.yaml
