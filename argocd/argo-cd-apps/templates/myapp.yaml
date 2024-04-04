@@ -7,7 +7,7 @@ spec:
   project: myproject
   source:
     repoURL: https://github.com/dkr290/helm-charts.git
-    path: myapp  
+    path: myapp-istio 
     helm:
       releaseName: myapp
       valueFiles:
