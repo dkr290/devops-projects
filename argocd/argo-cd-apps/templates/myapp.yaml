@@ -10,7 +10,7 @@ spec:
     path: myapp  
     helm:
       releaseName: myapp
-      values:
+      valueFiles:
       - values.yaml
   destination:
     server: {{ .Values.spec.destination.server }}
