@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/dkr290/helm-charts.git
     path: myapp-istio
-    targetRevision: {{ .Values.myapp.targetRevision }} 
+  #  targetRevision: {{ .Values.myapp.targetRevision }} 
     helm:
       releaseName: myapp
       {{- with .Values.myapp.valueFiles }}
