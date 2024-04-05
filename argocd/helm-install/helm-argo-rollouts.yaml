@@ -1,0 +1,122 @@
+# -- Install and upgrade CRDs
+installCRDs: true
+# -- Keep CRD's on helm uninstall
+keepCRDs: true
+
+# -- `false` runs controller in namespaced mode (does not require cluster RBAC)
+clusterInstall: true
+
+# -- flag to enable creation of cluster aggregate roles (requires cluster RBAC)
+createClusterAggregateRoles: true
+
+global:
+  # -- Annotations for all deployed Deployments
+  deploymentAnnotations: {}
+  # -- Labels for all deployed Deployments
+  deploymentLabels: {}
+
+controller:
+  # -- Value of label `app.kubernetes.io/component`
+  component: rollouts-controller
+  logging:
+    # -- Set the logging level (one of: `debug`, `info`, `warn`, `error`)
+    level: info
+    # -- Set the klog logging level
+    kloglevel: "0"
+    # -- Set the logging format (one of: `text`, `json`)
+    format: "text"
+
+  replicas: 2
+  image:
+    # -- Registry to use
+    registry: quay.io
+    # -- Repository to use
+    repository: argoproj/argo-rollouts
+    # -- Overrides the image tag (default is the chart appVersion)
+    tag: ""
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
+  
+  
+  # -- Resource limits and requests for the controller pods.
+  resources: 
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+  # -- flag to enable creation of cluster controller role (requires cluster RBAC)
+  createClusterRole: true
+
+  metrics:
+    # -- Deploy metrics service
+    enabled: true
+    serviceMonitor:
+      # -- Enable a prometheus ServiceMonitor
+      enabled: true
+  serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Annotations to add to the service account
+
+# -- Security Context to set on pod level
+podSecurityContext:
+  runAsNonRoot: true
+
+# -- Security Context to set on container level
+containerSecurityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+dashboard:
+  # -- Deploy dashboard server
+  enabled: true
+  # -- Set cluster role to readonly
+  readonly: false
+  # -- Value of label `app.kubernetes.io/component`
+  component: rollouts-dashboard
+  logging:
+    # -- Set the logging level (one of: `debug`, `info`, `warn`, `error`)
+    level: info
+    # -- Set the klog logging level
+    kloglevel: "0"
+
+  # -- flag to enable creation of dashbord cluster role (requires cluster RBAC)
+  createClusterRole: true
+
+  # -- The number of dashboard pods to run
+  replicas: 1
+  image:
+    # -- Registry to use
+    registry: quay.io
+    # --  Repository to use
+    repository: argoproj/kubectl-argo-rollouts
+    # -- Overrides the image tag (default is the chart appVersion)
+    tag: ""
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
+  # -- Resource limits and requests for the dashboard pods.
+  resources: {}
+  # -- Security Context to set on pod level
+  podSecurityContext:
+    runAsNonRoot: true
+  # -- Security Context to set on container level
+  containerSecurityContext: {}
+
+ ## Ingress configuration.
+  ## ref: https://kubernetes.io/docs/user-guide/ingress/
+  ##
+  ingress:
+    # -- Enable dashboard ingress support
+    enabled: false
+notifications:
+  secret:
+    # -- Whether to create notifications secret
+    create: false
+     

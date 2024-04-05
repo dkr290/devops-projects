@@ -1,3 +1,4 @@
+{{- if .Values.myapp.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -7,15 +8,22 @@ spec:
   project: myproject
   source:
     repoURL: https://github.com/dkr290/helm-charts.git
-    path: myapp-istio 
+    path: myapp-istio
+    targetRevision: {{ .Values.myapp.targetRevision }} 
     helm:
       releaseName: myapp
+      {{- with .Values.myapp.valueFiles }}
       valueFiles:
-      - values.yaml
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: test
+  {{- if .Values.myapp.syncPolicy.manual }}
+  {{- else }}
   syncPolicy:
-    automated:
-      selfHeal: true
-      prune: true
+    {{- with .Values.myapp.syncPolicy.automated }}
+    {{- toYaml . | nindent 4 }}
+    {{- end}}
+  {{- end }}
+{{- end }}

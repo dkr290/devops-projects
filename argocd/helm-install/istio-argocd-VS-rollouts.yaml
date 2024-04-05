@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: argorollouts-virtualservice
+  namespace: argo-rollouts
+spec:
+  gateways:
+  - argorollouts-virtualservice
+  hosts:
+  - rollouts.172.19.8.2.nip.io
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: argo-rollouts-dashboard
+        port:
+          number: 3100

@@ -2,3 +2,13 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
   
+myapp: 
+  enabled: true
+  syncPolicy:
+    manual: false
+    automated: 
+      selfHeal: true
+      prune: true
+  targetRevision: main
+  valueFiles:
+  - values.yaml

@@ -6,3 +6,9 @@
  k edit cm -n argocd argocd-cmd-params-cm
  data:
     server.insecure: "true"
+
+
+## for argo rollouts
+kubectl create namespace argo-rollouts
+helm repo add argo https://argoproj.github.io/argo-helm
+helm install argo-rollouts  argo/argo-rollouts -n argo-rollouts  -f helm-argo-lollouts.yaml 
