@@ -12,3 +12,7 @@ myapp:
   targetRevision: main
   valueFiles:
   - values.yaml
+
+###
+guestbook:
+  enabled: false
