@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/dkr290/helm-charts.git
     path: myapp-istio
-  #  targetRevision: {{ .Values.myapp.targetRevision }} 
+    targetRevision: {{ .Values.myapp.targetRevision }} 
     helm:
       releaseName: myapp
       {{- with .Values.myapp.valueFiles }}
@@ -19,8 +19,7 @@ spec:
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: test
-  {{- if .Values.myapp.syncPolicy.manual }}
-  {{- else }}
+  {{- if not .Values.myapp.syncPolicy.manual }}
   syncPolicy:
     {{- with .Values.myapp.syncPolicy.automated }}
     {{- toYaml . | nindent 4 }}
