@@ -21,8 +21,9 @@ spec:
     namespace: test
   {{- if not .Values.myapp.syncPolicy.manual }}
   syncPolicy:
+    automated:
     {{- with .Values.myapp.syncPolicy.automated }}
-    {{- toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 6 }}
     {{- end}}
   {{- end }}
 {{- end }}
