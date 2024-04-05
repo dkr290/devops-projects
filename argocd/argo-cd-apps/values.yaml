@@ -3,7 +3,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   
 myapp: 
-  enabled: false
+  enabled: true
   syncPolicy:
     manual: false
     automated: 
