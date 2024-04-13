@@ -3,12 +3,13 @@ name: Docker build and push CI
 on:
   push:
     paths:
-    - 'istio/goappv1/**'
-    - 'istio/goappv2/**'
-    - 'istio/webv1/**'
-    - 'istio/webv2/**'
-    - 'istio/webv3/**'
-  
+      - "istio/goappv1/**"
+      - "istio/goappv2/**"
+      - "istio/webv1/**"
+      - "istio/webv2/**"
+      - "istio/webv3/**"
+      - "argocd/currency-convertor/**"
+
     branches:
       - main
   pull_request:
@@ -21,31 +22,30 @@ env:
   DOCKER_IMAGE_WEBV1: ghcr.io/${{ github.repository }}/webv1
   DOCKER_IMAGE_WEBV2: ghcr.io/${{ github.repository }}/webv2
   DOCKER_IMAGE_WEBV3: ghcr.io/${{ github.repository }}/webv3
-
+  DOCKER_IMAGE_CURRENCY_CONV: ghcr.io/${{ github.repository }}/currencyconv
 
 jobs:
   # This workflow contains a single job called "build"
   build-goapp:
     name: Build and push docker image
     # The type of runner that the job will run on
-    
+
     runs-on: ubuntu-latest
     outputs:
       commit: ${{ steps.push-image.outputs.commit }}
-    
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-          
+
       - name: docker version and build app1
         run: |
           cd istio/goappv1/ 
           docker -v
           docker build . -f Dockerfile -t $DOCKER_IMAGE_APP1
           docker images -a
-      
+
       - name: docker version and build app2
         run: |
           cd istio/goappv2/ 
@@ -59,7 +59,7 @@ jobs:
           docker -v
           docker build . -f Dockerfile -t $DOCKER_IMAGE_WEBV1
           docker images -a
-      
+
       - name: docker version and build webv2
         run: |
           cd istio/webv2/ 
@@ -73,7 +73,13 @@ jobs:
           docker -v
           docker build . -f Dockerfile -t $DOCKER_IMAGE_WEBV3
           docker images -a
-          
+      - name: docker version and build currency-convertor
+        run: |
+          cd argocd/currency-convertor/ 
+          docker -v
+          docker build . -f Dockerfile -t $DOCKER_IMAGE_CURRENCY_CONV
+          docker images -a
+
       - if: github.event_name != 'pull_request'
         name: docker login and push
         id: push-image
@@ -89,7 +95,7 @@ jobs:
           docker tag $DOCKER_IMAGE_APP2 $DOCKER_IMAGE_APP2:$VERSION 
           docker push $DOCKER_IMAGE_APP2:$VERSION
           docker push $DOCKER_IMAGE_APP2
- 
+
           docker tag $DOCKER_IMAGE_WEBV1 $DOCKER_IMAGE_WEBV1:v1
           docker push $DOCKER_IMAGE_WEBV1:v1
           docker push $DOCKER_IMAGE_WEBV1
@@ -102,7 +108,6 @@ jobs:
           docker push $DOCKER_IMAGE_WEBV3:v3
           docker push $DOCKER_IMAGE_WEBV3
 
-
-      
-  
-
+          docker tag  $DOCKER_IMAGE_CURRENCY_CONV $DOCKER_IMAGE_CURRENCY_CONV:$VERSION
+          docker push $DOCKER_IMAGE_CURRENCY_CONV:$VERSION
+          docker push $DOCKER_IMAGE_CURRENCY_CONV
