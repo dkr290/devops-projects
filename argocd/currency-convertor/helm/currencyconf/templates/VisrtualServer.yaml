@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: convertor-virtualservice
+spec:
+  gateways:
+  - convertor-gateway
+  hosts:
+  - convertor.172.19.8.2.nip.io
+  http:
+  - route:
+    - destination:
+        host: {{ include "currencyconf.fullname" . }}
+        port:
+          number: {{ .Values.service.port }}

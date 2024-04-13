@@ -5,7 +5,7 @@ metadata:
   name: myapp
   namespace: argocd
 spec:
-  project: myproject
+  project: {{ .Values.myapp.project }}
   source:
     repoURL: https://github.com/dkr290/helm-charts.git
     path: myapp-istio
@@ -17,6 +17,7 @@ spec:
       {{- toYaml . | nindent 6 }}
       {{- end }}
   destination:
+    {{- if .Values.spec.destr }}
     server: {{ .Values.spec.destination.server }}
     namespace: test
   {{- if not .Values.myapp.syncPolicy.manual }}

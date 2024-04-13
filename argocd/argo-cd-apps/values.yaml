@@ -1,17 +1,19 @@
 spec:
   destination:
-    server: 'https://kubernetes.default.svc'
-  
-myapp: 
-  enabled: true
+    server: "https://kubernetes.default.svc"
+
+###---------myapp application values -----------###
+myapp:
+  enabled: false
   syncPolicy:
     manual: false
-    automated: 
+    automated:
       selfHeal: true
       prune: true
   targetRevision: main
+  project: myproject
   valueFiles:
-  - values.yaml
+    - values.yaml
 
 ###
 guestbook:
