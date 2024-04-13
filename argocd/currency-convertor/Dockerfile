@@ -1,10 +1,11 @@
 FROM golang:1.21.8-alpine3.18 as builder
 
+ENV CGO_ENABLED=0
 WORKDIR /build
 COPY go.mod ./
 RUN go mod download && go mod tidy
 COPY . .
-RUN go build cmd/app/main.go 
+RUN go build main.go 
 
 
 
