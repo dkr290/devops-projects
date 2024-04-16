@@ -14,7 +14,7 @@ spec:
       releaseName: istiod
       parameters:
       - name: global.defaultPodDisruptionBudget.enabled 
-        value: false
+        value: "false"
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: istio-system
