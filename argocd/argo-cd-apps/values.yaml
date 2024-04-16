@@ -19,7 +19,7 @@ myapp:
 guestbook:
   enabled: false
 istiobase:
-  enabled: true
+  enabled: false
   syncPolicy:
     manual: false
     automated:
@@ -27,7 +27,7 @@ istiobase:
       prune: true
   project: default
 istiod:
-  enabled: true
+  enabled: false
   syncPolicy:
     manual: false
     automated:
@@ -35,7 +35,7 @@ istiod:
       prune: true
   project: default
 istioingressgateway:
-  enabled: true
+  enabled: false
   syncPolicy:
     manual: false
     automated:
@@ -43,7 +43,7 @@ istioingressgateway:
       prune: true
   project: default
 istioegressgateway:
-  enabled: true
+  enabled: false
   syncPolicy:
     manual: false
     automated:
