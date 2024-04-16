@@ -34,3 +34,19 @@ istiod:
       selfHeal: true
       prune: true
   project: default
+istio-ingressgateway:
+  enabled: true
+  syncPolicy:
+    manual: false
+    automated:
+      selfHeal: true
+      prune: true
+  project: default
+istio-egressgateway:
+  enabled: true
+  syncPolicy:
+    manual: false
+    automated:
+      selfHeal: true
+      prune: true
+  project: default
