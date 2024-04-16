@@ -19,33 +19,33 @@ myapp:
 guestbook:
   enabled: false
 istiobase:
-  enabled: false
+  enabled: true
   syncPolicy:
-    manual: false
+    manual: true
     automated:
       selfHeal: true
       prune: true
   project: default
 istiod:
-  enabled: false
+  enabled: true
   syncPolicy:
-    manual: false
+    manual: true
     automated:
       selfHeal: true
       prune: true
   project: default
 istioingressgateway:
-  enabled: false
+  enabled: true
   syncPolicy:
-    manual: false
+    manual: true
     automated:
       selfHeal: true
       prune: true
   project: default
 istioegressgateway:
-  enabled: false
+  enabled: true
   syncPolicy:
-    manual: false
+    manual: true
     automated:
       selfHeal: true
       prune: true
