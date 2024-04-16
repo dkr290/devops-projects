@@ -11,6 +11,7 @@ spec:
     chart: istio/base
     helm:
       releaseName: istio-base
+      targetRevision: 1.21.0
       parameters:
       - name: "defaultRevision"
         value: default
