@@ -26,3 +26,11 @@ istiobase:
       selfHeal: true
       prune: true
   project: default
+istiod:
+  enabled: true
+  syncPolicy:
+    manual: false
+    automated:
+      selfHeal: true
+      prune: true
+  project: default
