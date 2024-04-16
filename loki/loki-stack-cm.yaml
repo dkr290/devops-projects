@@ -17,4 +17,3 @@ metadata:
     release: loki-stack
   name: loki-stack
   namespace: prometheus
-

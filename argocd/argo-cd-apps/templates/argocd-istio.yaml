@@ -1,0 +1,28 @@
+{{- if .Values.istiobase.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-base
+  namespace: argocd
+spec:
+  project: {{ .Values.istiobase.project }}
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    chart: istio/base
+    helm:
+      releaseName: istio-base
+      parameters:
+      - name: "defaultRevision"
+        value: default
+  destination:
+    {{- if .Values.spec.destr }}
+    server: {{ .Values.spec.destination.server }}
+    namespace: istio-system
+  {{- if not .Values.istiobase.syncPolicy.manual }}
+  syncPolicy:
+    automated:
+    {{- with .Values.istiobase.syncPolicy.automated }}
+    {{- toYaml . | nindent 6 }}
+    {{- end}}
+  {{- end }}
+{{- end }}

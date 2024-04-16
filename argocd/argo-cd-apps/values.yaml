@@ -18,3 +18,11 @@ myapp:
 ###
 guestbook:
   enabled: false
+istiobase:
+  enabled: true
+  syncPolicy:
+    manual: false
+    automated:
+      selfHeal: true
+      prune: true
+  project: default

@@ -6,13 +6,13 @@ metadata:
 
 spec:
   clusterResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: "*"
+      kind: "*"
   namespaceResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: "*"
+      kind: "*"
   destinations:
-  - namespace: 'demo-argo'
-    server: '*'
+    - namespace: "demo-argo"
+      server: "*"
   sourceRepos:
-    - '*'
+    - "*"
