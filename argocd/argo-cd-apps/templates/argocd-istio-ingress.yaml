@@ -1,11 +1,11 @@
-{{- if .Values.istio-ingressgateway.enabled }}
+{{- if .Values.istioingressgateway.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: istio-ingress
   namespace: argocd
 spec:
-  project: {{ .Values.istio-ingressgateway.project }}
+  project: {{ .Values.istioingressgateway.project }}
   source:
     repoURL: https://istio-release.storage.googleapis.com/charts
     chart: gateway
@@ -15,10 +15,10 @@ spec:
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: istio-ingress
-  {{- if not .Values.istio-ingressgateway.syncPolicy.manual }}
+  {{- if not .Values.istioingressgateway.syncPolicy.manual }}
   syncPolicy:
     automated:
-    {{- with .Values.istio-ingressgateway.syncPolicy.automated }}
+    {{- with .Values.istioingressgateway.syncPolicy.automated }}
     {{- toYaml . | nindent 6 }}
     {{- end}}
   {{- end }}

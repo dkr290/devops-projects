@@ -34,7 +34,7 @@ istiod:
       selfHeal: true
       prune: true
   project: default
-istio-ingressgateway:
+istioingressgateway:
   enabled: true
   syncPolicy:
     manual: false
@@ -42,7 +42,7 @@ istio-ingressgateway:
       selfHeal: true
       prune: true
   project: default
-istio-egressgateway:
+istioegressgateway:
   enabled: true
   syncPolicy:
     manual: false
