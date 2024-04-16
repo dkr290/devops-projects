@@ -15,7 +15,6 @@ spec:
       - name: "defaultRevision"
         value: default
   destination:
-    {{- if .Values.spec.destr }}
     server: {{ .Values.spec.destination.server }}
     namespace: istio-system
   {{- if not .Values.istiobase.syncPolicy.manual }}

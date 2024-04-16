@@ -17,7 +17,6 @@ spec:
       {{- toYaml . | nindent 6 }}
       {{- end }}
   destination:
-    {{- if .Values.spec.destr }}
     server: {{ .Values.spec.destination.server }}
     namespace: test
   {{- if not .Values.myapp.syncPolicy.manual }}
