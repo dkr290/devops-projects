@@ -8,7 +8,7 @@ spec:
   project: {{ .Values.istiobase.project }}
   source:
     repoURL: https://istio-release.storage.googleapis.com/charts
-    chart: istio/base
+    chart: base
     targetRevision: 1.21.0
     helm:
       releaseName: istio-base
