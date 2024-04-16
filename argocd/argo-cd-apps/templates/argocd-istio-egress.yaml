@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: istio-ingress
+  name: istio-egress
   namespace: argocd
 spec:
   project: {{ .Values.istioegressgateway.project }}
