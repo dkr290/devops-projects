@@ -1,0 +1,28 @@
+{{- if .Values.istiod.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istiod
+  namespace: argocd
+spec:
+  project: {{ .Values.istiod.project }}
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    chart: istiod
+    targetRevision: 1.21.0
+    helm:
+      releaseName: istiod
+      parameters:
+      - name: global.defaultPodDisruptionBudget.enabled 
+        value: false
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: istio-system
+  {{- if not .Values.istiod.syncPolicy.manual }}
+  syncPolicy:
+    automated:
+    {{- with .Values.istiod.syncPolicy.automated }}
+    {{- toYaml . | nindent 6 }}
+    {{- end}}
+  {{- end }}
+{{- end }}
