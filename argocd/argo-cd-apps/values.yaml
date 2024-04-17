@@ -15,6 +15,19 @@ myapp:
   valueFiles:
     - values.yaml
 
+# api-service
+apiservice:
+  enabled: true
+  syncPolicy:
+    manual: false
+    automated:
+      selfHeal: true
+      prune: true
+  targetRevision: main
+  project: default
+  valueFiles:
+    - values.yaml
+
 ###
 guestbook:
   enabled: false

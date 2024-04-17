@@ -1,0 +1,29 @@
+{{- if .Values.apiservice.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apiservice
+  namespace: argocd
+spec:
+  project: {{ .Values.apiservice.project }}
+  source:
+    repoURL: https://github.com/dkr290/go-advanced-projects/tree/main/apiservice/zarf/k8s/helm/sales-api
+    path: apiservice
+    targetRevision: {{ .Values.apiservice.targetRevision }} 
+    helm:
+      releaseName: apiservice
+      {{- with .Values.apiservice.valueFiles }}
+      valueFiles:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: test
+  {{- if not .Values.apiservice.syncPolicy.manual }}
+  syncPolicy:
+    automated:
+    {{- with .Values.apiservice.syncPolicy.automated }}
+    {{- toYaml . | nindent 6 }}
+    {{- end}}
+  {{- end }}
+{{- end }}
