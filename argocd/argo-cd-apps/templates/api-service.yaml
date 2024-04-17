@@ -7,8 +7,8 @@ metadata:
 spec:
   project: {{ .Values.apiservice.project }}
   source:
-    repoURL: https://github.com/dkr290/go-advanced-projects/tree/main/apiservice/zarf/k8s/helm/sales-api
-    path: apiservice
+    repoURL: https://github.com/dkr290/go-advanced-projects.git 
+    path: api-service/zarf/k8s/helm/sales-api
     targetRevision: {{ .Values.apiservice.targetRevision }} 
     helm:
       releaseName: apiservice
@@ -18,7 +18,7 @@ spec:
       {{- end }}
   destination:
     server: {{ .Values.spec.destination.server }}
-    namespace: test
+    namespace: apiservice
   {{- if not .Values.apiservice.syncPolicy.manual }}
   syncPolicy:
     automated:
