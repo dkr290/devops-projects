@@ -15,6 +15,9 @@ myapp:
   valueFiles:
     - values.yaml
 
+appsecrets:
+  enabled: false
+
 # api-service
 apiservice:
   enabled: true

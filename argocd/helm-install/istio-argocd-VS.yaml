@@ -5,15 +5,16 @@ metadata:
   namespace: argocd
 spec:
   gateways:
-  - argocd-gateway
+    - argocd-gateway
   hosts:
-  - argo.172.19.8.2.nip.io
+    - argocd.172.22.8.2.nip.io
   http:
-  - match:
-    - uri:
-        prefix: /
-    route:
-    - destination:
-        host: argocd-server
-        port:
-          number: 80
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: argocd-server
+            port:
+              number: 80
+
