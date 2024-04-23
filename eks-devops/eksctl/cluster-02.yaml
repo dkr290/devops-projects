@@ -1,0 +1,58 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+availabilityZones:
+  - eu-central-1a
+metadata:
+  name: demo-eks-cluster01
+  region: eu-central-1
+  version: "1.29"
+  tags:
+    karpenter.sh/discovery: demo-eks-cluster01
+    created-by: eks-testing
+    env: demo-eks-cluster01
+iam:
+  withOIDC: true
+vpc:
+  cidr: 10.42.0.0/16
+  clusterEndpoints:
+    privateAccess: true
+    publicAccess: true
+addons:
+  - name: vpc-cni
+    version: 1.14.1
+    configurationValues: '{"env":{"ENABLE_PREFIX_DELEGATION":"true", "ENABLE_POD_ENI":"true", "POD_SECURITY_GROUP_ENFORCING_MODE":"standard"},"enableNetworkPolicy": "true"}'
+    resolveConflicts: overwrite
+managedNodeGroups:
+  - name: default
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 3
+    volumeSize: 20
+    instanceType: t2.medium
+    privateNetworking: true
+    releaseVersion: "1.29.0-20240129"
+    updateConfig:
+      maxUnavailablePercentage: 50
+    ssh: # use existing EC2 key
+      publicKeyName: ec2_dev.pub
+    iam:
+      withAddonPolicies:
+        ebs: true
+        fsx: true
+        efs: true
+    labels:
+      workshop-default: "yes"
+  - name: spot
+    instanceTypes: ["t2.small", "t2.medium"]
+    spot: true
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 3
+    iam:
+      withAddonPolicies:
+        ebs: true
+        fsx: true
+        efs: true
+    privateNetworking: true
+    releaseVersion: "1.29.0-20240129"
+    volumeSize: 20

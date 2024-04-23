@@ -1,19 +1,21 @@
 #some commands
+
 ```
 eksctl create cluster -f cluster-01.yaml
 ```
+
 #to delete the cluster
+
 ```
 eksctl delete cluster -f cluster.yaml --disable-nodegroup-eviction
 
 ```
 
-
 #update the kubeconfig
+
 ```
 aws eks update-kubeconfig --region region --name demo-eks-cluster
 ```
-
 
 #install latest aws cli
 
@@ -24,7 +26,7 @@ sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --u
 
 ```
 
-#only some vpc canges 
+#only some vpc canges
 
 ```
 eksctl utils update-cluster-vpc-config -f cluster.yaml --approve
@@ -36,3 +38,8 @@ eksctl utils update-cluster-vpc-config -f cluster.yaml --approve
 eksctl delete cluster $EKS_CLUSTER_NAME --wait
 
 ```
+
+- To map IAM role to kubernetes service accounts
+  https://eksctl.io/usage/iamserviceaccounts/#
+  https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html
+
