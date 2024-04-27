@@ -1,3 +1,7 @@
+the policy needed AmazonEKS_EBS_CSI_Driver_Policy if not exists
+and from the link https://github.com/kubernetes-sigs/aws-ebs-csi-driver/blob/master/docs/example-iam-policy.json
+normally there is build in
+
 eksctl create iamserviceaccount \
     --name ebs-csi-controller-sa \
     --namespace kube-system \

@@ -2,6 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 availabilityZones:
   - eu-central-1a
+  - eu-central-1b
 metadata:
   name: demo-eks-cluster01
   region: eu-central-1
@@ -34,14 +35,13 @@ managedNodeGroups:
     updateConfig:
       maxUnavailablePercentage: 50
     ssh: # use existing EC2 key
-      publicKeyName: ec2_dev.pub
+      publicKeyName: ec2-key2
     iam:
       withAddonPolicies:
         ebs: true
         fsx: true
         efs: true
-    labels:
-      workshop-default: "yes"
+    labels: { workshop-default: "yes", role: "workers" }
   - name: spot
     instanceTypes: ["t2.small", "t2.medium"]
     spot: true
