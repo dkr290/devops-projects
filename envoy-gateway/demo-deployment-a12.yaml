@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goapp-v1
+spec:
+  selector:
+    matchLabels:
+      app: goappv1
+      version: v1
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: goappv1
+        version: v1
+    spec:
+      containers:
+        - name: goappv1
+          image: ghcr.io/dkr290/devops-projects/goappv1:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goapp-v2
+spec:
+  selector:
+    matchLabels:
+      app: goappv2
+      version: v2
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: goappv2
+        version: v2
+    spec:
+      containers:
+        - name: goappv2
+          image: ghcr.io/dkr290/devops-projects/goappv2:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 5

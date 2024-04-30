@@ -1,10 +1,11 @@
+#https://github.com/awslabs/amazon-eks-ami/releases
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 availabilityZones:
   - eu-central-1a
   - eu-central-1b
 metadata:
-  name: demo-eks-cluster01
+  name: demo-eks-cluster02
   region: eu-central-1
   version: "1.29"
   tags:
@@ -29,9 +30,9 @@ managedNodeGroups:
     minSize: 1
     maxSize: 3
     volumeSize: 20
-    instanceType: t2.medium
+    instanceType: t2.small
     privateNetworking: true
-    releaseVersion: "1.29.0-20240129"
+    releaseVersion: "1.29.0-20240415"
     updateConfig:
       maxUnavailablePercentage: 50
     ssh: # use existing EC2 key
@@ -54,5 +55,5 @@ managedNodeGroups:
         fsx: true
         efs: true
     privateNetworking: true
-    releaseVersion: "1.29.0-20240129"
+    releaseVersion: "1.29.0-20240415"
     volumeSize: 20

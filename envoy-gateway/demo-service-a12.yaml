@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: goappv1-service
+  labels:
+    app: goappv1
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: http
+  selector:
+    app: goappv1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: goappv2-service
+  labels:
+    app: goappv2
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: http
+  selector:
+    app: goappv2
