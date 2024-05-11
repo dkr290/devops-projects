@@ -1,0 +1,32 @@
+the policy needed AmazonEFSCSIDriverPolicy if not exists
+and from the link https://github.com/kubernetes-sigs/aws-efs-csi-driver/blob/master/docs/iam-policy-example.json
+normally there is build in
+
+
+export EKS_CLUSTER_NAME=my-cluster
+export EFS_CSI_ADDON_ROLE=AmazonEKS_EFS_CSI_DriverRole
+eksctl create iamserviceaccount \
+    --name efs-csi-controller-sa \
+    --namespace kube-system \
+    --cluster $EKS_CLUSTER_NAME \
+    --role-name $EFS_CSI_ADDON_ROLE \
+    --role-only \
+    --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy \
+    --approve
+
+TRUST_POLICY=$(aws iam get-role --role-name $EFS_CSI_ADDON_ROLE --query 'Role.AssumeRolePolicyDocument' | \
+    sed -e 's/efs-csi-controller-sa/efs-csi-*/' -e 's/StringEquals/StringLike/')
+aws iam update-assume-role-policy --role-name $EFS_CSI_ADDON_ROLE --policy-document "$TRUST_POLICY"
+
+
+
+
+aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name aws-efs-csi-driver \
+  --service-account-role-arn <arn of the role>
+
+aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name aws-efs-csi-driver
+
+kubectl get daemonset ebs-csi-node -n kube-system
+kubectl get daemonset efs-csi-node -n kube-system
+
+kubectl get storageclass
