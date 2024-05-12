@@ -7,11 +7,11 @@ resource "aws_eks_cluster" "eks" {
   vpc_config {
     subnet_ids = concat(aws_subnet.public[*].id, aws_subnet.private[*].id)
   }
- kubernetes_network_config {
+  kubernetes_network_config {
     ip_family         = "ipv4"
     service_ipv4_cidr = "172.20.0.0/16"
   }
-  
+
 
   depends_on = [
     aws_iam_role_policy_attachment.eks_cluster_policy,
@@ -20,25 +20,25 @@ resource "aws_eks_cluster" "eks" {
 }
 
 
-# Create security group for EKS cluster
-resource "aws_security_group" "cluster_sg" {
-  name_prefix = "cluster-sg"
-  vpc_id      = aws_vpc.eks_vpc.id
-
-  ingress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-}
+# # Create security group for EKS cluster
+# resource "aws_security_group" "cluster_sg" {
+#   name_prefix = "cluster-sg"
+#   vpc_id      = aws_vpc.eks_vpc.id
+#
+#   ingress {
+#     from_port       = 0
+#     to_port         = 0
+#     protocol        = "-1"
+#     cidr_blocks     = ["0.0.0.0/0"]
+#   }
+#
+#   egress {
+#     from_port       = 0
+#     to_port         = 0
+#     protocol        = "-1"
+#     cidr_blocks     = ["0.0.0.0/0"]
+#   }
+# }
 
 # Configure OIDC provider
 data "tls_certificate" "eks" {
@@ -56,8 +56,8 @@ resource "aws_eks_addon" "addons" {
   cluster_name      = aws_eks_cluster.eks.id
   addon_name        = each.value.name
   addon_version     = each.value.version
-  resolve_conflicts  = "OVERWRITE"
-  depends_on = [ resource.aws_eks_node_group.workers1  ]
+  resolve_conflicts = "OVERWRITE"
+  depends_on        = [resource.aws_eks_node_group.workers1]
 }
 
 #aws eks update-kubeconfig --region <region> --name <cluster_name>

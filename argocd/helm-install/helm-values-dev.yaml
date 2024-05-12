@@ -8,7 +8,6 @@ nameOverride: argocd
 fullnameOverride: ""
 # -- Override the Kubernetes version, which is used to evaluate certain manifests
 
-
 ## Globally shared configuration
 global:
   # -- Default domain used by all components
@@ -16,7 +15,8 @@ global:
   domain: argocd.example.com
 
   # -- Common labels for the all resources
-  additionalLabels: {}
+  additionalLabels:
+    {}
     # app: argo-cd
 
   # -- Number of old deployment ReplicaSets to retain. The rest will be garbage collected.
@@ -40,7 +40,7 @@ configs:
   cm:
     # -- Create the argocd-cm configmap for [declarative setup]
     create: true
- 
+
     # OIDC configuration as an alternative to dex (optional).
     # oidc.config: |
     #   name: Azure
@@ -56,9 +56,6 @@ configs:
     #     - email
     # url: https://argo.domain.com/
 
-
- 
-
   # Argo CD RBAC policy configuration
   ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/rbac.md
   rbac:
@@ -67,12 +64,10 @@ configs:
     # Argo CD will not work if there is no configmap created with the name above.
     create: true
 
-
     # -- The name of the default role which Argo CD will falls back to, when authorizing API requests (optional).
     # If omitted or empty, users may be still be able to login, but will see no apps, projects, etc...
-    policy.default: 'role:readonly'
+    policy.default: "role:readonly"
 
-    
     # Policy rules are in the form:
     #  p, subject, resource, action, object, effect
     # Role definitions and bindings are in the form:
@@ -85,7 +80,6 @@ configs:
     #   p, role:org-admin, repositories, update, *, allow
     #   p, role:org-admin, repositories, delete, *, allow
     #   g, "24941bfc-46b7-4186-9e57-07cf7f9dad38", role:org-admin
-  
 
     # -- OIDC scopes to examine during rbac enforcement (in addition to `sub` scope).
     # The scope value can be a string, or a list of strings.
@@ -94,21 +88,20 @@ configs:
     # -- Matcher function for Casbin, `glob` for glob matcher and `regex` for regex matcher.
     policy.matchMode: "glob"
 
-
 ## Application controller
 controller:
   # -- Application controller name string
   name: application-controller
   # -- Resource limits and requests for the application controller pods
   replicas: 1
-  resources: 
+  resources:
     limits:
-      cpu: 1000m
-      memory: 4096Mi
+      cpu: 512m
+      memory: 1024Mi
     requests:
       cpu: 250m
       memory: 256Mi
-   ## Application controller metrics configuration
+    ## Application controller metrics configuration
   metrics:
     # -- Deploy metrics service
     enabled: true
@@ -142,8 +135,6 @@ dex:
     repository: ghcr.io/dexidp/dex
     # -- Dex image tag
     tag: v2.38.0
-    
-
 
 ## Redis
 redis:
@@ -152,7 +143,6 @@ redis:
   # -- Redis name
   name: redis
 
-  
   ## Redis image
   image:
     # -- Redis repository
@@ -162,9 +152,9 @@ redis:
     # -- Redis image pull policy
     # @default -- `""` (defaults to global.image.imagePullPolicy)
     imagePullPolicy: ""
- 
+
   # -- Resource limits and requests for redis
-  resources: 
+  resources:
     limits:
       cpu: 500m
       memory: 1024Mi
@@ -179,9 +169,6 @@ redis:
       enabled: true
       # -- Interval at which metrics should be scraped
       interval: 30s
-    
-
-
 
 ## Server
 server:
@@ -200,9 +187,8 @@ server:
     # -- Maximum number of replicas for the Argo CD server [HPA]
     maxReplicas: 5
 
-
   # -- Resource limits and requests for the Argo CD server
-  resources: 
+  resources:
     limits:
       cpu: 1000m
       memory: 2048Mi
@@ -210,7 +196,6 @@ server:
       cpu: 50m
       memory: 256Mi
 
- 
   ## Server metrics service configuration
   metrics:
     # -- Deploy metrics service
@@ -221,21 +206,19 @@ server:
       # -- Enable a prometheus ServiceMonitor
       enabled: true
       # -- Prometheus ServiceMonitor interval
-     
-  
+
   # Argo CD server ingress configuration
   ingress:
     # -- Enable an ingress resource for the Argo CD server
     enabled: false
     # -- Additional ingress annotations
     ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#option-1-ssl-passthrough
-    annotations: 
+    annotations:
       # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
       nginx.ingress.kubernetes.io/backend-protocol: HTTPS
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-
 
     # -- Defines which ingress controller will implement the resource
     ingressClassName: "nginx"
@@ -255,15 +238,11 @@ server:
     ## You can create this secret via `certificate` or `certificateSecret` option
     tls: true
 
-   
-  
     # @default -- `[]` (See [values.yaml])
-    # extraTls: 
+    # extraTls:
     #   - hosts:
     #     - argo.k8s-dev.bankingcircle.net
     #     secretName: aks-ingress-tls
-
-
 
 ## Repo Server
 repoServer:
@@ -286,7 +265,8 @@ repoServer:
     # -- Average memory utilization percentage for the repo server [HPA]
     targetMemoryUtilizationPercentage: 50
     # -- Configures the scaling behavior of the target in both Up and Down directions.
-    behavior: {}
+    behavior:
+      {}
       # scaleDown:
       #  stabilizationWindowSeconds: 300
       #  policies:
@@ -309,9 +289,7 @@ repoServer:
       enabled: false
       # -- Prometheus ServiceMonitor interval
       interval: 30s
- 
 
-  
 ## ApplicationSet controller
 applicationSet:
   # -- Enable ApplicationSet controller
@@ -322,8 +300,8 @@ applicationSet:
 
   # -- The number of ApplicationSet controller pods to run
   replicas: 1
- 
-  resources: 
+
+  resources:
     limits:
       cpu: 500m
       memory: 1024Mi
@@ -339,8 +317,6 @@ applicationSet:
       # -- Prometheus ServiceMonitor interval
       interval: 30s
 
-
- 
 ## Notifications controller
 notifications:
   # -- Enable notifications controller
@@ -350,7 +326,7 @@ notifications:
   name: notifications-controller
 
   # -- Resource limits and requests for the notifications controller
-  resources: 
+  resources:
     limits:
       cpu: 512m
       memory: 512Mi
@@ -363,7 +339,3 @@ notifications:
     serviceMonitor:
       # -- Enable a prometheus ServiceMonitor
       enabled: true
-
-
-
-

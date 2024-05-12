@@ -30,10 +30,10 @@ variable "addons" {
   ]
 }
 variable "cluster_name" {
-  
+
   description = "The eks cluster name"
 }
 variable "aws_region" {
   description = "the region"
-  
+
 }
