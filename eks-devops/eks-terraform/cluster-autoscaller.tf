@@ -15,7 +15,8 @@ resource "aws_iam_policy" "cluster_autoscaler" {
         "autoscaling:DescribeLaunchConfigurations",
         "autoscaling:DescribeTags",
         "autoscaling:SetDesiredCapacity",
-        "autoscaling:TerminateInstanceInAutoScalingGroup"
+        "autoscaling:TerminateInstanceInAutoScalingGroup",
+        "ec2:DescribeLaunchTemplateVersions"
       ],
       "Resource": "*"
     }
@@ -52,19 +53,48 @@ resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
   role       = aws_iam_role.cluster_autoscaler.name
 }
 
+resource "aws_iam_role_policy_attachment" "cluster_autoscaler_a" {
+  policy_arn = aws_iam_policy.cluster_autoscaler.arn
+  role       = aws_iam_role.eks_node_role.name
+}
+
+data "terraform_remote_state" "eks" {
+  backend = "local"
+  config = {
+    path = "./terraform.tfstate"
+  }
+}
+provider "helm" {
+  kubernetes {
+    host                   = aws_eks_cluster.eks.endpoint
+    cluster_ca_certificate = base64decode(aws_eks_cluster.eks.certificate_authority.0.data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.eks.name]
+      command     = "aws"
+    }
+  }
+}
 
 
-# provider "helm" {
-#   kubernetes {
-#     host                   = aws_eks_cluster.eks.endpoint
-#     cluster_ca_certificate = base64decode(aws_eks_cluster.eks.certificate_authority.0.data)
-#     token                  = aws_eks_cluster.eks.token
-#   }
-# }
-# resource "helm_release" "cluster_autoscaler" {
-#   name       = "cluster-autoscaler"
-#   repository = "https://kubernetes.github.io/autoscaler"
-#   chart      = "cluster-autoscaler"
-#   namespace  = "kube-system"
-#   values     = [file("values.yaml")]
-# }
+# Install the Cluster Autoscaler using Helm
+resource "helm_release" "cluster_autoscaler" {
+  name       = "cluster-autoscaler"
+  repository = "https://kubernetes.github.io/autoscaler"
+  chart      = "cluster-autoscaler"
+  namespace  = "kube-system"
+
+  set {
+    name  = "awsRegion"
+    value = var.aws_region
+  }
+
+  set {
+    name  = "autoDiscovery.clusterName"
+    value = aws_eks_cluster.eks.id
+  }
+  depends_on = [resource.aws_eks_node_group.workers1]
+
+  # Additional configuration options...
+}
+
