@@ -1,0 +1,22 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ext-shared-gw
+spec:
+  gatewayClassName: exteg
+  listeners:
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.eu-central-1.elb.amazonaws.com"
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              shared-gateway-access: "true"
+      tls:
+        certificateRefs:
+          - kind: Secret
+            group: ""
+            name: ingress-tls

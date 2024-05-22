@@ -63,6 +63,7 @@ data "terraform_remote_state" "eks" {
   config = {
     path = "./terraform.tfstate"
   }
+  depends_on = [aws_eks_cluster.eks]
 }
 provider "helm" {
   kubernetes {
