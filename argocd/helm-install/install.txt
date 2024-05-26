@@ -1,6 +1,6 @@
  helm repo add argo-cd https://argoproj.github.io/argo-helm
  helm repo update
- helm install argocd argo/argo-cd --namespace argocd -f helm-values-dev.yaml
+ helm install argocd argo/argo-cd --namespace argocd --create-namespace -f helm-values-dev.yaml
 
  for just local testing 
  k edit cm -n argocd argocd-cmd-params-cm

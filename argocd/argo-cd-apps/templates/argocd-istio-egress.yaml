@@ -1,4 +1,4 @@
-{{- if .Values.istioegressgateway.enabled }}
+{{- if .Values.istioegressgateway }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

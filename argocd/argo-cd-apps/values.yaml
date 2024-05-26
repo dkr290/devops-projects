@@ -34,35 +34,35 @@ apiservice:
 ###
 guestbook:
   enabled: false
-istiobase:
-  enabled: true
-  syncPolicy:
-    manual: true
-    automated:
-      selfHeal: true
-      prune: true
-  project: default
-istiod:
-  enabled: true
-  syncPolicy:
-    manual: true
-    automated:
-      selfHeal: true
-      prune: true
-  project: default
-istioingressgateway:
-  enabled: true
-  syncPolicy:
-    manual: true
-    automated:
-      selfHeal: true
-      prune: true
-  project: default
-istioegressgateway:
-  enabled: true
-  syncPolicy:
-    manual: true
-    automated:
-      selfHeal: true
-      prune: true
-  project: default
+# istiobase:
+#   enabled: true
+#   syncPolicy:
+#     manual: true
+#     automated:
+#       selfHeal: true
+#       prune: true
+#   project: default
+# istiod:
+#   enabled: true
+#   syncPolicy:
+#     manual: true
+#     automated:
+#       selfHeal: true
+#       prune: true
+#   project: default
+# istioingressgateway:
+#   enabled: true
+#   syncPolicy:
+#     manual: true
+#     automated:
+#       selfHeal: true
+#       prune: true
+#  project: default
+# istioegressgateway:
+#   enabled: true
+#   syncPolicy:
+#     manual: true
+#     automated:
+#       selfHeal: true
+#       prune: true
+#   project: default

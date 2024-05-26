@@ -129,29 +129,12 @@ dex:
       # -- Prometheus ServiceMonitor interval
       interval: 30s
 
-  ## Dex image
-  image:
-    # -- Dex image repository
-    repository: ghcr.io/dexidp/dex
-    # -- Dex image tag
-    tag: v2.38.0
-
 ## Redis
 redis:
   # -- Enable redis
   enabled: true
   # -- Redis name
   name: redis
-
-  ## Redis image
-  image:
-    # -- Redis repository
-    repository: public.ecr.aws/docker/library/redis
-    # -- Redis tag
-    tag: 7.2.4-alpine
-    # -- Redis image pull policy
-    # @default -- `""` (defaults to global.image.imagePullPolicy)
-    imagePullPolicy: ""
 
   # -- Resource limits and requests for redis
   resources:
