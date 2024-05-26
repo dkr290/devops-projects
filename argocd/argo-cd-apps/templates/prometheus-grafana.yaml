@@ -1,0 +1,29 @@
+{{- if .Values.promgr }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-grafana
+  namespace: argocd
+spec:
+  project: {{ .Values.promgr.project }}
+  source:
+    repoURL: https://github.com/dkr290/devops-projects.git 
+    path: grafana-prometheus/helm/promgr
+    targetRevision: {{ .Values.promgr.targetRevision }} 
+    helm:
+      releaseName: promgr
+      {{- with .Values.promgr.valueFiles }}
+      valueFiles:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: promgr
+  {{- if not .Values.promgr.syncPolicy.manual }}
+  syncPolicy:
+    automated:
+    {{- with .Values.promgr.syncPolicy.automated }}
+    {{- toYaml . | nindent 6 }}
+    {{- end}}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,96 @@
+grafana:
+  persistence:
+    enabled: true
+    storageClassName: gp2
+    size: 10Gi
+    accessModes:
+      - ReadWriteOnce
+  grafana.ini:
+    # auth.azuread:
+    #   name: "Azure AD"
+    #   enabled: true #Default is false
+    #   allow_sign_up: true
+    #   client_id:
+    #   client_secret: __client-secret__
+    #   scopes: "openid email profile"
+    #   auth_url:
+    #   token_url:
+    #   allowed_domains:
+    #   allowed_groups:
+    #   role_attribute_strict: false
+    #
+    server:
+      root_url: __grafana-rooturl__
+    users:
+      viewers_can_edit: "True"
+  plugins:
+    - digrich-bubblechart-panel
+    - grafana-clock-panel
+    - grafana-singlestat-panel
+prometheus:
+  prometheusSpec:
+    retention: 60d
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp2
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+    # affinity:
+    #   nodeAffinity:
+    #     requiredDuringSchedulingIgnoredDuringExecution:
+    #       nodeSelectorTerms:
+    #         - matchExpressions:
+    #             - key: app
+    #               operator: In
+    #               values:
+    #                 - prometheus
+    # tolerations:
+    #   - key: "purpose"
+    #     operator: "Equal"
+    #     value: "prometheus"
+    #     effect: "NoSchedule"
+
+    # additionalScrapeConfigs:
+    #   - job_name: "uptime-check-endpoint"
+    #     metrics_path: /probe
+    #     params:
+    #       module: [http_2xx]
+    #     static_configs:
+    #       - targets:
+    #           - https://graphviz
+    #
+  #        relabel_configs:
+  #          - source_labels: [__address__]
+  #            target_label: __param_target
+  #          - source_labels: [__param_target]
+  #            target_label: instance
+  #          - target_label: __address__
+  #            replacement: prometheus-blackbox-exporter:9115
+  #
+  #
+  # - job_name: 'postgres-exporter-timescaledb'
+  #   metrics_path: /metrics
+  #   static_configs:
+  #   - targets: ['timescale-exporter-prometheus-postgres-exporter:80']
+
+  #   - job_name: "coredb-timescale-monitor"
+  #     kubernetes_sd_configs:
+  #       - role: pod
+  #     relabel_configs:
+  #       - source_labels: [__meta_kubernetes_pod_label_app]
+  #         regex: timescdb
+  #         action: keep
+  #       - source_labels: [__meta_kubernetes_pod_label_release]
+  #         regex: timescdb
+  #         action: keep
+  #
+  # # Add other necessary relabeling configurations
