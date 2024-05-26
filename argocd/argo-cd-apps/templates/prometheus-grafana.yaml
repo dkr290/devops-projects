@@ -18,7 +18,7 @@ spec:
       {{- end }}
   destination:
     server: {{ .Values.spec.destination.server }}
-    namespace: promgr
+    namespace: monitoring
   {{- if not .Values.promgr.syncPolicy.manual }}
   syncPolicy:
     automated:
