@@ -103,6 +103,10 @@ resource "helm_release" "cluster_autoscaler" {
     name  = "autoDiscovery.clusterName"
     value = aws_eks_cluster.eks.id
   }
+  set {
+    name  = "scaleDownUtilizationThreshold"
+    value = 0.3
+  }
   depends_on = [resource.aws_eks_node_group.workers1]
 
   # Additional configuration options...
