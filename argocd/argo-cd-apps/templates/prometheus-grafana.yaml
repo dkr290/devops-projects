@@ -21,6 +21,8 @@ spec:
     namespace: monitoring
   {{- if not .Values.promgr.syncPolicy.manual }}
   syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
     automated:
     {{- with .Values.promgr.syncPolicy.automated }}
     {{- toYaml . | nindent 6 }}
