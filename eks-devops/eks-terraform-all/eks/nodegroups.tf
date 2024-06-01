@@ -5,7 +5,7 @@ resource "aws_eks_node_group" "workers1" {
   node_group_name = "workers"
   node_role_arn   = aws_iam_role.eks_node_role.arn
 
-  subnet_ids = aws_subnet.private[*].id
+  subnet_ids = data.terraform_remote_state.eks_vpc.outputs.private_subnet_ids
 
   capacity_type  = "ON_DEMAND"
   instance_types = ["t2.small"]
@@ -31,7 +31,8 @@ resource "aws_eks_node_group" "workers2" {
   node_group_name = "spot-workers"
   node_role_arn   = aws_iam_role.eks_node_role.arn
 
-  subnet_ids = aws_subnet.private[*].id
+  subnet_ids = data.terraform_remote_state.eks_vpc.outputs.private_subnet_ids
+
 
   capacity_type  = "SPOT"
   instance_types = ["t2.small", "t2.medium"]
@@ -56,7 +57,7 @@ resource "aws_eks_node_group" "workers2" {
 # Create security group for worker nodes
 resource "aws_security_group" "worker_node_sg" {
   name_prefix = "worker-node-sg"
-  vpc_id      = aws_vpc.eks_vpc.id
+  vpc_id      = data.terraform_remote_state.eks_vpc.outputs.vpc_id
 
   ingress {
     from_port   = 0

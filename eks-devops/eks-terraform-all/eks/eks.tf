@@ -5,17 +5,20 @@ resource "aws_eks_cluster" "eks" {
   role_arn = aws_iam_role.eks_cluster_role.arn
 
   vpc_config {
-    subnet_ids = concat(aws_subnet.public[*].id, aws_subnet.private[*].id)
+    subnet_ids = concat(
+      data.terraform_remote_state.eks_vpc.outputs.public_subnet_ids,
+    data.terraform_remote_state.eks_vpc.outputs.private_subnet_ids)
   }
   kubernetes_network_config {
     ip_family         = "ipv4"
-    service_ipv4_cidr = "172.20.0.0/16"
+    service_ipv4_cidr = var.kubernetes_network_config_cidr
   }
 
 
   depends_on = [
     aws_iam_role_policy_attachment.eks_cluster_policy,
     aws_iam_role_policy_attachment.eks_service_policy,
+    aws_iam_role.eks_cluster_role,
   ]
 }
 

@@ -32,8 +32,19 @@ variable "addons" {
 variable "cluster_name" {
 
   description = "The eks cluster name"
+  default     = "eks-cluster"
 }
 variable "aws_region" {
   description = "the region"
+  default     = "eu-central-1"
 
+}
+variable "kubernetes_network_config_cidr" {
+  default = "172.20.0.0/16"
+
+}
+variable "create_efs" {
+  description = "Whether to create the EFS file system"
+  type        = bool
+  default     = false
 }

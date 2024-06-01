@@ -13,3 +13,5 @@ output "kubernetes_version" {
   value       = resource.aws_eks_cluster.eks.platform_version
 }
 
+
+
