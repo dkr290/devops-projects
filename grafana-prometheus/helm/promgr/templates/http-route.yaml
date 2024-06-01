@@ -4,19 +4,23 @@ metadata:
   name: grafana-httproute
 spec:
   parentRefs:
-    - name: grafana-eg
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: grafana-eg
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /grafana
+            value: "/grafana"
       filters:
       - type: URLRewrite
         urlRewrite:
           path:
-            type: ReplaceFullPath
+            type: ReplacePrefixMatch            
             replaceFullPath: /
       backendRefs:
-        - name: promgr-grafana
+        - group: ''
+          kind: Service
+          name: promgr-grafana
           port: 80
           weight: 1
