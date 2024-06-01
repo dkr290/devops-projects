@@ -52,6 +52,8 @@ promgr:
 #   targetRevision: v1.0.1
 #   project: default
 
+#sealedsecrets:
+
 ###
 guestbook:
   enabled: false
