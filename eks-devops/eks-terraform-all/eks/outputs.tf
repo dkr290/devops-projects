@@ -14,4 +14,11 @@ output "kubernetes_version" {
 }
 
 
+output "eks_get_creds" {
+
+  value       = "aws eks update-kubeconfig --region eu-central-1 --name <cluster_name>"
+  description = "Output the eks command to connect"
+
+}
+
 

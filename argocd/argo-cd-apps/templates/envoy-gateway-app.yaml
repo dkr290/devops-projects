@@ -1,0 +1,28 @@
+{{- if .Values.envoy }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: eg
+  namespace: argocd
+spec:
+  project: {{ .Values.envoy.project }}
+  source:
+    repoURL: oci://docker.io/envoyproxy/gateway-helm
+    chart: gateway
+    targetRevision: {{ .Values.envoy.targetRevision }} 
+    helm:
+      releaseName: eg
+      values:
+        deployment:
+          replicas: 2
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: envoy-gateway-system
+  {{- if not .Values.envoy.syncPolicy.manual }}
+  syncPolicy:
+    automated:
+    {{- with .Values.envoy.syncPolicy.automated }}
+    {{- toYaml . | nindent 6 }}
+    {{- end}}
+  {{- end }}
+{{- end }}

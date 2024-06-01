@@ -42,6 +42,15 @@ promgr:
   project: default
   valueFiles:
     - values.yaml
+envoy:
+  enabled: true
+  syncPolicy:
+    manual: false
+    automated:
+      selfHeal: true
+      prune: true
+  targetRevision: v1.0.1
+  project: default
 
 ###
 guestbook:

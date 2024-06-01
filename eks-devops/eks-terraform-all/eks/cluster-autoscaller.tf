@@ -58,13 +58,22 @@ resource "aws_iam_role_policy_attachment" "cluster_autoscaler_a" {
   role       = aws_iam_role.eks_node_role.name
 }
 
+# data "terraform_remote_state" "eks" {
+#   backend = "local"
+#   config = {
+#     path = "./terraform.tfstate"
+#   }
+#   depends_on = [aws_eks_cluster.eks]
+# }
+#
 data "terraform_remote_state" "eks" {
-  backend = "local"
+  backend = "s3"
   config = {
-    path = "./terraform.tfstate"
-  }
-  depends_on = [aws_eks_cluster.eks]
+    bucket = "terraform-infrastate80"
+    key    = "dev/eks.tfstate"
+  region = "eu-central-1" }
 }
+
 provider "helm" {
   kubernetes {
     host                   = aws_eks_cluster.eks.endpoint

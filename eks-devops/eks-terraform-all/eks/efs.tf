@@ -12,7 +12,7 @@ resource "aws_efs_file_system" "efs-test" {
 resource "aws_security_group" "efs" {
   count       = var.create_efs ? 1 : 0
   name_prefix = "efs-sg"
-  vpc_id      = data.terraform_remote_state.eks_vpc.outputs.eks_vpc.id
+  vpc_id      = data.terraform_remote_state.eks_vpc.outputs.vpc_id
 
 
   egress {
@@ -35,6 +35,6 @@ resource "aws_security_group_rule" "allow_from_eks" {
 resource "aws_efs_mount_target" "example" {
   count           = var.create_efs ? length(data.terraform_remote_state.eks_vpc.outputs.private_subnet_ids) : 0
   file_system_id  = aws_efs_file_system.efs-test[0].id
-  subnet_id       = data.terraform_remote_state.eks_vpc.outputs.aws_subnet.private[count.index].id
+  subnet_id       = data.terraform_remote_state.eks_vpc.outputs.private_subnet_ids[count.index]
   security_groups = [aws_security_group.efs[0].id]
 }
