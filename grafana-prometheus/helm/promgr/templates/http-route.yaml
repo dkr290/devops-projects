@@ -17,7 +17,7 @@ spec:
         urlRewrite:
           path:
             type: ReplacePrefixMatch            
-            replaceFullPath: /
+            replacePrefixMatch: /
       backendRefs:
         - group: ''
           kind: Service
