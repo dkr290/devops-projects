@@ -34,7 +34,7 @@ apiservice:
 promgr:
   enabled: true
   syncPolicy:
-    manual: false
+    manual: true
     automated:
       selfHeal: true
       prune: true
