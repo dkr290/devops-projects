@@ -11,13 +11,7 @@ spec:
     - matches:
         - path:
             type: PathPrefix
-            value: "/grafana"
-      filters:
-      - type: URLRewrite
-        urlRewrite:
-          path:
-            type: ReplacePrefixMatch            
-            replacePrefixMatch: /
+            value: /
       backendRefs:
         - group: ''
           kind: Service
