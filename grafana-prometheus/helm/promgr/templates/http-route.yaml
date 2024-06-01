@@ -10,6 +10,12 @@ spec:
         - path:
             type: PathPrefix
             value: /grafana
+      filters:
+      - type: URLRewrite
+        urlRewrite:
+          path:
+            type: ReplaceFullPath
+            replaceFullPath: /
       backendRefs:
         - name: promgr-grafana
           port: 80
