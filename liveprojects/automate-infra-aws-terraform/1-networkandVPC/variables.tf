@@ -8,3 +8,10 @@ variable "ssh_keypair" {
   default     = null #B
   type        = string
 }
+
+variable "vpc_cidr_block" {
+  description = "the vpc cidr block"
+  type        = string
+}
+
+
