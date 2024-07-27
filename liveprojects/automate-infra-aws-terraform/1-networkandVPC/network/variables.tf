@@ -81,3 +81,24 @@ variable "DbC" {
 
 
 }
+variable "natEipA" {
+  type = object({
+    domain = string
+  })
+
+
+}
+variable "natEipB" {
+  type = object({
+    domain = string
+  })
+
+
+}
+variable "natEipC" {
+  type = object({
+    domain = string
+  })
+
+
+}

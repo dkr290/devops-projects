@@ -70,6 +70,15 @@ module "network" {
     }
 
   }
+  natEipB = {
+    domain = "vpc"
+  }
+  natEipA = {
+    domain = "vpc"
+  }
+  natEipC = {
+    domain = "vpc"
+  }
 
 
 

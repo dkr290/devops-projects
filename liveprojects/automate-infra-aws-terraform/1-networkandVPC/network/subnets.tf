@@ -1,26 +1,5 @@
 # Create public and private subnets
-locals {
-  public_subnets = {
-    publicA = var.publicA
 
-    publicB = var.publicB
-
-    publicC = var.publicC
-  }
-  private_app_subnets = {
-    appA = var.AppA
-    appB = var.AppB
-    appC = var.AppC
-
-  }
-  private_db_subnets = {
-    DbA = var.DbA
-    DbB = var.DbB
-    DbC = var.DbC
-
-  }
-
-}
 
 resource "aws_subnet" "public" {
   for_each                = local.public_subnets
