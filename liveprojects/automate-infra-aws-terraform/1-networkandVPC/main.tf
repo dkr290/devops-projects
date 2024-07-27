@@ -22,6 +22,56 @@ module "network" {
       "Name" = "publicC"
     }
   }
+  AppA = {
+    cidr_block = "172.16.4.0/24"
+    az         = "eu-central-1a"
+    tags = {
+      "Name" = "appA"
+    }
+
+  }
+  AppB = {
+    cidr_block = "172.16.5.0/24"
+    az         = "eu-central-1b"
+    tags = {
+      "Name" = "appB"
+    }
+
+  }
+  AppC = {
+    cidr_block = "172.16.6.0/24"
+    az         = "eu-central-1c"
+    tags = {
+      "Name" = "appC"
+    }
+
+  }
+  DbA = {
+    cidr_block = "172.16.8.0/24"
+    az         = "eu-central-1a"
+    tags = {
+      "Name" = "DbA"
+    }
+
+  }
+  DbB = {
+    cidr_block = "172.16.9.0/24"
+    az         = "eu-central-1b"
+    tags = {
+      "Name" = "DbB"
+    }
+
+  }
+  DbC = {
+    cidr_block = "172.16.10.0/24"
+    az         = "eu-central-1c"
+    tags = {
+      "Name" = "DbC"
+    }
+
+  }
+
+
 
 
 }
