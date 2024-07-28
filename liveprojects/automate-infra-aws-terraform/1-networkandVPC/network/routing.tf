@@ -38,3 +38,28 @@ resource "aws_route_table_association" "publicSubnet" {
   subnet_id      = each.value.subnet_id
   route_table_id = each.value.route_table_id
 }
+resource "aws_route_table" "PrivateRoutes" {
+  for_each = local.privateRoutes
+  vpc_id   = each.value.vpc_id
+
+  dynamic "route" {
+    for_each = each.value.route
+    content {
+      cidr_block = route.value.cidr_block
+      gateway_id = route.value.gateway_id
+    }
+  }
+  tags = each.value.tags
+
+}
+resource "aws_route_table_association" "privateSubnetApp" {
+  for_each       = local.privateSubnetAppAssociation
+  subnet_id      = each.value.subnet_id
+  route_table_id = each.value.route_table_id
+}
+resource "aws_route_table_association" "privateSubnetDb" {
+  for_each       = local.privateSubnetDbAssotiation
+  subnet_id      = each.value.subnet_id
+  route_table_id = each.value.route_table_id
+}
+
