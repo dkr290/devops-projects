@@ -84,3 +84,10 @@ module "network" {
 
 
 }
+module "compute" {
+  source        = "./compute"
+  key_pair_name = "my_ec2_custom_key"
+  BastionSG     = ""
+
+
+}
