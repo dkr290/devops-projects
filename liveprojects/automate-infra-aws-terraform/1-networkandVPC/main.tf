@@ -84,10 +84,67 @@ module "network" {
 
 
 }
+module "security" {
+  source = "./security/"
+  vpc_id = module.network.vpc_id
+
+}
+
 module "compute" {
   source        = "./compute"
   key_pair_name = "my_ec2_custom_key"
-  BastionSG     = ""
+
+  publicSubnetA = {
+    subnet_id = module.network.publicSubnetA
+    bastionSG = module.network.bastionSG
+    tags = {
+      Name = "BastionHostA"
+    }
+  }
+  publicSubnetB = {
+    subnet_id = module.network.publicSubnetB
+    bastionSG = module.security.BastionSG
+    tags = {
+      Name = "BastionHostB"
+    }
+
+  }
+  publicSubnetC = {
+    subnet_id = module.network.publicSubnetC
+    bastionSG = module.security.BastionSG
+
+    tags = {
+      Name = "BastionHostC"
+    }
+
+  }
+  appSubnetA = {
+    subnet_id = module.network.publicSubnetA
+    bastionSG = module.network.AppSG
+    tags = {
+      Name = "AppHostA"
+    }
+  }
+  appSubnetB = {
+    subnet_id = module.network.publicSubnetB
+    bastionSG = module.network.AppSG
+    tags = {
+      Name = "AppHostB"
+    }
+  }
+  appSubnetC = {
+    subnet_id = module.network.publicSubnetC
+    bastionSG = module.network.AppSG
+    tags = {
+      Name = "AppHostC"
+    }
+  }
+
+
+
+  depends_on = [module.security]
+
+
 
 
 }

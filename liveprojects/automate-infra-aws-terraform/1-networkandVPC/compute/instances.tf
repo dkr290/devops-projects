@@ -33,7 +33,18 @@ resource "aws_instance" "BastionHost" {
   ami                    = data.aws_ami.linux2.id
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.myKeyPair.key_name
-  vpc_security_group_ids = each.value.BastionSG
+  vpc_security_group_ids = each.value.bastionSG
+  subnet_id              = each.value.subnet_id
+
+
+  tags = each.value.tags
+}
+resource "aws_instance" "AppHost" {
+  for_each               = local.private_app_ec2_instaces
+  ami                    = data.aws_ami.linux2.id
+  instance_type          = "t2.micro"
+  key_name               = aws_key_pair.myKeyPair.key_name
+  vpc_security_group_ids = each.value.AppSG
   subnet_id              = each.value.subnet_id
 
 
