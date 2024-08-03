@@ -2,28 +2,28 @@ module "network" {
   source         = "./network"
   vpc_cidr_block = var.vpc_cidr_block
   publicA = {
-    cidr_block = "172.16.1.0/24"
+    cidr_block = var.PublicA_CIDR
     az         = "eu-central-1a"
     tags = {
       "Name" = "publicA"
     }
   }
   publicB = {
-    cidr_block = "172.16.2.0/24"
+    cidr_block = var.PublicB_CIDR
     az         = "eu-central-1b"
     tags = {
       "Name" = "publicB"
     }
   }
   publicC = {
-    cidr_block = "172.16.3.0/24"
+    cidr_block = var.PublicC_CIDR
     az         = "eu-central-1c"
     tags = {
       "Name" = "publicC"
     }
   }
   AppA = {
-    cidr_block = "172.16.4.0/24"
+    cidr_block = var.AppACIDR
     az         = "eu-central-1a"
     tags = {
       "Name" = "appA"
@@ -31,7 +31,7 @@ module "network" {
 
   }
   AppB = {
-    cidr_block = "172.16.5.0/24"
+    cidr_block = var.AppBCIDR
     az         = "eu-central-1b"
     tags = {
       "Name" = "appB"
@@ -39,7 +39,7 @@ module "network" {
 
   }
   AppC = {
-    cidr_block = "172.16.6.0/24"
+    cidr_block = var.AppCCIDR
     az         = "eu-central-1c"
     tags = {
       "Name" = "appC"
@@ -47,7 +47,7 @@ module "network" {
 
   }
   DbA = {
-    cidr_block = "172.16.8.0/24"
+    cidr_block = var.DbACIDR
     az         = "eu-central-1a"
     tags = {
       "Name" = "DbA"
@@ -55,7 +55,7 @@ module "network" {
 
   }
   DbB = {
-    cidr_block = "172.16.9.0/24"
+    cidr_block = var.DbBCIDR
     az         = "eu-central-1b"
     tags = {
       "Name" = "DbB"
@@ -63,7 +63,7 @@ module "network" {
 
   }
   DbC = {
-    cidr_block = "172.16.10.0/24"
+    cidr_block = var.DbCCIDR
     az         = "eu-central-1c"
     tags = {
       "Name" = "DbC"
@@ -96,7 +96,7 @@ module "compute" {
 
   publicSubnetA = {
     subnet_id = module.network.publicSubnetA
-    bastionSG = module.network.bastionSG
+    bastionSG = module.security.BastionSG
     tags = {
       Name = "BastionHostA"
     }
@@ -119,22 +119,22 @@ module "compute" {
 
   }
   appSubnetA = {
-    subnet_id = module.network.publicSubnetA
-    bastionSG = module.network.AppSG
+    subnet_id = module.network.privateAppSubnetA
+    AppSG     = module.security.AppSG
     tags = {
       Name = "AppHostA"
     }
   }
   appSubnetB = {
-    subnet_id = module.network.publicSubnetB
-    bastionSG = module.network.AppSG
+    subnet_id = module.network.privateAppSubnetB
+    AppSG     = module.security.AppSG
     tags = {
       Name = "AppHostB"
     }
   }
   appSubnetC = {
-    subnet_id = module.network.publicSubnetC
-    bastionSG = module.network.AppSG
+    subnet_id = module.network.privateAppSubnetC
+    AppSG     = module.security.AppSG
     tags = {
       Name = "AppHostC"
     }

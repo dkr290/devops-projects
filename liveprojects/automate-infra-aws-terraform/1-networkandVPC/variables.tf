@@ -14,4 +14,31 @@ variable "vpc_cidr_block" {
   type        = string
 }
 
+variable "PublicA_CIDR" {
+  description = "publicSubnetA CIDR"
+}
+variable "PublicB_CIDR" {
+  description = "publicSubnetB CIDR"
+}
+variable "PublicC_CIDR" {
+  description = "publicSubnetC CIDR"
+}
+variable "AppACIDR" {
+  description = "app A CIDR"
+}
+variable "AppBCIDR" {
 
+}
+
+variable "AppCCIDR" {
+
+}
+variable "DbACIDR" {
+  description = "Cidr range for db A"
+}
+variable "DbBCIDR" {
+
+}
+variable "DbCCIDR" {
+
+}

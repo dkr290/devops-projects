@@ -36,7 +36,7 @@ resource "aws_security_group" "AppSG" {
     from_port       = "22"
     to_port         = "22"
     protocol        = "TCP"
-    security_groups = [aws_security_group.BastionSG]
+    security_groups = [aws_security_group.BastionSG.id]
     description     = "allow ssh traffic from bastion sg"
   }
 

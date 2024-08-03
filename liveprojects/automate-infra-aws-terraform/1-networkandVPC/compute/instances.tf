@@ -1,20 +1,27 @@
+# data "aws_ami" "linux2" {
+#   most_recent = true
+#   owners      = ["amazon"]
+#
+#   filter {
+#     name   = "name"
+#     values = ["ami-0e872aee57663ae2d"]
+#   }
+#
+#   filter {
+#     name   = "root-device-type"
+#     values = ["ebs"]
+#   }
+#
+#   filter {
+#     name   = "virtualization-type"
+#     values = ["hvm"]
+#   }
+# }
 data "aws_ami" "linux2" {
-  most_recent = true
-  owners      = ["amazon"]
-
+  owners = ["amazon"]
   filter {
-    name   = "name"
+    name   = "image-id"
     values = ["ami-0e872aee57663ae2d"]
-  }
-
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
   }
 }
 
@@ -27,13 +34,18 @@ resource "aws_key_pair" "myKeyPair" {
   key_name   = var.key_pair_name
   public_key = tls_private_key.tls_connector.public_key_openssh
 }
+resource "local_file" "private_key" {
+  content         = tls_private_key.tls_connector.private_key_pem
+  filename        = "${path.module}/myKeyPair.pem"
+  file_permission = "0400"
+}
 
 resource "aws_instance" "BastionHost" {
   for_each               = local.public_ec2_instaces
   ami                    = data.aws_ami.linux2.id
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.myKeyPair.key_name
-  vpc_security_group_ids = each.value.bastionSG
+  vpc_security_group_ids = [each.value.bastionSG]
   subnet_id              = each.value.subnet_id
 
 
@@ -44,7 +56,7 @@ resource "aws_instance" "AppHost" {
   ami                    = data.aws_ami.linux2.id
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.myKeyPair.key_name
-  vpc_security_group_ids = each.value.AppSG
+  vpc_security_group_ids = [each.value.AppSG]
   subnet_id              = each.value.subnet_id
 
 

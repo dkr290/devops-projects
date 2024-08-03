@@ -33,5 +33,14 @@ output "publicSubnetB" {
 output "publicSubnetC" {
   value = aws_subnet.public["publicC"].id
 }
+output "privateAppSubnetA" {
+  value = aws_subnet.privateApp["appA"].id
+}
+output "privateAppSubnetB" {
+  value = aws_subnet.privateApp["appB"].id
+}
+output "privateAppSubnetC" {
+  value = aws_subnet.privateApp["appC"].id
+}
 
 

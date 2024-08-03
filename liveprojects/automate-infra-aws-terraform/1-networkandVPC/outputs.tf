@@ -33,9 +33,16 @@ output "publicSubnetB" {
 output "publicSubnetC" {
   value = module.network.publicSubnetC
 }
-output "BastionSG" {
+
+output "bastionSG" {
   value       = module.security.BastionSG
   description = "The bastion ID of the security group"
 
 }
+output "AppSG" {
+  value       = module.security.AppSG
+  description = "The bastion ID of the security group"
+
+}
+
 
