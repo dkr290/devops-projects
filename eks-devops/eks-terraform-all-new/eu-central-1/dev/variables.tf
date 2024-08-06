@@ -37,3 +37,14 @@ variable "DbBCIDR" {
 variable "DbCCIDR" {
   description = "Cidr for workers B"
 }
+variable "azA" {
+  description = "az for  A subnet"
+}
+
+variable "azB" {
+  description = "az for  B subnet"
+}
+
+variable "azC" {
+  description = "az for  C subnet"
+}

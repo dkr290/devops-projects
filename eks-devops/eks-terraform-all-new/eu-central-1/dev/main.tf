@@ -3,28 +3,28 @@ module "network" {
   vpc_cidr_block = var.vpc_cidr_block
   publicA = {
     cidr_block = var.PublicA_CIDR
-    az         = "eu-central-1a"
+    az         = var.azA
     tags = {
       "Name" = "publicA"
     }
   }
   publicB = {
     cidr_block = var.PublicB_CIDR
-    az         = "eu-central-1b"
+    az         = var.azB
     tags = {
       "Name" = "publicB"
     }
   }
   publicC = {
     cidr_block = var.PublicC_CIDR
-    az         = "eu-central-1c"
+    az         = var.azC
     tags = {
       "Name" = "publicC"
     }
   }
   WorkersA = {
     cidr_block = var.WorkersA_cidr
-    az         = "eu-central-1a"
+    az         = var.azA
     tags = {
       "Name" = "WorkersA"
     }
@@ -32,7 +32,7 @@ module "network" {
   }
   AppB = {
     cidr_block = var.WorkersB_cidr
-    az         = "eu-central-1b"
+    az         = var.azB
     tags = {
       "Name" = "WorkersB"
     }
@@ -40,7 +40,7 @@ module "network" {
   }
   AppC = {
     cidr_block = var.WorkersC_cidr
-    az         = "eu-central-1c"
+    az         = var.azC
     tags = {
       "Name" = "WorkersC"
     }
@@ -48,7 +48,7 @@ module "network" {
   }
   DbA = {
     cidr_block = var.DbACIDR
-    az         = "eu-central-1a"
+    az         = var.azA
     tags = {
       "Name" = "DbA"
     }
@@ -56,7 +56,7 @@ module "network" {
   }
   DbB = {
     cidr_block = var.DbBCIDR
-    az         = "eu-central-1b"
+    az         = var.azB
     tags = {
       "Name" = "DbB"
     }
@@ -64,7 +64,7 @@ module "network" {
   }
   DbC = {
     cidr_block = var.DbCCIDR
-    az         = "eu-central-1c"
+    az         = var.azC
     tags = {
       "Name" = "DbC"
     }
