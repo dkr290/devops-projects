@@ -16,5 +16,22 @@ module "composition" {
   azA                = var.azA
   azB                = var.azB
   azC                = var.azC
+  #bastion host variables
+  enable_bastion_host    = var.enable_bastion_host
+  vpc_id                 = module.composition.vpc_id
+  ingress_from_port      = var.ingress_from_port
+  ingress_to_port        = var.ingress_to_port
+  bastion_instancew_type = "t2.micro"
+  public_subnets = {
+    subnetA = {
+      subnet_id = module.network.PublicSubnetA,
+      tags = merge(
+        var.common_tags,
+        {
+          "Name" = "BastionHost1"
+        }
+      )
+    }
+  }
 
 }
