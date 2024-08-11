@@ -22,9 +22,10 @@ module "composition" {
   ingress_from_port      = var.ingress_from_port
   ingress_to_port        = var.ingress_to_port
   bastion_instancew_type = "t2.micro"
+  ssh_keypair            = var.ssh_keypair
   public_subnets = {
     subnetA = {
-      subnet_id = module.network.PublicSubnetA,
+      subnet_id = module.composition.publicSubnetA,
       tags = merge(
         var.common_tags,
         {

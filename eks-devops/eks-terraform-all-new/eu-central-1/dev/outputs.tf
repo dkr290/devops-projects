@@ -57,3 +57,17 @@ output "DatabaseSubnetB" {
 output "DatabaseSubnetC" {
   value = module.composition.DatabaseSubnetC
 }
+output "BastionSecurityGroupID" {
+  value = module.composition.BastionSecurityGroupID
+}
+
+
+output "bastion_host_ids" {
+  description = "IDs of the Bastion Hosts"
+  value       = module.composition.bastion_host_ids
+}
+
+output "private_key_path" {
+  description = "Path to the private key file"
+  value       = module.composition.private_key_path
+}

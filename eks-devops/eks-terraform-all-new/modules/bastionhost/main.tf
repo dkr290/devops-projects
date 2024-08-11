@@ -17,7 +17,7 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
   filter {
-    name   = "achitecture"
+    name   = "architecture"
     values = ["x86_64"]
   }
 
@@ -33,7 +33,7 @@ resource "aws_key_pair" "myKeyPair" {
 }
 resource "local_file" "private_key" {
   content         = tls_private_key.tls_connector.private_key_pem
-  filename        = "${path.cwd}/${ssh_keypair}.pem"
+  filename        = "${path.cwd}/${var.ssh_keypair}.pem"
   file_permission = "0400"
 }
 resource "aws_instance" "BastionHost" {
@@ -41,7 +41,7 @@ resource "aws_instance" "BastionHost" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.bastion_instancew_type
   key_name               = aws_key_pair.myKeyPair.key_name
-  vpc_security_group_ids = aws_security_group.BastionHost.id
+  vpc_security_group_ids = [aws_security_group.BastionSG.id]
   subnet_id              = each.value.subnet_id
 
 

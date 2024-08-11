@@ -7,7 +7,7 @@ output "BastionSecurityGroupArn" {
 }
 output "bastion_host_ids" {
   description = "IDs of the Bastion Hosts"
-  value       = aws_instance.BastionHost[*].id
+  value       = [for instance in aws_instance.BastionHost : instance.id]
 }
 
 output "private_key_path" {

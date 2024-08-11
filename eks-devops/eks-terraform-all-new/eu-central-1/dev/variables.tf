@@ -82,18 +82,4 @@ variable "ingress_from_port" {
 variable "ingress_to_port" {
   description = "the ingress to port of bastion host"
 }
-variable "public_subnets" {
-  description = "List of public subnets"
-  type = map(object({
-    subnet_id = string
-    tags      = map(string)
-  }))
-}
-variable "common_tags" {
-  type = map(string)
-  default = {
-    "organization" = "MyOrg"
-    "environment"  = "dev"
-  }
-}
 
