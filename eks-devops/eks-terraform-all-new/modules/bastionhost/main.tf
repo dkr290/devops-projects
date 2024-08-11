@@ -47,3 +47,13 @@ resource "aws_instance" "BastionHost" {
 
   tags = each.value.tags
 }
+resource "aws_eip" "bastion_eips" {
+  for_each = var.public_subnets
+
+
+}
+resource "aws_eip_association" "bastion_eip_association" {
+  for_each      = var.public_subnets
+  instance_id   = aws_instance.BastionHost[each.key].id
+  allocation_id = aws_eip.bastion_eips[each.key].id
+}
