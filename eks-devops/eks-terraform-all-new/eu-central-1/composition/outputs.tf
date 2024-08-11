@@ -44,3 +44,16 @@ output "WorkersSubnetC" {
 }
 
 
+output "DatabaseSubnetsA" {
+  value = module.network[0].DatabaseSubnetsA
+
+}
+
+output "DatabaseSubnetB" {
+  value = module.network[0].DatabaseSubnetB
+
+}
+
+output "DatabaseSubnetC" {
+  value = module.network[0].DatabaseSubnetC
+}

@@ -43,4 +43,16 @@ output "WorkersSubnetC" {
   value = aws_subnet.workers["WorkerC"].id
 }
 
+output "DatabaseSubnetsA" {
+  value = aws_subnet.privateDb["DbA"].id
 
+}
+
+output "DatabaseSubnetB" {
+  value = aws_subnet.privateDb["DbB"].id
+
+}
+output "DatabaseSubnetC" {
+  value = aws_subnet.privateDb["DbC"].id
+
+}

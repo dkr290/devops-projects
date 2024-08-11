@@ -5,65 +5,53 @@ module "network" {
   publicA = {
     cidr_block = var.PublicA_CIDR
     az         = var.azA
-    tags       = local.public_subnets_tags
+    tags       = local.public_subnetA_tags
   }
   publicB = {
     cidr_block = var.PublicB_CIDR
     az         = var.azB
-    tags       = local.public_subnets_tags
+    tags       = local.public_subnetB_tags
   }
   publicC = {
     cidr_block = var.PublicC_CIDR
     az         = var.azC
-    tags       = local.public_subnets_tags
+    tags       = local.public_subnetC_tags
 
   }
   WorkerA = {
     cidr_block = var.WorkersA_cidr
     az         = var.azA
-    tags = {
-      "Name" = "WorkersA"
-    }
+    tags       = local.workers_subnetsA_tags
 
   }
   WorkerB = {
     cidr_block = var.WorkersB_cidr
     az         = var.azB
-    tags = {
-      "Name" = "WorkersB"
-    }
+    tags       = local.workers_subnetsB_tags
 
   }
   WorkerC = {
     cidr_block = var.WorkersC_cidr
     az         = var.azC
-    tags = {
-      "Name" = "WorkersC"
-    }
+    tags       = local.workers_subnetsC_tags
 
   }
   DbA = {
     cidr_block = var.DbACIDR
     az         = var.azA
-    tags = {
-      "Name" = "DbA"
-    }
+    tags       = local.database_subnetsA_tags
 
   }
   DbB = {
     cidr_block = var.DbBCIDR
     az         = var.azB
-    tags = {
-      "Name" = "DbB"
-    }
+    tags       = local.database_subnetsB_tags
 
   }
   DbC = {
     cidr_block = var.DbCCIDR
     az         = var.azC
-    tags = {
-      "Name" = "DbC"
-    }
+    tags       = local.database_subnetsC_tags
 
   }
   natEipA = {

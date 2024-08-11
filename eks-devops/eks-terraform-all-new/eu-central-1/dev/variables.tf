@@ -8,6 +8,10 @@ variable "vpc_cidr_block" {
   description = "the vpc cidr block"
   type        = string
 }
+variable "enable_vpc_network" {
+  description = "Whether to create or not VPC or enable or disable the module"
+
+}
 
 variable "PublicA_CIDR" {
   description = "publicSubnetA CIDR"
@@ -47,4 +51,15 @@ variable "azB" {
 
 variable "azC" {
   description = "az for  C subnet"
+}
+variable "common_tags" {
+  type = map(string)
+  default = {
+    "organization" = "MyOrg"
+    "environment"  = "dev"
+  }
+}
+variable "eks_cluster_name" {
+  description = "The eks cluster name"
+
 }

@@ -56,4 +56,5 @@ variable "common_tags" {
 }
 variable "eks_cluster_name" {
   description = "The eks cluster name"
+
 }
