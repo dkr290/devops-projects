@@ -17,3 +17,26 @@ module "bastionhost" {
   }
   ssh_keypair = var.ssh_keypair
 }
+## using together the two for control plane and nodegroups
+module "eks_control" {
+  source                          = "../modules/eks/"
+  environment                     = var.environment
+  cluster_version                 = var.cluster_version
+  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
+  cluster_endpoint_private_access = var.cluster_endpoint_private_access
+  subnet_ids                      = [module.network[0].publicSubnetA, module.network[0].publicSubnetB, module.network[0].publicSubnetC]
+  cluster_name                    = var.eks_cluster_name
+  cluster_service_ipv4_cidr       = var.cluster_service_ipv4_cidr
+
+}
+module "eks_public_nodes" {
+  source          = "../modules/eks-nodes/"
+  ec2_ssh_key     = var.ssh_keypair
+  environment     = var.environment
+  cluster_name    = var.eks_cluster_name
+  cluster_id      = module.eks_control.cluster_id
+  subnet_ids      = [module.network[0].publicSubnetA, module.network[0].publicSubnetB, module.network[0].publicSubnetC]
+  node_group_name = var.node_group_name
+  tags            = local.public_nodegroup_tags
+
+}

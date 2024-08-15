@@ -87,6 +87,13 @@ locals {
 
     }
   )
+  public_nodegroup_tags = merge(
+    var.common_tags,
+    {
+      "Name"          = "EKS public nodegroup"
+      "NodeGroupType" = "public"
+    }
+  )
 
 
 }

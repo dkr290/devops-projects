@@ -86,6 +86,41 @@ variable "ingress_from_port" {
 variable "ingress_to_port" {
   description = "the ingress to port of bastion host"
 }
+
+## EKS cluster variables 
+variable "cluster_service_ipv4_cidr" {
+  description = "service ipv4 cidr for the kubernetes cluster"
+  type        = string
+}
+
+variable "cluster_version" {
+  description = "Kubernetes minor version to use for the EKS cluster (for example 1.21)"
+  type        = string
+}
+variable "cluster_endpoint_private_access" {
+  description = "Indicates whether or not the Amazon EKS private API server endpoint is enabled."
+  type        = bool
+}
+
+variable "cluster_endpoint_public_access" {
+  description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled. When it's set to `false` ensure to have a proper private access with `cluster_endpoint_private_access = true`."
+  type        = bool
+}
+variable "cluster_endpoint_public_access_cidrs" {
+  description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint."
+  type        = list(string)
+}
+variable "environment" {
+  description = "The environment"
+}
+
+variable "node_group_name" {
+  description = "The node group name"
+  type        = string
+
+}
+
+
 # Example tfvars
 # aws_region         = "eu-central-1"
 # vpc_cidr_block     = "10.0.0.0/16"

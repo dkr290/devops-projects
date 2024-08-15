@@ -30,5 +30,18 @@ variable "cluster_endpoint_public_access_cidrs" {
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
+variable "environment" {
+  description = "The environment"
+}
 
+variable "subnet_ids" {
+  description = "List of subnet IDs for the VPC"
+  type        = list(string)
+}
+variable "enabled_cluster_log_types" {
+  description = "List of enabled cluster log types"
+  type        = list(string)
+  default     = [] # Default to an empty list if not provided
+  # some default will be if enabled  ["api","audit","authenticator","controllerManager","scheduler"]
+}
 
