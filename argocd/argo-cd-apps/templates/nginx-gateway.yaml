@@ -19,6 +19,7 @@ spec:
             path: config/crd/gateway-api/standard  
   template:
     metadata:
+      name: '{{`{{name}}`}}'
       labels:
         app: nginx-gateway   
     spec:
