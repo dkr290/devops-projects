@@ -10,8 +10,9 @@ spec:
           - name: nginx-gateway-fabric-helm
             namespace: nginx-gateway
             chart: nginx-gateway-fabric
-            repoURL: https://your-helm-repo-url  # Replace with your Helm repo URL
+            repoURL: oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric  # Replace with your Helm repo URL
             targetRevision: HEAD
+            releaseName: nginx-gateway-fabric
           - name: nginx-gateway-api-standard
             namespace: nginx-gateway
             repoURL: https://github.com/nginxinc/nginx-gateway-fabric
@@ -31,5 +32,10 @@ spec:
         repoURL: '{{`{{repoURL}}`}}'
         path: '{{`{{path}}`}}'
         targetRevision: '{{`{{targetRevision}}`}}'
+         {{- if .chart }}
         chart: '{{`{{chart}}`}}'  # This will only be used for the Helm application
-     
+        helm:
+          releaseName: '{{`{{releaseName}}`}}'
+        {{- else }}
+        path: '{{`{{path}}`}}'
+        {{- end }}
