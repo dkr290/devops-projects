@@ -37,12 +37,16 @@ spec:
         namespace: '{{`{{namespace}}`}}'
       source:
         repoURL: '{{`{{repoURL}}`}}'
-        path: '{{`{{path}}`}}'
         targetRevision: '{{`{{targetRevision}}`}}'
          {{- if .chart }}
         chart: '{{`{{chart}}`}}'  # This will only be used for the Helm application
         helm:
           releaseName: '{{`{{releaseName}}`}}'
+          parameters:
+            {{- range .parameters }}
+            - name: '{{.name}}'
+              value: '{{.value}}'
+            {{- end }}
         {{- else }}
         path: '{{`{{path}}`}}'
         {{- end }}
