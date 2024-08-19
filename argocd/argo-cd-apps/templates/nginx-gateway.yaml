@@ -1,3 +1,4 @@
+## it does not work well with helm + if etc
 {{- if .Values.ngf }}
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
