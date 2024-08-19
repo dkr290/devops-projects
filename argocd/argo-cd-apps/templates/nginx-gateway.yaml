@@ -1,3 +1,4 @@
+{{- if .Values.ngf }}
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -12,7 +13,12 @@ spec:
             chart: nginx-gateway-fabric
             repoURL: oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric  # Replace with your Helm repo URL
             targetRevision: HEAD
-            releaseName: nginx-gateway-fabric
+            releaseName: ngf
+            # valueFiles:
+            #   - values-dev.yaml
+            parameters:
+              - name: nginxGateway.replicaCount
+                value: "3"  # Set the desired replica count here
           - name: nginx-gateway-api-standard
             namespace: nginx-gateway
             repoURL: https://github.com/nginxinc/nginx-gateway-fabric
@@ -21,6 +27,7 @@ spec:
   template:
     metadata:
       name: '{{`{{name}}`}}'
+      namespace: '{{`{{namespace}}`}}'
       labels:
         app: nginx-gateway   
     spec:
@@ -39,3 +46,12 @@ spec:
         {{- else }}
         path: '{{`{{path}}`}}'
         {{- end }}
+       {{- if not .Values.ngf.syncPolicy.manual }}
+      syncPolicy:
+        automated:
+        {{- with .Values.ngf.syncPolicy.automated }}
+        {{- toYaml . | nindent 10 }}
+        {{- end}}
+    {{- end }}
+{{- end }}
+

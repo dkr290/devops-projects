@@ -18,6 +18,14 @@ myapp:
 appsecrets:
   enabled: false
 
+# nginx gateway
+ngf:
+  syncPolicy:
+    manual: true
+    automated:
+      selfHeal: true
+      prune: true
+
 # api-service
 apiservice:
   enabled: true
