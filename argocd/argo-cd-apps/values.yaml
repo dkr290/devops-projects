@@ -76,29 +76,30 @@ envoygwresource:
 #       prune: true
 
 # api-service
-apiservice:
-  enabled: true
-  syncPolicy:
-    manual: false
-    automated:
-      selfHeal: true
-      prune: true
-  targetRevision: main
-  project: default
-  valueFiles:
-    - values.yaml
+# apiservice:
+#   enabled: true
+#   syncPolicy:
+#     manual: false
+#     automated:
+#       selfHeal: true
+#       prune: true
+#   targetRevision: main
+#   project: default
+#   valueFiles:
+#     - values.yaml
+
 # promgr
-promgr:
-  enabled: true
-  syncPolicy:
-    manual: true
-    automated:
-      selfHeal: true
-      prune: true
-  targetRevision: main
-  project: default
-  valueFiles:
-    - values.yaml
+# promgr:
+#   enabled: true
+#   syncPolicy:
+#     manual: true
+#     automated:
+#       selfHeal: true
+#       prune: true
+#   targetRevision: main
+#   project: default
+#   valueFiles:
+#     - values.yaml
 # envoy:
 #   enabled: true
 #   syncPolicy:
