@@ -1,8 +1,8 @@
-gateway-helm:
-  deployment:
-    replicas: "3"
-  config:
-    envoyGateway:
-      logging:
-        level:
-          default: "info"
+# gateway-helm:
+#   deployment:
+#     replicas: "3"
+#   config:
+#     envoyGateway:
+#       logging:
+#         level:
+#           default: "info"

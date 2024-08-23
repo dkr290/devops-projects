@@ -17,20 +17,55 @@ myapp:
 
 appsecrets:
   enabled: false
-
+## envoy gateway installation
 envoy:
   enabled: true
   name: envoy
   project: default
-  repo: https://github.com/dkr290/devops-projects.git
+  repo: docker.io/envoyproxy
   namespace: envoy-gateway-system
-  path: central-repo/envoy
-  targetRevision: main
+  targetRevision: v1.1.0
   syncPolicy:
     manual: true
     automated:
       selfHeal: true
       prune: true
+  parameters:
+    - name: deployment.replicas
+      value: "3"
+    - name: config.envoyGateway.logging.level.default
+      value: info
+## envoy gateway provisioning of class and resources
+
+envoygwresource:
+  enabled: true
+  name: envoy-gateways-app
+  project: default
+  path: central-repo/envoy
+  repo: https://github.com/dkr290/devops-projects.git
+  namespace: envoy-gateway-system
+  syncPolicy:
+    manual: true
+    automated:
+      selfHeal: true
+      prune: true
+  targetRevision: main
+  valueFiles:
+    - values-dev.yaml
+## this is applicable only with the envoy from backup
+# envoy:
+#   enabled: true
+#   name: envoy
+#   project: default
+#   repo: https://github.com/dkr290/devops-projects.git
+#   namespace: envoy-gateway-system
+#   path: central-repo/envoy
+#   targetRevision: main
+#   syncPolicy:
+#     manual: true
+#     automated:
+#       selfHeal: true
+#       prune: true
 
 # nginx gateway
 # ngf:

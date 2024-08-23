@@ -1,0 +1,33 @@
+{{- if hasKey .Values "envoygwresource" }}
+{{- if .Values.envoygwresource.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.envoygwresource.name }}
+  namespace: argocd
+spec:
+  project: {{ .Values.envoygwresource.project }}
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: {{ .Values.envoygwresource.namespace }}
+  source:
+    path: {{ .Values.envoygwresource.path }}
+    repoURL: {{ .Values.envoygwresource.repo }}
+    targetRevision: {{ .Values.envoygwresource.targetRevision }}
+    helm:
+      releaseName: ep-gw-resource
+      {{- with .Values.envoygwresource.valueFiles }}
+      valueFiles:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  syncPolicy:
+  {{- if not .Values.envoygwresource.syncPolicy.manual }}
+    automated:
+    {{- with .Values.envoygwresource.syncPolicy.automated }}
+    {{- toYaml . | nindent 6 }}
+    {{- end}}
+  {{- end }}
+    syncOptions:
+    - PrunePropagationPolicy=foreground
+{{- end }}
+{{- end }}
