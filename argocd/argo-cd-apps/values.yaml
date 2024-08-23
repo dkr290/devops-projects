@@ -18,6 +18,20 @@ myapp:
 appsecrets:
   enabled: false
 
+envoy:
+  enabled: true
+  name: envoy
+  project: default
+  repo: https://github.com/dkr290/devops-projects.git
+  namespace: envoy-gateway-system
+  path: central-repo/envoy
+  targetRevision: main
+  syncPolicy:
+    manual: true
+    automated:
+      selfHeal: true
+      prune: true
+
 # nginx gateway
 # ngf:
 #   syncPolicy:
