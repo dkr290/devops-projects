@@ -125,6 +125,19 @@ variable "addons" {
     version = string
   }))
 }
+variable "max_size" {
+  description = "The maximum number of instances in the node group"
+  type        = number
+}
+
+variable "min_size" {
+  description = "The minimum number of instances in the node group"
+  type        = number
+}
+variable "desired_size" {
+  description = "The desired number of instances in the node group"
+  type        = number
+}
 
 
 # Example tfvars

@@ -9,7 +9,7 @@ terraform {
   backend "s3" {
     bucket = "terraform-infrastate80" # Replace with your S3 bucket name
     key    = "dev/new-eks.tfstate"    # Path and name of the state file
-    region = "eu-central-1"           # Replace with your AWS region
+    region = "us-east-2"              # Replace with your AWS region
     #dynamodb_table = "my-terraform-locks" # DynamoDB table for locking, replace with your table name
     encrypt = true # Encrypt the state file at rest using AWS-managed keys
   }

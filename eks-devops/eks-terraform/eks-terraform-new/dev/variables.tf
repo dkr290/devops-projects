@@ -80,6 +80,12 @@ variable "ssh_keypair" {
   default     = null #B
   type        = string
 }
+variable "ssh_bastion_keypair" {
+  description = "optional ssh keypair to use for EC2 instance"
+  default     = null #B
+  type        = string
+}
+
 variable "ingress_from_port" {
   description = "The from port for Ingress of bastion host"
 }

@@ -20,7 +20,7 @@ resource "aws_eks_node_group" "eks_ng" {
   }
 
   remote_access {
-    ec2_ssh_key = var.ec2_ssh_key
+    ec2_ssh_key = var.nodepool_keypair
   }
 
   update_config {
@@ -30,4 +30,17 @@ resource "aws_eks_node_group" "eks_ng" {
   tags = var.tags
 }
 
+resource "tls_private_key" "tls_connector" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
 
+resource "aws_key_pair" "nodepool_keypair" {
+  key_name   = var.nodepool_keypair
+  public_key = tls_private_key.tls_connector.public_key_openssh
+}
+resource "local_file" "private_key" {
+  content         = tls_private_key.tls_connector.private_key_pem
+  filename        = "${path.cwd}/${var.nodepool_keypair}.pem"
+  file_permission = "0400"
+}

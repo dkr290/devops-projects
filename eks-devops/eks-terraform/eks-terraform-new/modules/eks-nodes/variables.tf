@@ -65,7 +65,7 @@ variable "disk_size" {
   default     = "20"
 
 }
-variable "ec2_ssh_key" {
+variable "nodepool_keypair" {
   description = "The ssh key for connection to the nodes"
   type        = string
 

@@ -17,7 +17,7 @@ module "bastionhost" {
       )
     }
   }
-  ssh_keypair = var.ssh_keypair
+  ssh_keypair = var.ssh_bastion_keypair
 }
 ## using together the two for control plane and nodegroups
 module "eks_control" {
@@ -34,7 +34,7 @@ module "eks_control" {
 }
 module "eks_public_nodes" {
   source                 = "../modules/eks-nodes/"
-  ec2_ssh_key            = var.ssh_keypair
+  nodepool_keypair       = var.ssh_keypair
   environment            = var.environment
   cluster_name           = var.eks_cluster_name
   cluster_id             = module.eks_control.cluster_id
@@ -46,7 +46,7 @@ module "eks_public_nodes" {
 }
 module "eks_private_nodes" {
   source                 = "../modules/eks-nodes/"
-  ec2_ssh_key            = var.ssh_keypair
+  nodepool_keypair       = var.ssh_keypair
   environment            = var.environment
   cluster_name           = var.eks_cluster_name
   cluster_id             = module.eks_control.cluster_id

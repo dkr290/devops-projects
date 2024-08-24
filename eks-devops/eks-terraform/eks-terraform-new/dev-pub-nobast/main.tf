@@ -14,7 +14,7 @@ module "eks_control" {
 }
 module "eks_public_nodes" {
   source                 = "../modules/eks-nodes/"
-  ec2_ssh_key            = var.ssh_keypair
+  nodepool_keypair       = var.ssh_keypair
   environment            = var.environment
   cluster_name           = var.eks_cluster_name
   cluster_id             = module.eks_control.cluster_id
@@ -23,6 +23,9 @@ module "eks_public_nodes" {
   tags                   = local.public_nodegroup_tags
   eks_nodegroup_role_arn = module.eks_control.eks_nodegroup_role_arn
   depends_on             = [module.eks_control]
+  desired_size           = var.desired_size
+  min_size               = var.min_size
+  max_size               = var.max_size
 }
 module "addons" {
   source     = "../modules/eks_addons/"
