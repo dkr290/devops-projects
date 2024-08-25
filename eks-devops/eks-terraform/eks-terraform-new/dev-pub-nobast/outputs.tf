@@ -102,3 +102,9 @@ output "node_group_version" {
   description = "Node Group Kubernetes Version"
   value       = module.eks_public_nodes.node_group_version
 }
+output "eks_nodegroup_role_name" {
+  value       = module.eks_control.eks_nodegroup_role_name
+  description = "This is important to be used for creation of autoscaler node role"
+
+}
+

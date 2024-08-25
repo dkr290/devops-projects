@@ -90,15 +90,21 @@ locals {
   public_nodegroup_tags = merge(
     var.common_tags,
     {
-      "Name"          = "EKS public nodegroup"
-      "NodeGroupType" = "public"
+      "Name"                                              = "EKS public nodegroup"
+      "NodeGroupType"                                     = "public"
+      "k8s.io/cluster-autoscaler/${var.eks_cluster_name}" = "owned"
+      "k8s.io/cluster-autoscaler/enabled"                 = "True"
+
     }
   )
   private_nodegroup_tags = merge(
     var.common_tags,
     {
-      "Name"          = "EKS private nodegroup"
-      "NodeGroupType" = "private"
+      "Name"                                              = "EKS private nodegroup"
+      "NodeGroupType"                                     = "private"
+      "k8s.io/cluster-autoscaler/${var.eks_cluster_name}" = "owned"
+      "k8s.io/cluster-autoscaler/enabled"                 = "True"
+
     }
   )
 

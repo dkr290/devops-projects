@@ -46,4 +46,11 @@ output "cluster_primary_security_group_id" {
 output "eks_nodegroup_role_arn" {
   value = aws_iam_role.eks_nodegroup_role.arn
 }
+output "eks_nodegroup_role_name" {
+  value = aws_iam_role.eks_nodegroup_role.name
 
+}
+
+output "aws_iam_openid_connect_provider" {
+  value = aws_iam_openid_connect_provider.eks.arn
+}

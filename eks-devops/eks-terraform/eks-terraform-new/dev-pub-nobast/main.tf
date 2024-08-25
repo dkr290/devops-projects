@@ -33,3 +33,14 @@ module "addons" {
   addons     = var.addons
   depends_on = [module.eks_control, module.eks_public_nodes]
 }
+module "cluster_autoscaler" {
+  source                          = "../modules/cluster-autoscaler/"
+  eks_nodegroup_role_name         = module.eks_control.eks_nodegroup_role_name
+  eks_cluster                     = var.eks_cluster_name
+  aws_iam_openid_connect_provider = module.eks_control.aws_iam_openid_connect_provider
+  cluster_oidc_issuer_url         = module.eks_control.cluster_oidc_issuer_url
+  eks_endpoint                    = module.eks_control.cluster_endpoint
+  eks_certificate_authority_data  = module.eks_control.cluster_certificate_authority_data
+  aws_region                      = var.aws_region
+  cluster_id                      = module.eks_control.cluster_id
+}
