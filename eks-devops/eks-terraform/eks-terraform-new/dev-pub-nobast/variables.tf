@@ -141,7 +141,7 @@ variable "desired_size" {
 
 
 # Example tfvars
-# aws_region         = "eu-central-1"
+# aws_region         = "eu-north-1"
 # vpc_cidr_block     = "10.0.0.0/16"
 # PublicA_CIDR       = "10.0.101.0/24"
 # PublicB_CIDR       = "10.0.102.0/24"
@@ -152,9 +152,9 @@ variable "desired_size" {
 # DbACIDR            = "10.0.151.0/24"
 # DbBCIDR            = "10.0.152.0/24"
 # DbCCIDR            = "10.0.153.0/24"
-# azA                = "eu-central-1a"
-# azB                = "eu-central-1b"
-# azC                = "eu-central-1c"
+# azA                = "us-east-2a"
+# azB                = "us-east-2b"
+# azC                = "us-east-2c"
 # enable_vpc_network = true
 # eks_cluster_name   = "dev_eks_cluster"
 # #bastion host related variables
@@ -164,13 +164,16 @@ variable "desired_size" {
 # ingress_from_port     = "22"
 # ingress_to_port       = "22"
 # #Eks variables
-# cluster_version                      = "1.29.0"
+# cluster_version                      = "1.29"
 # cluster_service_ipv4_cidr            = "172.20.0.0/16"
 # cluster_endpoint_private_access      = false
 # cluster_endpoint_public_access       = true
 # cluster_endpoint_public_access_cidrs = ["0.0.0.0/0"]
 # environment                          = "dev"
 # node_group_name                      = "default-ng"
+# desired_size                         = 2
+# min_size                             = 2
+# max_size                             = 6
 # addons = [
 #   {
 #     name    = "kube-proxy"
@@ -178,20 +181,20 @@ variable "desired_size" {
 #   },
 #   {
 #     name    = "vpc-cni"
-#     version = "v1.18.1-eksbuild.1"
+#     version = "v1.18.3-eksbuild.1"
 #   },
 #   {
 #     name    = "coredns"
 #     version = "v1.11.1-eksbuild.9"
-#   },
-#   {
-#     name    = "aws-ebs-csi-driver"
-#     version = "v1.30.0-eksbuild.1"
-#   },
-#   {
-#     name    = "aws-efs-csi-driver"
-#     version = "v2.0.1-eksbuild.1"
 #   }
+#   # {
+#   #   name    = "aws-ebs-csi-driver"
+#   #   version = "v1.33.0-eksbuild.1"
+#   # },
+#   # {
+#   #   name    = "aws-efs-csi-driver"
+#   #   version = "v2.0.6-eksbuild.1"
+#   # }
 #
 # ]
-
+#
