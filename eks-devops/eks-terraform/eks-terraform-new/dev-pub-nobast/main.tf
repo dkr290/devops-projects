@@ -26,6 +26,7 @@ module "eks_public_nodes" {
   desired_size           = var.desired_size
   min_size               = var.min_size
   max_size               = var.max_size
+
 }
 module "addons" {
   source     = "../modules/eks_addons/"
@@ -36,7 +37,7 @@ module "addons" {
 module "cluster_autoscaler" {
   source                          = "../modules/cluster-autoscaler/"
   eks_nodegroup_role_name         = module.eks_control.eks_nodegroup_role_name
-  eks_cluster                     = var.eks_cluster_name
+  eks_cluster                     = module.eks_public_nodes.eks_cluster_name #this creates dependency
   aws_iam_openid_connect_provider = module.eks_control.aws_iam_openid_connect_provider
   cluster_oidc_issuer_url         = module.eks_control.cluster_oidc_issuer_url
   eks_endpoint                    = module.eks_control.cluster_endpoint

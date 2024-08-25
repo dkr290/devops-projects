@@ -55,7 +55,7 @@ variable "capacity_type" {
 variable "instance_types" {
   description = "Instance types list"
   type        = list(string)
-  default     = ["t2.small"]
+  default     = ["t3.small"]
 
 
 }

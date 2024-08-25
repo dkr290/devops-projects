@@ -17,3 +17,7 @@ output "node_group_version" {
   description = "Node Group Kubernetes Version"
   value       = aws_eks_node_group.eks_ng.version
 }
+output "eks_cluster_name" {
+
+  value = aws_eks_node_group.eks_ng.cluster_name
+}
