@@ -44,4 +44,7 @@ variable "enabled_cluster_log_types" {
   default     = [] # Default to an empty list if not provided
   # some default will be if enabled  ["api","audit","authenticator","controllerManager","scheduler"]
 }
+variable "common_tags" {
+  type = map(string)
+}
 

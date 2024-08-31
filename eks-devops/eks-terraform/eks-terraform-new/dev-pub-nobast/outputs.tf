@@ -107,4 +107,10 @@ output "eks_nodegroup_role_name" {
   description = "This is important to be used for creation of autoscaler node role"
 
 }
-
+output "aws_iam_openid_connect_provider" {
+  description = "AWS IAM Open ID Connect Provider ARN"
+  value       = module.eks_control.aws_iam_openid_connect_provider
+}
+output "aws_iam_oidc_connect_provider_exctract_from_arn" {
+  value = module.eks_control.aws_iam_oidc_connect_provider_exctract_from_arn
+}

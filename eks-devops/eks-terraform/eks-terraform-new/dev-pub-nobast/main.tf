@@ -10,6 +10,7 @@ module "eks_control" {
   cluster_name                    = var.eks_cluster_name
   cluster_service_ipv4_cidr       = var.cluster_service_ipv4_cidr
   depends_on                      = [module.network]
+  common_tags                     = var.common_tags
 
 }
 module "eks_public_nodes" {

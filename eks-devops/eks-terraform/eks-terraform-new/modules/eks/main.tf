@@ -26,16 +26,27 @@ resource "aws_eks_cluster" "eks_cluster" {
     aws_iam_role_policy_attachment.eks-AmazonEKSWorkerNodePolicy
 
   ]
+  tags = var.common_tags
 }
 
 # Configure OIDC provider
 data "tls_certificate" "eks" {
   url = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }
+data "aws_partition" "current" {}
 
 resource "aws_iam_openid_connect_provider" "eks" {
-  client_id_list  = ["sts.amazonaws.com"]
+  client_id_list  = ["sts.${data.aws_partition.current.dns_suffix}"]
   thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
   url             = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+
+  tags = merge(
+    {
+      Name = "${var.cluster_name}-eks-irsa"
+    },
+    var.common_tags
+  )
+
+
 }
 

@@ -52,5 +52,9 @@ output "eks_nodegroup_role_name" {
 }
 
 output "aws_iam_openid_connect_provider" {
-  value = aws_iam_openid_connect_provider.eks.arn
+  description = "AWS IAM Open ID Connect Provider ARN"
+  value       = aws_iam_openid_connect_provider.eks.arn
+}
+output "aws_iam_oidc_connect_provider_exctract_from_arn" {
+  value = local.aws_iam_oidc_connect_provider_exctract_from_arn
 }

@@ -26,8 +26,8 @@ resource "aws_eks_node_group" "eks_ng" {
   update_config {
     max_unavailable = var.update_max_unavailable
   }
-
-  tags = var.tags
+  depends_on = [aws_key_pair.nodepool_keypair]
+  tags       = var.tags
 }
 
 resource "tls_private_key" "tls_connector" {
