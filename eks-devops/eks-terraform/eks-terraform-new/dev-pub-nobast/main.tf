@@ -39,10 +39,27 @@ module "cluster_autoscaler" {
   source                          = "../modules/cluster-autoscaler/"
   eks_nodegroup_role_name         = module.eks_control.eks_nodegroup_role_name
   eks_cluster                     = module.eks_public_nodes.eks_cluster_name #this creates dependency
-  aws_iam_openid_connect_provider = module.eks_control.aws_iam_openid_connect_provider
+  aws_iam_openid_connect_provider = module.eks_control.aws_iam_openid_connect_provider_arn
   cluster_oidc_issuer_url         = module.eks_control.cluster_oidc_issuer_url
   eks_endpoint                    = module.eks_control.cluster_endpoint
   eks_certificate_authority_data  = module.eks_control.cluster_certificate_authority_data
   aws_region                      = var.aws_region
   cluster_id                      = module.eks_control.cluster_id
 }
+
+## modules that can be switched on or off depenig on the need
+## If installed through addon disable this module
+module "ebs_helm_csi_self_managed_install" {
+  source                                           = "../modules/ebs-helm-self-managed/"
+  eks_certificate_authority_data                   = module.eks_control.cluster_certificate_authority_data
+  aws_iam_openid_connect_provider_arn              = module.eks_control.aws_iam_openid_connect_provider_arn
+  eks_cluster                                      = var.eks_cluster_name
+  business_divsion                                 = "IT"
+  environment                                      = var.environment
+  eks_endpoint                                     = module.eks_control.cluster_endpoint
+  aws_region                                       = var.aws_region
+  aws_iam_openid_connect_provider_extract_from_arn = module.eks_control.aws_iam_oidc_connect_provider_exctract_from_arn
+  image_repo                                       = "602401143452.dkr.ecr.eu-north-1.amazonaws.com/eks/aws-ebs-csi-driver"
+
+}
+

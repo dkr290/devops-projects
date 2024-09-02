@@ -11,7 +11,7 @@ provider "helm" {
 }
 #EBS csi helm install 
 resource "helm_release" "ebs_csi_driver" {
-  name       = "${var.eks_cluster}-aws-ebs-csi-driver"
+  name       = "eks-aws-ebs-csi-driver"
   repository = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
   chart      = "aws-ebs-csi-driver"
   namespace  = "kube-system"
