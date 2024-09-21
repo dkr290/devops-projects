@@ -16,19 +16,8 @@ spec:
       filters:
       - type: URLRewrite
         urlRewrite: 
-          path:
-            type: ReplacePrefixMatch
-            replacePrefixMatch: / 
-    - matches:
-        - path:
-            type: Exact
-            value: /pypi/about
-      filters:
-        - type: URLRewrite
-          urlRewrite:
-            path:
-              type: ReplaceFullPath
-              replaceFullPath: /about
+          pathPrefix: /
+             
       backendRefs:
         - group: ""
           kind: Service
