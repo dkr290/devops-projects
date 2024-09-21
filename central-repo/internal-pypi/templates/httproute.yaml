@@ -11,13 +11,24 @@ spec:
   rules:
     - matches:
         - path:
+            type: PathPrefix
             value: /pypi
       filters:
       - type: URLRewrite
         urlRewrite: 
           path:
-            type: ReplaceFullPath
-            replaceFullPath: /pypi 
+            type: ReplacePrefixMatch
+            replacePrefixMatch: / 
+    - matches:
+        - path:
+            type: Exact
+            value: /pypi/about
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplaceFullPath
+              replaceFullPath: /about
       backendRefs:
         - group: ""
           kind: Service
