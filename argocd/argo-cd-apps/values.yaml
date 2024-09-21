@@ -61,7 +61,7 @@ internalpypi:
   repo: https://github.com/dkr290/devops-projects.git
   namespace: default
   syncPolicy:
-    manual: true
+    manual: false
     automated:
       selfHeal: true
       prune: true
