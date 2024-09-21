@@ -12,3 +12,7 @@
 kubectl create namespace argo-rollouts
 helm repo add argo https://argoproj.github.io/argo-helm
 helm install argo-rollouts  argo/argo-rollouts -n argo-rollouts  -f helm-argo-lollouts.yaml 
+
+kubectl config set-context --current --namespace=argocd
+argocd app list
+argocd app sync my-app --dry-run --core
