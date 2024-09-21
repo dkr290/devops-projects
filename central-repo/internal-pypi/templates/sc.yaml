@@ -2,9 +2,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: {{ .Values.pvc.storageClassName }}
-  provisioner: ebs.csi.aws.com
-parameters:
-  type: gp2
+provisioner: ebs.csi.aws.com
 reclaimPolicy: Delete
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: true
