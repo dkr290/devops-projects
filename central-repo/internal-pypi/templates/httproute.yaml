@@ -6,7 +6,7 @@ spec:
   parentRefs:
     - kind: Gateway
       group: gateway.networking.k8s.io
-      name: eg
+      name: default-gateway
       namespace: envoy-gateway-system
   rules:
     - matches:
