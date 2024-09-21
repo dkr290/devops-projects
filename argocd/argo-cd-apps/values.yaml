@@ -52,6 +52,23 @@ envoygwresource:
   targetRevision: main
   valueFiles:
     - values-dev.yaml
+
+internalpypi:
+  enabled: true
+  name: internalpypi-app
+  project: default
+  path: central-repo/internal-pypi
+  repo: https://github.com/dkr290/devops-projects.git
+  namespace: default
+  syncPolicy:
+    manual: true
+    automated:
+      selfHeal: true
+      prune: true
+  targetRevision: main
+  valueFiles:
+    - values-dev.yaml
+
 ## this is applicable only with the envoy from backup
 # envoy:
 #   enabled: true

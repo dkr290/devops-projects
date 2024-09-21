@@ -1,0 +1,33 @@
+{{- if hasKey .Values "internalpypi" }}
+{{- if .Values.internalpypi.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.internalpypi.name }}
+  namespace: argocd
+spec:
+  project: {{ .Values.internalpypi.project }}
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: {{ .Values.internalpypi.namespace }}
+  source:
+    path: {{ .Values.internalpypi.path }}
+    repoURL: {{ .Values.internalpypi.repo }}
+    targetRevision: {{ .Values.internalpypi.targetRevision }}
+    helm:
+      releaseName: pypi
+      {{- with .Values.internalpypi.valueFiles }}
+      valueFiles:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  syncPolicy:
+  {{- if not .Values.internalpypi.syncPolicy.manual }}
+    automated:
+    {{- with .Values.internalpypi.syncPolicy.automated }}
+    {{- toYaml . | nindent 6 }}
+    {{- end}}
+  {{- end }}
+    syncOptions:
+    - PrunePropagationPolicy=foreground
+{{- end }}
+{{- end }}
