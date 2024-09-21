@@ -1,0 +1,26 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: internal-pypi-httproute
+spec:
+  parentRefs:
+    - kind: Gateway
+      group: gateway.networking.k8s.io
+      name: eg
+      namespace: envoy-gateway-system
+  rules:
+    - matches:
+        - path:
+            value: /pypi
+      filters:
+      - type: URLRewrite
+        urlRewrite: 
+          path: 
+            type: ReplacePrefixMatch
+            replacePrefixMatch: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: {{ .Values.service.name }}
+          port: {{ .Values.service.port }}
+          weight: 1

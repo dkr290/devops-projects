@@ -5,10 +5,10 @@
 replicaCount: 3
 
 image:
-  repository: <repo>
+  repository: ghcr.io/dkr290/go-advanced-projects/internal-pypi
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: 1.0.0
+  tag: 0.0.1
 
 imagePullSecrets: []
 nameOverride: ""
@@ -80,7 +80,7 @@ enviroment_vars:
 
 pvc:
   name: pypi-pvc
-  storageClassName: azurefile-csi-premium # depends what
+  storageClassName: ebs-gp3 # depends what
   storageSize: 300Gi
 # Additional volumes on the output Deployment definition.
 volumes:
