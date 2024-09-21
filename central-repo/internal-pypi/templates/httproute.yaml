@@ -17,7 +17,7 @@ spec:
         urlRewrite: 
           path:
             type: ReplaceFullPath
-            replaceFullPath: / 
+            replaceFullPath: /pypi 
       backendRefs:
         - group: ""
           kind: Service
