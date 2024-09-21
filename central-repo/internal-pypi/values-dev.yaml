@@ -73,11 +73,7 @@ enviroment_vars:
   - name: USERNAME
     value: admin
   - name: PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: creds
-        key: password
-
+    value: password123
 pvc:
   name: pypi-pvc
   storageClassName: ebs-sc # depends what
