@@ -77,7 +77,7 @@ enviroment_vars:
 pvc:
   name: pypi-pvc
   storageClassName: ebs-sc # depends what
-  storageSize: 300Gi
+  storageSize: 30Gi
 # Additional volumes on the output Deployment definition.
 volumes:
   - name: packages
