@@ -6,7 +6,7 @@ metadata:
     {{- include "gopypi.labels" . | nindent 4 }}
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   storageClassName: {{ .Values.pvc.storageClassName }}
   resources:
     requests:
