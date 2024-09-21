@@ -15,9 +15,9 @@ spec:
       filters:
       - type: URLRewrite
         urlRewrite: 
-          path: 
-            type: ReplacePrefixMatch
-            replacePrefixMatch: /
+          path:
+            type: ReplaceFullPath
+            replaceFullPath: / 
       backendRefs:
         - group: ""
           kind: Service
