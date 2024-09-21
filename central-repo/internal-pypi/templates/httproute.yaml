@@ -12,12 +12,13 @@ spec:
     - matches:
         - path:
             type: PathPrefix
-            value: /pypi
-      filters:
-      - type: URLRewrite
-        urlRewrite: 
-          pathPrefix: /
-             
+            value: /
+      # filters:
+      # - type: URLRewrite
+      #   urlRewrite: 
+      #     path:
+      #       type: ReplacePrefixMatch
+      #       replacePrefixMatch: / 
       backendRefs:
         - group: ""
           kind: Service
