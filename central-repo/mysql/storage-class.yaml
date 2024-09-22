@@ -4,6 +4,8 @@ metadata:
   name: ebs-sc
 provisioner: ebs.csi.aws.com
 volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+reclaimPolicy: Retain
 # STORAGE CLASS
 # 1. A StorageClass provides a way for administrators
 # to describe the "classes" of storage they offer.
