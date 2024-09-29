@@ -139,6 +139,15 @@ variable "desired_size" {
   type        = number
 }
 
+variable "ebs_csi_addon_name" {
+  description = "The name of ebc_csi addon if the module is enabled needs to change deafault null"
+  default     = null
+}
+variable "ebs_csi_addon_version" {
+  description = "The fulle string of the version if the module is enabled needs to change the default"
+  default     = null
+}
+
 
 # Example tfvars
 # aws_region         = "eu-north-1"
@@ -152,9 +161,9 @@ variable "desired_size" {
 # DbACIDR            = "10.0.151.0/24"
 # DbBCIDR            = "10.0.152.0/24"
 # DbCCIDR            = "10.0.153.0/24"
-# azA                = "us-east-2a"
-# azB                = "us-east-2b"
-# azC                = "us-east-2c"
+# azA                = "eu-north-1a"
+# azB                = "eu-north-1b"
+# azC                = "eu-north-1c"
 # enable_vpc_network = true
 # eks_cluster_name   = "dev_eks_cluster"
 # #bastion host related variables
@@ -188,13 +197,11 @@ variable "desired_size" {
 #     version = "v1.11.1-eksbuild.9"
 #   }
 #   # {
-#   #   name    = "aws-ebs-csi-driver"
-#   #   version = "v1.33.0-eksbuild.1"
-#   # },
-#   # {
 #   #   name    = "aws-efs-csi-driver"
 #   #   version = "v2.0.6-eksbuild.1"
 #   # }
 #
 # ]
+# ebs_csi_addon_name    = "aws-ebs-csi-driver"
+# ebs_csi_addon_version = "v1.35.0-eksbuild.1"
 #

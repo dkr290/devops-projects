@@ -29,11 +29,14 @@ module "eks_public_nodes" {
   max_size               = var.max_size
 
 }
-module "addons" {
+module "basic_addons" {
   source     = "../modules/eks_addons/"
   cluster_id = module.eks_control.cluster_id
   addons     = var.addons
   depends_on = [module.eks_control, module.eks_public_nodes]
+
+
+
 }
 module "cluster_autoscaler" {
   source                          = "../modules/cluster-autoscaler/"
@@ -49,17 +52,26 @@ module "cluster_autoscaler" {
 
 ## modules that can be switched on or off depenig on the need
 ## If installed through addon disable this module
-module "ebs_helm_csi_self_managed_install" {
-  source                                           = "../modules/ebs-helm-self-managed/"
-  eks_certificate_authority_data                   = module.eks_control.cluster_certificate_authority_data
+##This is installation with self managed helm install of CSI controller
+# module "ebs_helm_csi_self_managed_install" {
+#   source                                           = "../modules/ebs-helm-self-managed/"
+#   eks_certificate_authority_data                   = module.eks_control.cluster_certificate_authority_data
+#   aws_iam_openid_connect_provider_arn              = module.eks_control.aws_iam_openid_connect_provider_arn
+#   eks_cluster                                      = var.eks_cluster_name
+#   business_divsion                                 = "IT"
+#   environment                                      = var.environment
+#   eks_endpoint                                     = module.eks_control.cluster_endpoint
+#   aws_region                                       = var.aws_region
+#   aws_iam_openid_connect_provider_extract_from_arn = module.eks_control.aws_iam_oidc_connect_provider_exctract_from_arn
+#   image_repo                                       = "602401143452.dkr.ecr.eu-north-1.amazonaws.com/eks/aws-ebs-csi-driver"
+#
+# }
+module "ebs_csi_addon" {
+  source                                           = "../modules/ebs-csi-addon/"
   aws_iam_openid_connect_provider_arn              = module.eks_control.aws_iam_openid_connect_provider_arn
   eks_cluster                                      = var.eks_cluster_name
-  business_divsion                                 = "IT"
-  environment                                      = var.environment
-  eks_endpoint                                     = module.eks_control.cluster_endpoint
-  aws_region                                       = var.aws_region
   aws_iam_openid_connect_provider_extract_from_arn = module.eks_control.aws_iam_oidc_connect_provider_exctract_from_arn
-  image_repo                                       = "602401143452.dkr.ecr.eu-north-1.amazonaws.com/eks/aws-ebs-csi-driver"
-
+  cluster_id                                       = module.eks_control.cluster_id
+  addon_name                                       = var.ebs_csi_addon_name
+  addon_version                                    = var.ebs_csi_addon_version
 }
-

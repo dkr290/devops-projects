@@ -32,6 +32,9 @@ resource "aws_route_table" "MyPublicRoute" {
   tags = {
     Name = "MyPublicRoute"
   }
+  lifecycle {
+    ignore_changes = [route]
+  }
 }
 resource "aws_route_table_association" "publicSubnet" {
   for_each       = local.publicRouteAssociation
@@ -50,6 +53,10 @@ resource "aws_route_table" "PrivateRoutes" {
     }
   }
   tags = each.value.tags
+
+  lifecycle {
+    ignore_changes = [route]
+  }
 
 }
 resource "aws_route_table_association" "privateSubnetWorkers" {

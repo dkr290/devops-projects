@@ -11,3 +11,4 @@ variable "cluster_id" {
   description = "The EKS cluster id"
 
 }
+

@@ -7,3 +7,5 @@ resource "aws_eks_addon" "addons" {
   resolve_conflicts_on_update = "OVERWRITE"
 }
 
+
+

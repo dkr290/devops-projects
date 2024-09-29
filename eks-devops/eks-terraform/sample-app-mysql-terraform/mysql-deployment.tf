@@ -28,7 +28,7 @@ resource "kubernetes_deployment_v1" "mysq_deployemnt" {
         volume {
           name = "mysql-persistent-storage"
           persistent_volume_claim {
-            claim_name = "ebs-mysql-pv-claim"
+            claim_name = "ebs-mysql-pvc-claim"
           }
 
         }
