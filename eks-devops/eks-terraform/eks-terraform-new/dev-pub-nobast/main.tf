@@ -27,6 +27,7 @@ module "eks_public_nodes" {
   desired_size           = var.desired_size
   min_size               = var.min_size
   max_size               = var.max_size
+  cluster_version        = var.cluster_version //eks version for control plane 
 
 }
 module "basic_addons" {
