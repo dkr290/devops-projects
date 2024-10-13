@@ -102,9 +102,21 @@ output "node_group_version" {
   description = "Node Group Kubernetes Version"
   value       = module.eks_public_nodes.node_group_version
 }
+
+output "node_group_arn" {
+  description = "The node group arn"
+  value       = module.eks_public_nodes.node_group_arn
+
+}
 output "eks_nodegroup_role_name" {
   value       = module.eks_control.eks_nodegroup_role_name
   description = "This is important to be used for creation of autoscaler node role"
+
+}
+
+output "eks_nodegroup_role_arn" {
+  value       = module.eks_control.eks_nodegroup_role_arn
+  description = "Eks nodegroup role arn for node group"
 
 }
 output "aws_iam_openid_connect_provider_arn" {

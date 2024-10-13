@@ -58,3 +58,5 @@ output "aws_iam_openid_connect_provider_arn" {
 output "aws_iam_oidc_connect_provider_exctract_from_arn" {
   value = local.aws_iam_oidc_connect_provider_exctract_from_arn
 }
+
+

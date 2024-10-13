@@ -21,3 +21,6 @@ output "eks_cluster_name" {
 
   value = aws_eks_node_group.eks_ng.cluster_name
 }
+output "node_group_role_arn" {
+  value = aws_eks_node_group.eks_ng.node_role_arn
+}
