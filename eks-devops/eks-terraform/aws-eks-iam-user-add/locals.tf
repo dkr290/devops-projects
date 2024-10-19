@@ -17,8 +17,8 @@ locals {
 
   configmap_users = [
     {
-      userarn  = "${aws_iam_user.admin_user.arn}"
-      username = "${aws_iam_user.admin_user.name}"
+      userarn  = "${aws_iam_user.admin-user.arn}"
+      username = "${aws_iam_user.admin-user.name}"
       groups   = ["system:masters"]
     },
 

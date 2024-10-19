@@ -23,9 +23,9 @@ resource "aws_iam_user" "basic-user" {
 
 }
 resource "aws_iam_user_policy" "basic-user-policy" {
-  name = "${data.aws_eks_cluster.cluster}-eks-full-access-policy"
+  name = "${data.aws_eks_cluster.cluster.name}-eks-full-access-policy"
   user = aws_iam_user.basic-user.name
-  policy = jsondecode({
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -41,11 +41,6 @@ resource "aws_iam_user_policy" "basic-user-policy" {
   })
 }
 
-resource "aws_iam_user_policy_attachment" "basic-user-attchment" {
-  user       = aws_iam_user.basic-user.name
-  policy_arn = aws_iam_user_policy.basic-user-policy.arn
-
-}
 
 
 

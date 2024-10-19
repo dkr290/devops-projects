@@ -9,7 +9,7 @@ terraform {
   backend "s3" {
     bucket = "terraform-infrastate80" # Replace with your S3 bucket name
     key    = "dev/eks-users.tfstate"  # Path and name of the state file
-    region = "eu-north-1"             # Replace with your AWS region
+    region = "eu-central-1"           # Replace with your AWS region
     #dynamodb_table = "my-terraform-locks" # DynamoDB table for locking, replace with your table name
     encrypt = true # Encrypt the state file at rest using AWS-managed keys
   }
@@ -33,6 +33,11 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(data.terraform_remote_state.eks.outputs.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.cluster.token
 
+
+}
+provider "aws" {
+  # Configuration options
+  region = var.region
 
 }
 
