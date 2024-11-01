@@ -2,6 +2,21 @@ k3d cluster create envoy-cluster --api-port 6550 --servers 1 --agents 3 \
 --k3s-arg "--disable=traefik@server:0" \
 --k3s-arg "--disable=servicelb@server:0" --no-lb --wait
 
+# install kind cluster
+
+## kind-clu.yaml
+
+```yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+  - role: worker
+  - role: worker
+```
+
+kind create cluster --name envoy-cluster --config kind-cl.yaml
+
 - install mettallb
   kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.5/config/manifests/metallb-native.yaml
 
