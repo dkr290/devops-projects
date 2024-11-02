@@ -1,8 +1,24 @@
+# install k3d
+
+```
 k3d cluster create envoy-cluster --api-port 6550 --servers 1 --agents 3 \
 --k3s-arg "--disable=traefik@server:0" \
 --k3s-arg "--disable=servicelb@server:0" --no-lb --wait
+```
 
-# install kind cluster
+## install calico from documentation
+
+```
+k apply -f https://k3d.io/v5.0.0/usage/advanced/calico.yaml
+```
+
+## install metallb
+
+```
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.8/config/manifests/metallb-native.yaml
+```
+
+# or install kind cluster
 
 ## kind-clu.yaml
 
@@ -16,6 +32,8 @@ nodes:
 ```
 
 kind create cluster --name envoy-cluster --config kind-cl.yaml
+
+## for metallb after installation configure the pool
 
 - install mettallb
   kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.5/config/manifests/metallb-native.yaml
