@@ -15,7 +15,7 @@ spec:
     repoURL: {{ .Values.redisscaled.repo }}
     targetRevision: {{ .Values.redisscaled.targetRevision }}
     helm:
-      releaseName: pypi
+      releaseName: db
       {{- with .Values.redisscaled.valueFiles }}
       valueFiles:
       {{- toYaml . | nindent 6 }}
