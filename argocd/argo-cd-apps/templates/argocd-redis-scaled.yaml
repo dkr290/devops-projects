@@ -1,0 +1,33 @@
+{{- if hasKey .Values "redis-scaled" }}
+{{- if .Values.redis-scaled.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.redis-scaled.name }}
+  namespace: argocd
+spec:
+  project: {{ .Values.redis-scaled.project }}
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: {{ .Values.redis-scaled.namespace }}
+  source:
+    path: {{ .Values.redis-scaled.path }}
+    repoURL: {{ .Values.redis-scaled.repo }}
+    targetRevision: {{ .Values.redis-scaled.targetRevision }}
+    helm:
+      releaseName: pypi
+      {{- with .Values.redis-scaled.valueFiles }}
+      valueFiles:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  syncPolicy:
+  {{- if not .Values.redis-scaled.syncPolicy.manual }}
+    automated:
+    {{- with .Values.redis-scaled.syncPolicy.automated }}
+    {{- toYaml . | nindent 6 }}
+    {{- end}}
+  {{- end }}
+    syncOptions:
+    - PrunePropagationPolicy=foreground
+{{- end }}
+{{- end }}

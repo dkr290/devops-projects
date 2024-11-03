@@ -1,0 +1,21 @@
+redis-scaled:
+  global:
+    redis:
+      password: password
+  replica:
+    replicaCount: 2
+    persistence:
+      enabled: true
+      size: 10Gi
+  sentinel:
+    enabled: true
+  nameOverride: "test-redis"
+  defaultStorageClass: "local-path"
+  master:
+    persistence:
+      ## @param master.persistence.enabled Enable persistence on Redis&reg; master nodes using Persistent Volume Claims
+      ##
+      enabled: true
+      ## @param master.persistence.medium Provide a medium for `emptyDir` volumes.
+      ##
+      size: 10Gi
