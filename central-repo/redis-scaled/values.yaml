@@ -19,3 +19,8 @@ redis-scaled:
       ## @param master.persistence.medium Provide a medium for `emptyDir` volumes.
       ##
       size: 10Gi
+
+    service:
+    ## @param master.service.type Redis&reg; master service type
+    ##
+    type: LoadBalancer
