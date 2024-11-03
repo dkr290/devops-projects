@@ -1,9 +1,9 @@
 # New installation instructions without metallb
 ## install k3d cluster withot the ingress
 ```
-k3d cluster create my-cluster --k3s-arg "--disable=traefik@server:*" -p "8080:80@loadbalancer"
+k3d cluster create my-cluster --k3s-arg "--disable=traefik@server:*" -p "8080:80@loadbalancer" --servers 1 --agents 3 
 or
-k3d cluster create my-cluster --k3s-arg "--disable=traefik@server:*" 
+k3d cluster create my-cluster --k3s-arg "--disable=traefik@server:*" --servers 1 --agents 3 
 ```
 ## Then install the envoy gateway
 ```
