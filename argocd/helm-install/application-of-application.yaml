@@ -6,13 +6,17 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/dkr290/devops-projects.git'
+    repoURL: "https://github.com/dkr290/devops-projects.git"
     path: argocd/argo-cd-apps
     targetRevision: main
+    helm:
+      valueFiles:
+        - values-k3d.yaml
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: "https://kubernetes.default.svc"
     namespace: argocd
   syncPolicy:
     automated:
       selfHeal: true
       prune: true
+
