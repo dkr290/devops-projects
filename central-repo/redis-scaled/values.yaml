@@ -21,6 +21,6 @@ redis-scaled:
       size: 10Gi
 
     service:
-    ## @param master.service.type Redis&reg; master service type
-    ##
-    type: LoadBalancer
+      ## @param master.service.type Redis&reg; master service type
+      ##
+      type: LoadBalancer
