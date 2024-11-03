@@ -1,3 +1,4 @@
+{{- if hasKey .Values "istioingressgateway" }}
 {{- if .Values.istioingressgateway}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -22,4 +23,5 @@ spec:
     {{- toYaml . | nindent 6 }}
     {{- end}}
   {{- end }}
+{{- end }}
 {{- end }}

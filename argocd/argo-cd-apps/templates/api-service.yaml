@@ -1,3 +1,4 @@
+{{- if hasKey .Values "apiservice" }}
 {{- if .Values.apiservice }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -26,4 +27,5 @@ spec:
     {{- toYaml . | nindent 6 }}
     {{- end}}
   {{- end }}
+{{- end }}
 {{- end }}

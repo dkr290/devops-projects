@@ -1,4 +1,5 @@
 ## it does not work well with helm + if etc
+{{- if hasKey .Values "ngf" }}
 {{- if .Values.ngf }}
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -59,4 +60,4 @@ spec:
         {{- end}}
     {{- end }}
 {{- end }}
-
+{{- end }}

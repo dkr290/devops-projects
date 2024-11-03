@@ -1,3 +1,4 @@
+{{- if hasKey .Values "istiobase" }}
 {{- if .Values.istiobase }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -25,4 +26,5 @@ spec:
     {{- toYaml . | nindent 6 }}
     {{- end}}
   {{- end }}
+{{- end }}
 {{- end }}
