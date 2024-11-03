@@ -1,3 +1,4 @@
+{{- if hasKey .Values "guestbook" }}
 {{- if .Values.guestbook.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -15,4 +16,5 @@ spec:
     path: guestbook
     repoURL: https://github.com/argoproj/argocd-example-apps
     targetRevision: HEAD
+{{- end }}
 {{- end }}
