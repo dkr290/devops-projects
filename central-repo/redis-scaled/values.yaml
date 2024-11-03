@@ -3,7 +3,7 @@ redis-scaled:
     redis:
       password: password
   replica:
-    replicaCount: 2
+    replicaCount: 3
     persistence:
       enabled: true
       size: 10Gi
