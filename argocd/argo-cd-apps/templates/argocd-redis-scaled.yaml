@@ -1,29 +1,29 @@
-{{- if hasKey .Values "redis-scaled" }}
-{{- if .Values.redis-scaled.enabled }}
+{{- if hasKey .Values "redisscaled" }}
+{{- if .Values.redisscaled.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ .Values.redis-scaled.name }}
+  name: {{ .Values.redisscaled.name }}
   namespace: argocd
 spec:
-  project: {{ .Values.redis-scaled.project }}
+  project: {{ .Values.redisscaled.project }}
   destination:
     server: {{ .Values.spec.destination.server }}
-    namespace: {{ .Values.redis-scaled.namespace }}
+    namespace: {{ .Values.redisscaled.namespace }}
   source:
-    path: {{ .Values.redis-scaled.path }}
-    repoURL: {{ .Values.redis-scaled.repo }}
-    targetRevision: {{ .Values.redis-scaled.targetRevision }}
+    path: {{ .Values.redisscaled.path }}
+    repoURL: {{ .Values.redisscaled.repo }}
+    targetRevision: {{ .Values.redisscaled.targetRevision }}
     helm:
       releaseName: pypi
-      {{- with .Values.redis-scaled.valueFiles }}
+      {{- with .Values.redisscaled.valueFiles }}
       valueFiles:
       {{- toYaml . | nindent 6 }}
       {{- end }}
   syncPolicy:
-  {{- if not .Values.redis-scaled.syncPolicy.manual }}
+  {{- if not .Values.redisscaled.syncPolicy.manual }}
     automated:
-    {{- with .Values.redis-scaled.syncPolicy.automated }}
+    {{- with .Values.redisscaled.syncPolicy.automated }}
     {{- toYaml . | nindent 6 }}
     {{- end}}
   {{- end }}

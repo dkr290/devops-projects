@@ -5,7 +5,7 @@ spec:
 appsecrets:
   enabled: false
 
-redis-scaled:
+redisscaled:
   enabled: true
   name: redis-scaled-app
   project: default
