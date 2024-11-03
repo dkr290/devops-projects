@@ -1,0 +1,12 @@
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: redis-route
+  namespace: default
+spec:
+  parentRefs:
+  - name: redis-gateway
+  rules:
+  - backendRefs:
+    - name: {{ include "redis.serviceName" . }}
+      port: 6379

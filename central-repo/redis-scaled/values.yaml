@@ -1,4 +1,4 @@
-redis-scaled:
+redisscaled:
   global:
     redis:
       password: password
@@ -9,8 +9,8 @@ redis-scaled:
       size: 10Gi
   sentinel:
     enabled: true
-    service:
-      type: LoadBalancer
+    # service:
+    #   type: LoadBalancer
   nameOverride: "test-redis"
   defaultStorageClass: "local-path"
   master:
@@ -22,7 +22,7 @@ redis-scaled:
       ##
       size: 10Gi
 
-    service:
-      ## @param master.service.type Redis&reg; master service type
-      ##
-      type: LoadBalancer
+    # service:
+    #   ## @param master.service.type Redis&reg; master service type
+    #   ##
+    #   type: LoadBalancer
