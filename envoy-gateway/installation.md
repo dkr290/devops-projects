@@ -1,20 +1,26 @@
 # New installation instructions without metallb
+
 ## install k3d cluster withot the ingress
+
 ```
-k3d cluster create my-cluster --k3s-arg "--disable=traefik@server:*" -p "8080:80@loadbalancer" --servers 1 --agents 3 
+k3d cluster create my-cluster --k3s-arg "--disable=traefik@server:*" -p "8080:80@loadbalancer" --servers 1 --agents 3
 or
-k3d cluster create my-cluster --k3s-arg "--disable=traefik@server:*" --servers 1 --agents 3 
+k3d cluster create my-cluster --k3s-arg "--disable=traefik@server:*" --servers 1 --agents 3
 ```
+
 ## Then install the envoy gateway
+
 ```
-helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.1.1  -n envoy-gateway-system --create-namespace  --set deployment.replicas=2
+helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.2.4  -n envoy-gateway-system --create-namespace  --set deployment.replicas=2
 ```
-## Test 
+
+## Test
 
 ```
 k run nginx --image=nginx
 k expose pod nginx --type ClusterIP --port 80
 ```
+
 ## gateway class
 
 ```yaml
@@ -44,7 +50,7 @@ spec:
           from: All
 ```
 
-## make httproute for to test that everything works 
+## make httproute for to test that everything works
 
 ```yaml
 apiVersion: gateway.networking.k8s.io/v1
@@ -53,7 +59,7 @@ metadata:
   name: nginx-httproute
 spec:
   hostnames:
-    - "nginx.172.18.0.2.nip.io"  ##change this to the appropriate IP
+    - "nginx.172.18.0.2.nip.io" ##change this to the appropriate IP
   parentRefs:
     - name: default-gateway
       namespace: envoy-gateway-system
@@ -67,16 +73,11 @@ spec:
           port: 80
           weight: 1
 ```
+
 ## you can browse from the host the IP directly
 
-
-
-
-
-
-
-
 #OLD installation instruction used to work previously with metallb.
+
 # install k3d
 
 ```
