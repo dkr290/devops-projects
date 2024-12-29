@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ .Values.goapp.name }}
+spec:
+  selector:
+    matchLabels:
+      app: goapp
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: goapp
+    spec:
+      containers:
+        - name: goapp
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 8080
+          resources:
+          {{- with .Values.resources }}
+           {{- toYaml . | nindent 12 }}
+           {{- end }}
+          livenessProbe:
+          {{- with .Values.livenessProbe }}
+            {{- toYaml . | nindent 12}}
+            {{- end }}
+          readinessProbe:
+          {{- with .Values.readinessProbe }}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+  strategy:
+    blueGreen: 
+      activeService: goapp-service
+      previewService: goapp-service-preview
+      autoPromotionEnabled: true
+      autoPromotionSeconds: 180
+

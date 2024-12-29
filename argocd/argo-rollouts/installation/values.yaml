@@ -1,0 +1,3 @@
+dashboard:
+  # -- Deploy dashboard server
+  enabled: true
