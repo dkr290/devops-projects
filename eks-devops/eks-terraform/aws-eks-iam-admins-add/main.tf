@@ -41,9 +41,8 @@ resource "aws_iam_role" "eks_admin_role" {
 
   }
 
-  tags = {
-    tag-key = local.common_tags
-  }
+  tags = local.common_tags
+
 }
 
 
@@ -84,9 +83,8 @@ resource "aws_iam_user" "ekasadmin_user" {
   name          = "eksadmin3-${local.environment}"
   path          = "/"
   force_destroy = true
-  tags = {
-    tag-key = local.common_tags
-  }
+  tags          = local.common_tags
+
 }
 # AWS IAM Group membership 
 
@@ -94,7 +92,7 @@ resource "aws_iam_group_membership" "eksadmins" {
   name = "eksadmins-${local.environment}"
 
   users = [
-    aws_iam_user.ekasadmin_user
+    aws_iam_user.ekasadmin_user.id
   ]
 
   group = aws_iam_group.eksadmins_iam_group.name

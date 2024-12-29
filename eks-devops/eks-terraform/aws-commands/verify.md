@@ -1,0 +1,4 @@
+- aws eks update-kubeconfig --region <region> --name dev_eks_cluster
+- kubectl get nodes
+- kubectl get nodes -o wide
+- kubectl -n kube-system get configmap aws-auth -o yaml

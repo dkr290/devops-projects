@@ -30,6 +30,19 @@ module "eks_public_nodes" {
   cluster_version        = var.cluster_version //eks version for control plane 
 
 }
+# module "eks_private_nodes" {
+#   source                 = "../modules/eks-nodes/"
+#   nodepool_keypair       = var.ssh_keypair
+#   environment            = var.environment
+#   cluster_name           = var.eks_cluster_name
+#   cluster_id             = module.eks_control.cluster_id
+#   subnet_ids             = [module.network[0].WorkersSubnetA, module.network[0].WorkersSubnetB, module.network[0].WorkersSubnetC]
+#   node_group_name        = "private_ng"
+#   tags                   = local.private_nodegroup_tags
+#   eks_nodegroup_role_arn = module.eks_control.eks_nodegroup_role_arn
+#   depends_on             = [module.eks_control]
+# }
+
 module "basic_addons" {
   source     = "../modules/eks_addons/"
   cluster_id = module.eks_control.cluster_id
