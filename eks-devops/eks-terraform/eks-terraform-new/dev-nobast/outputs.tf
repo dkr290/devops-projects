@@ -92,11 +92,22 @@ output "node_group_id" {
   value       = module.eks_public_nodes.node_group_id
 }
 
+output "priv_node_group_id" {
+  description = "Node Group ID"
+  value       = module.eks_private_nodes.node_group_id
+}
+
+
 
 output "node_group_status" {
   description = "Node Group status"
   value       = module.eks_public_nodes.node_group_status
 }
+output "private_node_group_status" {
+  description = "Node Group status"
+  value       = module.eks_private_nodes.node_group_status
+}
+
 
 output "node_group_version" {
   description = "Node Group Kubernetes Version"
@@ -108,6 +119,12 @@ output "node_group_arn" {
   value       = module.eks_public_nodes.node_group_arn
 
 }
+output "priv_node_group_arn" {
+  description = "The node group arn"
+  value       = module.eks_private_nodes.node_group_arn
+
+}
+
 output "eks_nodegroup_role_name" {
   value       = module.eks_control.eks_nodegroup_role_name
   description = "This is important to be used for creation of autoscaler node role"
@@ -125,4 +142,7 @@ output "aws_iam_openid_connect_provider_arn" {
 }
 output "aws_iam_oidc_connect_provider_exctract_from_arn" {
   value = module.eks_control.aws_iam_oidc_connect_provider_exctract_from_arn
+}
+output "alb_controller_metadata" {
+  value = module.alb-controller.lbc_helm_metadata
 }

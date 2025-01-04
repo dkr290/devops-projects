@@ -147,7 +147,12 @@ variable "ebs_csi_addon_version" {
   description = "The fulle string of the version if the module is enabled needs to change the default"
   default     = null
 }
+### alb variables 
+variable "alb_image_repo" {
+  description = "The image repository for alb controller helm module depends on the region"
+  type        = string
 
+}
 
 # Example tfvars
 # aws_region         = "eu-north-1"

@@ -30,18 +30,22 @@ module "eks_public_nodes" {
   cluster_version        = var.cluster_version //eks version for control plane 
 
 }
-# module "eks_private_nodes" {
-#   source                 = "../modules/eks-nodes/"
-#   nodepool_keypair       = var.ssh_keypair
-#   environment            = var.environment
-#   cluster_name           = var.eks_cluster_name
-#   cluster_id             = module.eks_control.cluster_id
-#   subnet_ids             = [module.network[0].WorkersSubnetA, module.network[0].WorkersSubnetB, module.network[0].WorkersSubnetC]
-#   node_group_name        = "private_ng"
-#   tags                   = local.private_nodegroup_tags
-#   eks_nodegroup_role_arn = module.eks_control.eks_nodegroup_role_arn
-#   depends_on             = [module.eks_control]
-# }
+module "eks_private_nodes" {
+  source                 = "../modules/eks-nodes/"
+  nodepool_keypair       = "eks-tf-key-privategroup"
+  environment            = var.environment
+  cluster_name           = var.eks_cluster_name
+  cluster_id             = module.eks_control.cluster_id
+  subnet_ids             = [module.network[0].WorkersSubnetA, module.network[0].WorkersSubnetB, module.network[0].WorkersSubnetC]
+  node_group_name        = "private_ng"
+  tags                   = local.private_nodegroup_tags
+  eks_nodegroup_role_arn = module.eks_control.eks_nodegroup_role_arn
+  depends_on             = [module.eks_public_nodes]
+  desired_size           = var.desired_size
+  min_size               = var.min_size
+  max_size               = var.max_size
+  cluster_version        = var.cluster_version
+}
 
 module "basic_addons" {
   source     = "../modules/eks_addons/"
@@ -88,4 +92,20 @@ module "ebs_csi_addon" {
   cluster_id                                       = module.eks_control.cluster_id
   addon_name                                       = var.ebs_csi_addon_name
   addon_version                                    = var.ebs_csi_addon_version
+}
+
+######### adding ot not ALB ingress controller###############################
+module "alb-controller" {
+  source                                           = "../modules/alb-controller/"
+  vpc_id                                           = module.network[0].vpc_id
+  eks_certificate_authority_data                   = module.eks_control.cluster_certificate_authority_data
+  eks_cluster_id                                   = module.eks_control.cluster_id
+  eks_cluster                                      = var.eks_cluster_name
+  aws_iam_openid_connect_provider_arn              = module.eks_control.aws_iam_openid_connect_provider_arn
+  aws_iam_openid_connect_provider_extract_from_arn = module.eks_control.aws_iam_oidc_connect_provider_exctract_from_arn
+  business_divsion                                 = "IT"
+  eks_endpoint                                     = module.eks_control.cluster_endpoint
+  environment                                      = var.environment
+  aws_region                                       = var.aws_region
+  image_repo                                       = var.alb_image_repo
 }
