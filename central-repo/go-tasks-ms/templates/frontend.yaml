@@ -1,68 +1,75 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "go-tasks-ms.fullname" . }}
+  name: {{ include "frontend.fullname" . }}
   labels:
-    {{- include "go-tasks-ms.labels" . | nindent 4 }}
+    {{- include "frontend.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  {{- if not .Values.frontend.autoscaling.enabled }}
+  replicas: {{ .Values.frontend.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "go-tasks-ms.selectorLabels" . | nindent 6 }}
+      {{- include "frontend.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- with .Values.frontend.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "go-tasks-ms.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
+        {{- include "frontend.labels" . | nindent 8 }}
+        {{- with .Values.frontend.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.frontend.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "go-tasks-ms.serviceAccountName" . }}
+      serviceAccountName: {{ include "frontend.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.frontend.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Chart.Name }}-frontend
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+            {{- toYaml .Values.frontend.securityContext | nindent 12 }}
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          {{- with .Values.frontend }}
+          env: 
+            - name: BACKEND_SERVICE
+              value: {{ $.Values.backend.fullnameOverride }}:{{$.Values.backend.service.port}}
+            - name: HTTP_LISTEN_ADDR
+              value: {{ $.Values.frontend.HTTP_LISTEN_ADDR }} 
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .service.port }}
               protocol: TCP
           livenessProbe:
-            {{- toYaml .Values.livenessProbe | nindent 12 }}
+            {{- toYaml .livenessProbe | nindent 12 }}
           readinessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}
+            {{- toYaml .readinessProbe | nindent 12 }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.volumeMounts }}
+            {{- toYaml .resources | nindent 12 }}
+          {{- end}}
+          {{- with .Values.frontend.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with .Values.volumes }}
+      {{- with .Values.frontend.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.nodeSelector }}
+      {{- with .Values.frontend.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.frontend.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.frontend.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
