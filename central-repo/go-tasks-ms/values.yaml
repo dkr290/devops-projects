@@ -8,7 +8,7 @@ backend:
 
   # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
   image:
-    repository: nginx
+    repository: ghcr.io/dkr290/go-advanced-projects/go-tasks-ms-backend
     # This sets the pull policy for images.
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
@@ -23,7 +23,7 @@ backend:
   environment_vars:
     DB_PORT: "3306"
 
-  HTTP_LISTEN_ADDR: "localhost:3000"
+  HTTP_LISTEN_ADDR: ":3000"
 
   #This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
   serviceAccount:
@@ -35,7 +35,7 @@ backend:
     annotations: {}
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
-    name: ""
+    name: "backend-sa"
 
   # This is for setting Kubernetes Annotations to a Pod.
   # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
@@ -90,7 +90,7 @@ backend:
   autoscaling:
     enabled: false
     minReplicas: 1
-    maxReplicas: 100
+    maxReplicas: 15
     targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
 
@@ -114,12 +114,11 @@ backend:
   affinity: {}
 frontend:
   # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
-  replicaCount: 2
+  replicaCount: 3
 
   # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
   image:
-    repository: nginx
-    # This sets the pull policy for images.
+    repository: ghcr.io/dkr290/go-advanced-projects/go-tasks-ms-frontend # This sets the pull policy for images.
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
@@ -130,7 +129,7 @@ frontend:
   nameOverride: "frontend"
   fullnameOverride: ""
 
-  HTTP_LISTEN_ADDR: "localhost:8080"
+  HTTP_LISTEN_ADDR: ":8080"
 
   #This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
   serviceAccount:
@@ -142,7 +141,7 @@ frontend:
     annotations: {}
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
-    name: ""
+    name: "frontend-sa"
 
   # This is for setting Kubernetes Annotations to a Pod.
   # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
@@ -169,7 +168,7 @@ frontend:
     # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
     type: ClusterIP
     # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
-    port: 3000
+    port: 8080
 
   resources:
     # We usually recommend not to specify default resources and to leave this as a conscious
@@ -197,7 +196,7 @@ frontend:
   autoscaling:
     enabled: false
     minReplicas: 1
-    maxReplicas: 100
+    maxReplicas: 10
     targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
 

@@ -30,6 +30,7 @@ spec:
       serviceAccountName: {{ include "backend.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.backend.podSecurityContext | nindent 8 }}
+      automountServiceAccountToken: false
       containers:
         - name: {{ .Chart.Name }}-backend
           securityContext:
