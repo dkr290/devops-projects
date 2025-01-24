@@ -5,6 +5,9 @@ kind: Application
 metadata:
   name: {{ .Values.redisscaled.name }}
   namespace: argocd
+  finalizers:
+    # The default behaviour is foreground cascading deletion
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: {{ .Values.redisscaled.project }}
   destination:
