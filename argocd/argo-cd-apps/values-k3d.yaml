@@ -6,7 +6,7 @@ appsecrets:
   enabled: false
 
 redisscaled:
-  enabled: true
+  enabled: false
   name: redis-scaled-app
   project: default
   path: central-repo/redis-scaled
