@@ -47,7 +47,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ $.Values.mysql.auth.existingSecret }}
-                  key: mysql-password
+                  key: mysql-root-password 
             - name: DB_USER
               value: {{ $.Values.mysql.auth.username }}
             - name: DB_NAME

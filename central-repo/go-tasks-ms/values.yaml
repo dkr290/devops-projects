@@ -221,7 +221,14 @@ frontend:
 
 mysql:
   auth:
-    username: "tasks_user"
     database: "tasks"
     existingSecret: "mysql-creds"
   fullnameOverride: mysql
+  primary:
+    persistence:
+      enabled: true
+      storageClass: "local-path" ## k3d
+      # storageClass: "ebs"  #for eks
+      accessModes:
+        - ReadWriteOnce
+      size: 8Gi
