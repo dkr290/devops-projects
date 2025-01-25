@@ -1,19 +1,16 @@
-{{- if hasKey .Values.frontend "eg" }}
-{{- if .Values.frontend.eg.enabled }}
+{{- if .Values.frontend.envoygw.enabled }}
+{{- if .Values.frontend.envoygw.httprouteOnly.enabled }}
+{{- with .Values.frontend.envoygw.httprouteOnly }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: {{ include "frontend.httproute" . }}
+  name: {{ include "frontend.envoygw" . }}
 spec:
   parentRefs:
-    {{- if .Values.frontend.envoygateway.enabled }}
-    - name: {{ .Values.frontend.envoygateway.http.gatewayName }}
-    {{- else}}
-    - name: {{ .Values.frontend.eg.gatewayRef }}
-      namespace: {{ .Values.frontend.eg.gatewayNs }}
-    {{- end }}
+    - name: {{ .gatewayRef }}
+      namespace: {{ .gatewayNs }}
   hostnames:
-    {{- range .Values.frontend.eg.hostnames }}
+    {{- range .hostnames }}
     - {{ . | quote }}
     {{- end }}
   rules:
@@ -25,6 +22,7 @@ spec:
         - name: {{ include "frontend.fullname" . }}
           port: {{ .Values.frontend.service.port }}
           weight: {{ .Values.frontend.eg.weight }}
+{{- end }}
 {{- end }}
 {{- end }}
 

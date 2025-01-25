@@ -178,13 +178,27 @@ frontend:
     hostnames:
       - "tasksapp.172.19.0.5.nip.io"
     weight: 1
-  ## this can be enabled if there is no gateway that is shared and created to be used or if specifically need gateway
-  envoygateway:
-    enabled: false
-    http:
+
+  ## envoy gateway type of ingress
+  envoygw:
+    enabled: true
+    nameOverride: ""
+    ## if there is already some envoy gateway to use enable this one only and disable toe others
+    httprouteOnly:
       enabled: true
-      className: eg
+      gatewayRef: default-gateway
+      gatewayNs: envoy-gateway-system
+      hostnames:
+        - "tasksapp.172.19.0.5.nip.io"
+      weight: 1
+
+    httpGateway:
+      enabled: false
+      className: egclass
       gatewayName: front-gw
+      weight: 1
+      hostnames:
+        - "tasksapp.172.19.0.5.nip.io"
       ## Same or All
       allowedRoutes:
         namespaces:
