@@ -1,0 +1,28 @@
+{{- if hasKey .Values.frontend "envoygateway" }}
+{{- if .Values.frontend.envoygateway.enabled }}
+{{- if .Values.frontend.envoygateway.http.enabled }}
+{{- with .Values.frontend.envoygateway.http }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: {{ .className }}
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{ .gatewayName }}
+spec:
+  gatewayClassName: {{ .className }}
+  listeners:
+  - name: http 
+    port: 80
+    protocol: HTTP
+    allowedRoutes:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+

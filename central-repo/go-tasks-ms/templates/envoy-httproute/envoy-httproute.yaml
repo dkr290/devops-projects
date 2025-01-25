@@ -1,5 +1,30 @@
-{{- if hasKey .Values "eg" }}
-{{- if .Values.eg.enabled }}
+{{- if hasKey .Values.frontend "eg" }}
+{{- if .Values.frontend.eg.enabled }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "frontend.httproute" . }}
+spec:
+  parentRefs:
+    {{- if .Values.frontend.envoygateway.enabled }}
+    - name: {{ .Values.frontend.envoygateway.http.gatewayName }}
+    {{- else}}
+    - name: {{ .Values.frontend.eg.gatewayRef }}
+      namespace: {{ .Values.frontend.eg.gatewayNs }}
+    {{- end }}
+  hostnames:
+    {{- range .Values.frontend.eg.hostnames }}
+    - {{ . | quote }}
+    {{- end }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: {{ include "frontend.fullname" . }}
+          port: {{ .Values.frontend.service.port }}
+          weight: {{ .Values.frontend.eg.weight }}
 {{- end }}
 {{- end }}
 

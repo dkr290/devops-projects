@@ -1,0 +1,51 @@
+{{- if hasKey .Values.frontend "envoygateway" }}
+{{- if .Values.frontend.envoygateway.enabled }}
+{{- if .Values.frontend.envoygateway.eks.enabled }}
+{{- with .Values.frontend.envoygateway.eks }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: {{ .className }}
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+  parametersRef:
+    group: gateway.envoyproxy.io
+    kind: EnvoyProxy
+    name: custom-proxy-config
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: custom-proxy-config
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyService:
+        annotations:
+          service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+          service.beta.kubernetes.io/aws-load-balancer-internal: "true" # For internal NLB
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ext-shared-gw
+spec:
+  gatewayClassName: {{ .className }}
+  listeners:
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: {{ .hostname }}
+      allowedRoutes:
+        {{- toYaml . | nindent 10 }}
+      tls:
+        certificateRefs:
+          - kind: Secret
+            group: ""
+            name: {{ .certificateRef }}
+{{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}
+

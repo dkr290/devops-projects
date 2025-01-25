@@ -105,3 +105,14 @@ Create the name of the service account to use
 {{- default "default" .Values.backend.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "frontend.httproute" -}}
+{{- if .Values.frontend.eg.enabled }}
+{{- if .Values.frontend.eg.name }}
+{{- .Values.frontend.eg.name }}
+{{- else }}
+{{- printf "%s-httproute" (include "frontend.fullname" .) }}
+{{- end }}
+
+{{- end }}
+{{- end }}
