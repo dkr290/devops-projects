@@ -170,15 +170,6 @@ frontend:
     # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
     port: 8080
 
-  eg:
-    enabled: true
-    # name: frontend-httproute
-    gatewayRef: default-gateway
-    gatewayNs: envoy-gateway-system
-    hostnames:
-      - "tasksapp.172.19.0.5.nip.io"
-    weight: 1
-
   ## envoy gateway type of ingress
   envoygw:
     enabled: true
