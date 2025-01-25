@@ -49,11 +49,11 @@ spec:
                   name: {{ $.Values.mysql.auth.existingSecret }}
                   key: mysql-root-password 
             - name: DB_USER
-              value: {{ $.Values.backend.DB_USER }}
+              value: {{ $.Values.backend.DB_USER | quote }}
             - name: DB_NAME
               value: {{ $.Values.mysql.auth.database }}
             - name: HTTP_LISTEN_ADDR
-              value: {{ .HTTP_LISTEN_ADDR }} 
+              value: {{ .HTTP_LISTEN_ADDR | quote }} 
               
           ports:
             - name: http
