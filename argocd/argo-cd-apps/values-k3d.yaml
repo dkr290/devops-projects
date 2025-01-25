@@ -20,3 +20,20 @@ redisscaled:
   targetRevision: main
   valueFiles:
     - values.yaml
+
+## go tasks application
+gotasks:
+  enabled: true
+  name: go-tasks-app
+  project: default
+  path: central-repo/go-tasks-ms
+  repo: https://github.com/dkr290/devops-projects.git
+  namespace: default
+  syncPolicy:
+    manual: false
+    automated:
+      selfHeal: true
+      prune: true
+  targetRevision: main
+  valueFiles:
+    - values.yaml

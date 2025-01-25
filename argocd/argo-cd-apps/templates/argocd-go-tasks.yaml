@@ -1,0 +1,36 @@
+{{- if hasKey .Values "gotasks" }}
+{{- if .Values.gotasks.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.gotasks.name }}
+  namespace: argocd
+  finalizers:
+    # The default behaviour is foreground cascading deletion
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.gotasks.project }}
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: {{ .Values.gotasks.namespace }}
+  source:
+    path: {{ .Values.gotasks.path }}
+    repoURL: {{ .Values.gotasks.repo }}
+    targetRevision: {{ .Values.gotasks.targetRevision }}
+    helm:
+      releaseName: tapp
+      {{- with .Values.gotasks.valueFiles }}
+      valueFiles:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  syncPolicy:
+  {{- if not .Values.gotasks.syncPolicy.manual }}
+    automated:
+    {{- with .Values.gotasks.syncPolicy.automated }}
+    {{- toYaml . | nindent 6 }}
+    {{- end}}
+  {{- end }}
+    syncOptions:
+    - PrunePropagationPolicy=foreground
+{{- end }}
+{{- end }}
