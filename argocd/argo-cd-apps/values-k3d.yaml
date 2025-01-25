@@ -23,7 +23,7 @@ redisscaled:
 
 ## go tasks application
 gotasks:
-  enabled: true
+  enabled: false
   name: go-tasks-app
   project: default
   path: central-repo/go-tasks-ms
