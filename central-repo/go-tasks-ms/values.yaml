@@ -180,7 +180,7 @@ frontend:
     weight: 1
   ## this can be enabled if there is no gateway that is shared and created to be used or if specifically need gateway
   envoygateway:
-    enabled: true
+    enabled: false
     http:
       enabled: true
       className: eg
