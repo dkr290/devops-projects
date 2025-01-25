@@ -8,11 +8,10 @@ backend:
 
   # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
   image:
-    repository: ghcr.io/dkr290/go-advanced-projects/go-tasks-ms-backend
-    # This sets the pull policy for images.
+    repository: ghcr.io/dkr290/go-advanced-projects/go-tasks-backend # This sets the pull policy for images.
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+    tag: "0.0.1"
 
   # This is for the secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   imagePullSecrets: []
@@ -118,10 +117,10 @@ frontend:
 
   # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
   image:
-    repository: ghcr.io/dkr290/go-advanced-projects/go-tasks-ms-frontend # This sets the pull policy for images.
+    repository: ghcr.io/dkr290/go-advanced-projects/go-tasks-frontend # This sets the pull policy for images.
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+    tag: "0.0.1"
 
   # This is for the secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   imagePullSecrets: []
