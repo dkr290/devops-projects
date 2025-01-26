@@ -118,3 +118,15 @@ Create the name of the service account to use
 
 {{- end }}
 {{- end }}
+
+
+{{- define "frontend.alb" -}}
+{{- if .Values.frontend.alb.enabled }}
+{{- if .Values.frontend.alb.nameOverride }}
+{{- .Values.frontend.alb.nameOverride}}
+{{- else }}
+{{- printf "%s-alb" (include "frontend.fullname" .) }}
+{{- end }}
+
+{{- end }}
+{{- end }}

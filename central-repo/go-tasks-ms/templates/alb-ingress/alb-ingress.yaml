@@ -1,5 +1,25 @@
-{{- if hasKey .Values "alb" }}
-{{- if .Values.alb.enabled }}
-{{- end }}
+{{- if .Values.frontend.alb.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "frontend.alb" . }}
+  labels: 
+    {{- include "frontend.labels" . | nindent 4 }}
+  annotations:
+    {{- if .Values.frontend.alb.customClass.enabled }}
+    kubernetes.io/ingress.class: {{ .Values.frontend.alb.customClass.className }}
+    {{- else }}
+    {{- toYaml .Values.frontend.alb.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.frontend.alb.host }}
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: {{ include "frontend.fullname" . }}
+              servicePort: {{ .Values.frontend.service.port }}
+
 {{- end }}
 
