@@ -1,11 +1,11 @@
 {{- if .Values.frontend.envoygw.enabled }}
 {{- if .Values.frontend.envoygw.httprouteOnly.enabled }}
-{{- with .Values.frontend.envoygw.httprouteOnly }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: {{ include "frontend.envoygw" . }}
 spec:
+{{- with .Values.frontend.envoygw.httprouteOnly }}
   parentRefs:
     - name: {{ .gatewayRef }}
       namespace: {{ .gatewayNs }}
@@ -18,11 +18,11 @@ spec:
         - path:
             type: PathPrefix
             value: /
+    {{- end }}
       backendRefs:
         - name: {{ include "frontend.fullname" . }}
-          port: {{ .Values.frontend.service.port }}
-          weight: {{ .Values.frontend.eg.weight }}
-{{- end }}
+          port: {{ $.Values.frontend.service.port }}
+          weight: {{ $.Values.frontend.envoygw.httprouteOnly.weight }}
 {{- end }}
 {{- end }}
 
