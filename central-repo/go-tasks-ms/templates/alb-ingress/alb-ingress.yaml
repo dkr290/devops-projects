@@ -17,6 +17,7 @@ spec:
       http:
         paths:
           - path: /*
+            pathType: Prefix
             backend:
               serviceName: {{ include "frontend.fullname" . }}
               servicePort: {{ .Values.frontend.service.port }}
