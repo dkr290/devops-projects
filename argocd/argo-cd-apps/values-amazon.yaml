@@ -174,7 +174,7 @@ gotasks:
   repo: https://github.com/dkr290/devops-projects.git
   namespace: default
   syncPolicy:
-    manual: false
+    manual: true
     automated:
       selfHeal: true
       prune: true
