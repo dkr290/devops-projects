@@ -50,10 +50,10 @@ resource "kubernetes_ingress_v1" "alb_ingress" {
 
   spec {
     rule {
-      host = "*.eu-north-1.elb.amazonaws.com"
       http {
         path {
-          path = "/*"
+          path      = "/"
+          path_type = "Prefix"
           backend {
             service {
               name = "argocd-server"
