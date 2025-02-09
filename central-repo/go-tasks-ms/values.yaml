@@ -295,7 +295,7 @@ mysql:
     persistence:
       enabled: true
       #storageClass: "local-path" ## k3d
-      storageClass: "ebs" #for eks
+      storageClass: "gp2" #for eks
       accessModes:
         - ReadWriteOnce
       size: 8Gi
