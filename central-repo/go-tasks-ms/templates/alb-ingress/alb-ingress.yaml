@@ -13,14 +13,16 @@ metadata:
     {{- end }}
 spec:
   rules:
-    - host: {{ .Values.frontend.alb.host }}
-      http:
+   # - host: {{ .Values.frontend.alb.host }}
+    - http:
         paths:
           - path: /*
             pathType: Prefix
             backend:
-              serviceName: {{ include "frontend.fullname" . }}
-              servicePort: {{ .Values.frontend.service.port }}
+              service:
+                name: {{ include "frontend.fullname" . }}
+                port: 
+                  number: {{ .Values.frontend.service.port }}
 
 {{- end }}
 
