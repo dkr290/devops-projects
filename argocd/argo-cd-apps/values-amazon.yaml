@@ -19,7 +19,7 @@ appsecrets:
   enabled: false
 ## envoy gateway installation
 envoy:
-  enabled: true
+  enabled: false
   name: envoy
   project: default
   repo: docker.io/envoyproxy
@@ -38,7 +38,7 @@ envoy:
 ## envoy gateway provisioning of class and resources
 
 envoygwresource:
-  enabled: true
+  enabled: false
   name: envoy-gateways-app
   project: default
   path: central-repo/envoy
@@ -54,7 +54,7 @@ envoygwresource:
     - values-dev.yaml
 
 internalpypi:
-  enabled: true
+  enabled: false
   name: internalpypi-app
   project: default
   path: central-repo/internal-pypi
@@ -164,3 +164,20 @@ guestbook:
 #       selfHeal: true
 #       prune: true
 #   project: default
+
+## go tasks application
+gotasks:
+  enabled: true
+  name: go-tasks-app
+  project: default
+  path: central-repo/go-tasks-ms
+  repo: https://github.com/dkr290/devops-projects.git
+  namespace: default
+  syncPolicy:
+    manual: false
+    automated:
+      selfHeal: true
+      prune: true
+  targetRevision: main
+  valueFiles:
+    - values.yaml
