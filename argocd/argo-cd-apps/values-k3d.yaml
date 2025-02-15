@@ -43,7 +43,7 @@ opensearch:
   enabled: true
   name: opensearch
   project: default
-  path: central-repo/go-tasks-ms
+  path: central-repo/opensearch
   repo: https://github.com/dkr290/devops-projects.git
   namespace: opensearch
   syncPolicy:
