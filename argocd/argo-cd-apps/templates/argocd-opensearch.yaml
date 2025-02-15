@@ -1,0 +1,36 @@
+{{- if hasKey .Values "opensearch" }}
+{{- if .Values.opensearch.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.opensearch.name }}
+  namespace: argocd
+  finalizers:
+    # The default behaviour is foreground cascading deletion
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.opensearch.project }}
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: {{ .Values.opensearch.namespace }}
+  source:
+    path: {{ .Values.opensearch.path }}
+    repoURL: {{ .Values.opensearch.repo }}
+    targetRevision: {{ .Values.opensearch.targetRevision }}
+    helm:
+      releaseName: ops
+      {{- with .Values.opensearch.valueFiles }}
+      valueFiles:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  syncPolicy:
+  {{- if not .Values.opensearch.syncPolicy.manual }}
+    automated:
+    {{- with .Values.opensearch.syncPolicy.automated }}
+    {{- toYaml . | nindent 6 }}
+    {{- end}}
+  {{- end }}
+    syncOptions:
+    - PrunePropagationPolicy=foreground
+{{- end }}
+{{- end }}

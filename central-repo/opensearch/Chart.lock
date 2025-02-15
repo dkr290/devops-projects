@@ -1,0 +1,15 @@
+dependencies:
+- name: master
+  repository: file://./charts/master/
+  version: 2.31.0
+- name: data
+  repository: file://./charts/data/
+  version: 2.31.0
+- name: client
+  repository: file://./charts/client/
+  version: 2.31.0
+- name: dashboard
+  repository: file://./charts/dashboard/
+  version: 2.27.0
+digest: sha256:8ef48f47ebefdeda55b8ce3dd338d192ec6e4754efee213df6fdaaeeadc1ac07
+generated: "2025-02-15T17:23:34.297703004+01:00"

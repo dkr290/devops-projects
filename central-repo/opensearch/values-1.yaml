@@ -1,0 +1,291 @@
+master:
+  enabled: true
+  # Global settings for the OpenSearch Helm chart
+  opensearch:
+    clusterName: "opensearch-cluster"
+    nodeGroup: master
+    masterService: "opensearch-cluster-master"
+    replicas: 3
+    # Enable master roles
+    roles:
+      - master
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+    persistence:
+      enabled: true
+      size: 50Gi
+      storageClass: zrs-managed-csi-premium
+    serviceMonitor:
+      # Set to true to enable the ServiceMonitor resource
+      enabled: true
+    config:
+      opensearch.yml: |
+        cluster.name: opensearch-cluster
+        network.host: 0.0.0.0
+        plugins:
+          security:
+            ssl:
+              transport:
+                pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
+                pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
+                pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
+                enforce_hostname_verification: false
+              http:
+                enabled: false
+                pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
+                pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
+                pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
+            allow_unsafe_democertificates: false
+            allow_default_init_securityindex: true
+            nodes_dn:
+              - 'CN=*.k8s-dev.bankingcircle.net,OU=AA,O=Bankingcircle,L=Luxembourg,ST=Luxembourg,C=LU'
+            authcz:
+              admin_dn:
+                - 'CN=admin,OU=AA,O=Bankingcircle,L=Luxembourg,ST=Luxembourg,C=LU'
+            audit.type: internal_opensearch
+            enable_snapshot_restore_privilege: true
+            check_snapshot_restore_write_privileges: true
+            restapi:
+              roles_enabled: ["all_access", "security_rest_api_access"]
+            system_indices:
+              enabled: true
+              indices:
+                [
+                  ".opendistro-alerting-config",
+                  ".opendistro-alerting-alert*",
+                  ".opendistro-anomaly-results*",
+                  ".opendistro-anomaly-detector*",
+                  ".opendistro-anomaly-checkpoints",
+                  ".opendistro-anomaly-detection-state",
+                  ".opendistro-reports-*",
+                  ".opendistro-notifications-*",
+                  ".opendistro-notebooks",
+                  ".opendistro-asynchronous-search-response*",
+                ]
+    extraVolumes:
+      - name: opensearch-certificates
+        secret:
+          secretName: opensearch-certificates
+
+    extraVolumeMounts:
+      - name: opensearch-certificates
+        mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
+        readOnly: true
+
+    extraInitContainers:
+      - name: sysctl
+        image: busybox:1.31
+        securityContext:
+          privileged: true
+        command: ["sh", "-c", "sysctl -w vm.max_map_count=262144"]
+    sysctlVmMaxMapCount: 262144
+
+data:
+  enabled: true
+  opensearch:
+    clusterName: "opensearch-cluster"
+    nodeGroup: "data"
+    masterService: "opensearch-cluster-master"
+
+    roles:
+      - data
+      - ingest
+    replicas: 3
+    resources:
+      requests:
+        cpu: "1"
+        memory: "4Gi"
+
+    persistence:
+      enabled: true
+      size: 200Gi
+      storageClass: zrs-managed-csi-premium
+    serviceMonitor:
+      enabled: true
+    config:
+      opensearch.yml: |
+        cluster.name: opensearch-cluster
+        network.host: 0.0.0.0
+        plugins:
+          security:
+            ssl:
+              transport:
+                pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
+                pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
+                pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
+                enforce_hostname_verification: false
+              http:
+                enabled: false
+                pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
+                pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
+                pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
+            allow_unsafe_democertificates: false
+            allow_default_init_securityindex: true
+            nodes_dn:
+              - 'CN=*.k8s-dev.bankingcircle.net,OU=AA,O=Bankingcircle,L=Luxembourg,ST=Luxembourg,C=LU'
+            authcz:
+              admin_dn:
+                - 'CN=admin,OU=AA,O=Bankingcircle,L=Luxembourg,ST=Luxembourg,C=LU'
+            audit.type: internal_opensearch
+            enable_snapshot_restore_privilege: true
+            check_snapshot_restore_write_privileges: true
+            restapi:
+              roles_enabled: ["all_access", "security_rest_api_access"]
+            system_indices:
+              enabled: true
+              indices:
+                [
+                  ".opendistro-alerting-config",
+                  ".opendistro-alerting-alert*",
+                  ".opendistro-anomaly-results*",
+                  ".opendistro-anomaly-detector*",
+                  ".opendistro-anomaly-checkpoints",
+                  ".opendistro-anomaly-detection-state",
+                  ".opendistro-reports-*",
+                  ".opendistro-notifications-*",
+                  ".opendistro-notebooks",
+                  ".opendistro-asynchronous-search-response*",
+                ]
+
+    extraVolumes:
+      - name: opensearch-certificates
+        secret:
+          secretName: opensearch-certificates
+
+    extraVolumeMounts:
+      - name: opensearch-certificates
+        mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
+        readOnly: true
+
+    extraInitContainers:
+      - name: sysctl
+        image: busybox:1.31
+        securityContext:
+          privileged: true
+        command: ["sh", "-c", "sysctl -w vm.max_map_count=262144"]
+    sysctlVmMaxMapCount: 262144
+
+client:
+  enabled: true
+  opensearch:
+    clusterName: "opensearch-cluster"
+    nodeGroup: "client"
+    masterService: "opensearch-cluster-master"
+    roles:
+      - remote_cluster_client
+    replicas: 3
+
+    resources:
+      requests:
+        cpu: "1"
+        memory: "1Gi"
+
+    persistence:
+      enabled: false
+    serviceMonitor:
+      enabled: true
+    config:
+      opensearch.yml: |
+        cluster.name: opensearch-cluster
+        network.host: 0.0.0.0
+        plugins:
+          security:
+            ssl:
+              transport:
+                pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
+                pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
+                pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
+                enforce_hostname_verification: false
+              http:
+                enabled: false
+                pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
+                pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
+                pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
+            allow_unsafe_democertificates: false
+            allow_default_init_securityindex: true
+            nodes_dn:
+              - 'CN=*.k8s-dev.bankingcircle.net,OU=AA,O=Bankingcircle,L=Luxembourg,ST=Luxembourg,C=LU'
+            authcz:
+              admin_dn:
+                - 'CN=admin,OU=AA,O=Bankingcircle,L=Luxembourg,ST=Luxembourg,C=LU'
+            audit.type: internal_opensearch
+            enable_snapshot_restore_privilege: true
+            check_snapshot_restore_write_privileges: true
+            restapi:
+              roles_enabled: ["all_access", "security_rest_api_access"]
+            system_indices:
+              enabled: true
+              indices:
+                [
+                  ".opendistro-alerting-config",
+                  ".opendistro-alerting-alert*",
+                  ".opendistro-anomaly-results*",
+                  ".opendistro-anomaly-detector*",
+                  ".opendistro-anomaly-checkpoints",
+                  ".opendistro-anomaly-detection-state",
+                  ".opendistro-reports-*",
+                  ".opendistro-notifications-*",
+                  ".opendistro-notebooks",
+                  ".opendistro-asynchronous-search-response*",
+                ]
+
+    extraVolumes:
+      - name: opensearch-certificates
+        secret:
+          secretName: opensearch-certificates
+
+    extraVolumeMounts:
+      - name: opensearch-certificates
+        mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
+        readOnly: true
+
+    extraInitContainers:
+      - name: sysctl
+        image: busybox:1.31
+        securityContext:
+          privileged: true
+        command: ["sh", "-c", "sysctl -w vm.max_map_count=262144"]
+    sysctlVmMaxMapCount: 262144
+
+dashboard:
+  enabled: true
+  dashboard:
+    replicaCount: 2
+    opensearchHosts: "http://opensearch-cluster-master:9200"
+    serviceMonitor:
+      enabled: true
+
+httproute:
+  enabled: true
+  name: ops-dashboard-httproute
+  hostnames:
+    - "aa-opensearch-metrics.k8s-dev.bankingcircle.net"
+  rules:
+    backendrefs:
+      - group: ""
+        kind: Service
+        name: ops-dashboard
+        port: 5601
+        weight: 1
+    matches:
+      - path:
+          type: PathPrefix
+          value: /
+apiroute:
+  enabled: true
+  name: api-httproute
+  hostnames:
+    - "aa-opensearch-api.k8s-dev.bankingcircle.net"
+  rules:
+    backendrefs:
+      - group: ""
+        kind: Service
+        name: opensearch-cluster-client
+        port: 9200
+        weight: 1
+    matches:
+      - path:
+          type: PathPrefix
+          value: /

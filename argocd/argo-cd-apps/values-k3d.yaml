@@ -37,3 +37,20 @@ gotasks:
   targetRevision: main
   valueFiles:
     - values.yaml
+
+## opensearch application
+opensearch:
+  enabled: true
+  name: opensearch
+  project: default
+  path: central-repo/go-tasks-ms
+  repo: https://github.com/dkr290/devops-projects.git
+  namespace: opensearch
+  syncPolicy:
+    manual: false
+    automated:
+      selfHeal: true
+      prune: true
+  targetRevision: main
+  valueFiles:
+    - values-dev.yaml

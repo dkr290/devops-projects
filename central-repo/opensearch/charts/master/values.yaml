@@ -1,0 +1,56 @@
+opensearch:
+  # Global settings for the OpenSearch Helm chart
+  clusterName: "opensearch-cluster"
+  nodeGroup: master
+  masterService: "opensearch-cluster-master"
+  replicas: 3
+  # Enable master roles
+  roles:
+    - master
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+  persistence:
+    enabled: true
+    size: 50Gi
+    storageClass: zrs-managed-csi-premium
+  config:
+    opensearch.yml: |
+      cluster.name: opensearch-cluster
+      network.host: 0.0.0.0
+      plugins:
+        security:
+          ssl:
+            transport:
+              pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
+              pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
+              pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
+              enforce_hostname_verification: false
+            http:
+              enabled: true
+              pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
+              pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
+              pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
+          allow_unsafe_democertificates: false
+          nodes_dn:
+           - "CN=master.k8s-dev.bankingcircle.net, O=Banking Circle S.A., L=Luxemburg, ST=Luxemburg, C=LU"
+
+  extraVolumes:
+    - name: opensearch-certificates
+      secret:
+        secretName: opensearch-certificates
+
+  extraVolumeMounts:
+    - name: opensearch-certificates
+      mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
+      readOnly: true
+  extraInitContainers:
+    - name: sysctl
+      image: busybox:1.31
+      securityContext:
+        privileged: true
+      command: ["sh", "-c", "sysctl", "-w", "vm.max_map_count=262144"]
+  serviceMonitor:
+    # Set to true to enable the ServiceMonitor resource
+    enabled: true
