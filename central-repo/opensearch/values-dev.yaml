@@ -169,7 +169,7 @@ client:
     masterService: "opensearch-cluster-master"
     roles:
       - remote_cluster_client
-    replicas: 3
+    replicas: 2
 
     resources:
       requests:
