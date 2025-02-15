@@ -254,7 +254,7 @@ httproute:
   enabled: true
   name: ops-dashboard-httproute
   hostnames:
-    - "dashboard.example.com"
+    - "dashboard.172.18.0.4.nip.io"
   rules:
     backendrefs:
       - group: ""
@@ -270,7 +270,7 @@ apiroute:
   enabled: true
   name: api-httproute
   hostnames:
-    - "opensearch-api.example.com"
+    - "api.172.18.0.4.nip.io"
   rules:
     backendrefs:
       - group: ""

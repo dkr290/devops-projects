@@ -5,7 +5,7 @@ metadata:
   name: {{ .Values.httproute.name }}
 spec:
   parentRefs:
-    - name: default-envoy-gw
+    - name: default-gateway
       namespace: envoy-gateway-system
   hostnames:
   {{- range .Values.httproute.hostnames }}
