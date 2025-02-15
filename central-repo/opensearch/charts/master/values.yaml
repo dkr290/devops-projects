@@ -53,4 +53,4 @@ opensearch:
       command: ["sh", "-c", "sysctl", "-w", "vm.max_map_count=262144"]
   serviceMonitor:
     # Set to true to enable the ServiceMonitor resource
-    enabled: true
+    enabled: false

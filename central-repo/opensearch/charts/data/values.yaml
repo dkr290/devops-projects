@@ -46,6 +46,3 @@ opensearch:
     - name: opensearch-certificates
       mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
       readOnly: true
-
-  serviceMonitor:
-    enabled: true
