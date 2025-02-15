@@ -78,6 +78,9 @@ master:
         value: "true"
       - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
         value: Parola1234##22
+    serviceMonitor:
+      # Set to true to enable the ServiceMonitor resource
+      enabled: false
 
 data:
   enabled: true
@@ -155,7 +158,9 @@ data:
           privileged: true
         command: ["sh", "-c", "sysctl -w vm.max_map_count=262144"]
     sysctlVmMaxMapCount: 262144
-
+    serviceMonitor:
+      # Set to true to enable the ServiceMonitor resource
+      enabled: false
 client:
   enabled: true
   opensearch:
@@ -232,12 +237,18 @@ client:
           privileged: true
         command: ["sh", "-c", "sysctl -w vm.max_map_count=262144"]
     sysctlVmMaxMapCount: 262144
+    serviceMonitor:
+      # Set to true to enable the ServiceMonitor resource
+      enabled: false
 
 dashboard:
   enabled: true
   dashboard:
     replicaCount: 2
     opensearchHosts: "http://opensearch-cluster-master:9200"
+  serviceMonitor:
+    # Set to true to enable the ServiceMonitor resource
+    enabled: false
 
 httproute:
   enabled: true
