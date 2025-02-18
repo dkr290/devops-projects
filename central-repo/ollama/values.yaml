@@ -141,7 +141,7 @@ apiroute:
             path:
               type: ReplacePrefixMatch
               replacePrefixMatch: "/"
-      backendrefs:
+      backendRefs:
         - group: ""
           kind: Service
           name: ollama-api
