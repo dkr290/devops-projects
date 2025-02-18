@@ -134,7 +134,7 @@ apiroute:
     - matches:
         - path:
             type: PathPrefix
-            value: /api
+            value: /ollama
       filters:
         - type: URLRewrite
           urlRewrite:
