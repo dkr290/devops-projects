@@ -40,17 +40,34 @@ gotasks:
 
 ## opensearch application
 opensearch:
-  enabled: true
+  enabled: false
   name: opensearch
   project: default
   path: central-repo/opensearch
   repo: https://github.com/dkr290/devops-projects.git
   namespace: opensearch
   syncPolicy:
-    manual: false
+    manual: true
     automated:
       selfHeal: true
       prune: true
   targetRevision: main
   valueFiles:
     - values-dev.yaml
+
+## opensearch application
+ollama:
+  enabled: true
+  name: ollama
+  project: default
+  path: central-repo/ollama
+  repo: https://github.com/dkr290/devops-projects.git
+  namespace: ollama
+  syncPolicy:
+    manual: true
+    automated:
+      selfHeal: true
+      prune: true
+  targetRevision: main
+  valueFiles:
+    - values.yaml

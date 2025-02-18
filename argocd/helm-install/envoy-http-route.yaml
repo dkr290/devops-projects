@@ -8,7 +8,7 @@ spec:
     - name: default-gateway
       namespace: envoy-gateway-system
   hostnames:
-    - "argocd.172.19.0.5.nip.io"
+    - "argocd.172.20.0.2.nip.io"
   rules:
     - matches:
         - path:

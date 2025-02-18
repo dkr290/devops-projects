@@ -1,0 +1,36 @@
+{{- if hasKey .Values "ollama" }}
+{{- if .Values.ollama.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.ollama.name }}
+  namespace: argocd
+  finalizers:
+    # The default behaviour is foreground cascading deletion
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.ollama.project }}
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: {{ .Values.ollama.namespace }}
+  source:
+    path: {{ .Values.ollama.path }}
+    repoURL: {{ .Values.ollama.repo }}
+    targetRevision: {{ .Values.ollama.targetRevision }}
+    helm:
+      releaseName: ollama
+      {{- with .Values.ollama.valueFiles }}
+      valueFiles:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  syncPolicy:
+  {{- if not .Values.ollama.syncPolicy.manual }}
+    automated:
+    {{- with .Values.ollama.syncPolicy.automated }}
+    {{- toYaml . | nindent 6 }}
+    {{- end}}
+  {{- end }}
+    syncOptions:
+    - PrunePropagationPolicy=foreground
+{{- end }}
+{{- end }}
