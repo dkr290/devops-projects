@@ -1,0 +1,149 @@
+ollama:
+  replicaCount: 1
+  image:
+    repository: ollama/ollama
+    pullPolicy: IfNotPresent
+    tag: ""
+  imagePullSecrets: []
+  # -- String to partially override template  (will maintain the release name)
+  nameOverride: ""
+  # -- String to fully override template
+  fullnameOverride: "ollama-api"
+  # Ollama parameters
+  ollama:
+    gpu:
+      # -- Enable GPU integration
+      enabled: false
+
+      # -- Specify the number of GPU
+      number: 1
+
+    # -- Default model to serve, if not set, no model will be served at container startup
+    defaultModel: ""
+
+    models:
+      # -- List of models to pull at container startup
+      # The more you add, the longer the container will take to start if models are not present
+      pull:
+        - llama3.2
+        - mxbai-embed-large
+
+      # -- List of models to load in memory at container startup
+      run:
+        - mxbai-embed-large
+  # Service account
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+  serviceAccount:
+    create: true
+    automount: false
+    annotations: {}
+    name: "ollama-sa"
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext:
+    {}
+    # fsGroup: 2000
+
+  # -- Container Security Context
+  securityContext:
+    {}
+    # capabilities:
+    #  drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 10000
+
+  # -- Specify runtime class
+  runtimeClassName: ""
+
+  # Configure Service
+  service:
+    # -- Service type
+    type: ClusterIP
+
+    # -- Service port
+    port: 11434
+
+  # Configure the ingress resource that allows you to access the
+  ingress:
+    # -- Enable ingress controller resource
+    enabled: false
+  # ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    requests:
+      memory: 4096Mi
+      cpu: 2000m
+    limits:
+      memory: 12288Mi
+      cpu: 4000m
+  # Configure autoscaling
+  autoscaling:
+    # -- Enable autoscaling
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+  # -- Additional volumes on the output Deployment definition.
+  volumes: []
+  # -- - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
+
+  # -- Additional volumeMounts on the output Deployment definition.
+  volumeMounts: []
+  # -- - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
+
+  # -- Additional arguments on the output Deployment definition.
+  extraArgs: []
+
+  # Enable persistence using Persistent Volume Claims
+  # ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+  persistentVolume:
+    # -- Enable persistence using PVC
+    enabled: true
+
+    # -- Ollama server data Persistent Volume access modes
+    # Must match those of existing PV or dynamic provisioner
+    # Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+    existingClaim: ""
+    size: 30Gi
+    ## for k3d
+    storageClass: "local-path"
+
+    # -- Ollama server data Persistent Volume Binding Mode
+    # If defined, volumeMode: <volumeMode>
+    # If empty (the default) or set to null, no volumeBindingMode spec is
+    # set, choosing the default mode.
+    volumeMode: ""
+
+    # -- Subdirectory of Ollama server data Persistent Volume to mount
+    # Useful if the volume's root directory is not empty
+    subPath: ""
+apiroute:
+  enabled: true
+  name: api-httproute
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: "/"
+      backendrefs:
+        - group: ""
+          kind: Service
+          name: ollama-api
+          port: 11434
+          weight: 1
