@@ -28,8 +28,8 @@ ollama:
         - mxbai-embed-large
 
       # -- List of models to load in memory at container startup
-      run:
-        - mxbai-embed-large
+      # run:
+      #   - mxbai-embed-large
   # Service account
   # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   serviceAccount:
