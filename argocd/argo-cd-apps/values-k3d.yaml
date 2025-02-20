@@ -71,3 +71,17 @@ ollama:
   targetRevision: main
   valueFiles:
     - values.yaml
+
+mongodb:
+  enabled: true
+  name: mongodb
+  project: default
+  path: central-repo/mongodb
+  repo: https://github.com/dkr290/devops-projects.git
+  namespace: mongodb
+  syncPolicy:
+    manual: true
+    automated:
+      selfHeal: true
+      prune: true
+  targetRevision: main
