@@ -27,6 +27,7 @@ spec:
           volumeMounts:
             - name: mongodb-keyfile
               mountPath: /data/configdb
+              readOnly: false
       containers:
         - name: mongodb
           image: mongodb/mongodb-atlas-local
