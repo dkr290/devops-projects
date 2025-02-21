@@ -5,7 +5,7 @@ metadata:
   name: mongodb-service
   namespace: mongodb
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: mongodb
   ports:

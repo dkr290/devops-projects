@@ -1,0 +1,26 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: mongodb-gateway
+  namespace: mongodb
+spec:
+  addresses:
+    - 172.2.0.20
+  gatewayClassName: eg
+  listeners:
+    - name: redis
+      protocol: TCP
+      port: 27017
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: mongodb-route
+  namespace: mongodb
+spec:
+  parentRefs:
+    - name: mongodb-gateway
+  rules:
+    - backendRefs:
+        - name: mongodb-service
+          port: 21017
