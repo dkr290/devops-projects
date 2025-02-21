@@ -21,6 +21,7 @@ spec:
           command: [
               "sh",
               "-c",
+              mkdir -p /data/configdb
               cp /etc/mongo-keyfile/keyfile /data/configdb/keyfile
               chmod 600 /data/configdb/keyfile
               chown 999:999 /data/configdb/keyfile,
