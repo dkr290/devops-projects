@@ -18,16 +18,20 @@ spec:
       initContainers:
         - name: fix-keyfile-permissions
           image: busybox
-          command:
-            [
+          command: [
               "sh",
               "-c",
-              "chmod 600 /data/configdb/keyfile && chown 999:999 /data/configdb/keyfile",
+              mkdir -p /data/configdb
+              cp /etc/mongo-keyfile/keyfile /data/configdb/keyfile
+              chmod 600 /data/configdb/keyfile
+              chown 999:999 /data/configdb/keyfile,
             ]
           volumeMounts:
             - name: mongodb-keyfile
-              mountPath: /data/configdb
-              readOnly: false
+              mountPath: /etc/mongo-keyfile
+              readOnly: true
+            - name: mongodb-persistent-storage
+              mountPath: /data
       containers:
         - name: mongodb
           image: mongodb/mongodb-atlas-local
