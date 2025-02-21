@@ -4,9 +4,9 @@ metadata:
   name: mongodb-gateway
   namespace: mongodb
 spec:
-  addresses:
-    - type: IPAddress
-      value: "172.2.0.20"
+  # addresses:
+  #   - type: IPAddress
+  #     value: "172.2.0.20"
   gatewayClassName: eg
   listeners:
     - name: mongodb
