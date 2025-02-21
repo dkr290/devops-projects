@@ -35,8 +35,8 @@ spec:
             - name: mongodb-persistent-storage
               mountPath: /data/db
             - name: mongodb-keyfile
-              mountPath: /etc/mongo
-              subPath: mongodb-keyfile
+              mountPath: /data/configdb/keyfile
+              subPath: keyfile
       volumes:
         - name: mongodb-persistent-storage
           persistentVolumeClaim:
@@ -46,4 +46,4 @@ spec:
             secretName: mongodb-keyfile
             items:
               - key: mongodb-keyfile
-                path: mongodb-keyfile
+                path: keyfile
