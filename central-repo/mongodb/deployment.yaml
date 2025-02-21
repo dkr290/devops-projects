@@ -15,6 +15,18 @@ spec:
       labels:
         app: mongodb
     spec:
+      initContainers:
+        - name: fix-keyfile-permissions
+          image: busybox
+          command:
+            [
+              "sh",
+              "-c",
+              "chmod 600 /data/configdb/keyfile && chown 999:999 /data/configdb/keyfile",
+            ]
+          volumeMounts:
+            - name: mongodb-keyfile
+              mountPath: /data/configdb
       containers:
         - name: mongodb
           image: mongodb/mongodb-atlas-local
