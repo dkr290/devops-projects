@@ -15,26 +15,34 @@ spec:
       labels:
         app: mongodb
     spec:
-      initContainers:
-        - name: fix-keyfile-permissions
-          image: busybox
-          command: [
-              "sh",
-              "-c",
-              mkdir -p /data/configdb
-              cp /etc/mongo-keyfile/keyfile /data/configdb/keyfile
-              chmod 600 /data/configdb/keyfile
-              chown 999:999 /data/configdb/keyfile,
-            ]
-          volumeMounts:
-            - name: mongodb-keyfile
-              mountPath: /etc/mongo-keyfile
-              readOnly: true
-            - name: mongodb-persistent-storage
-              mountPath: /data
       containers:
         - name: mongodb
           image: mongodb/mongodb-atlas-local
+          args: ["--dbpath", "/data/db"]
+          livenessProbe:
+            exec:
+              command:
+                - mongo
+                - --disableImplicitSessions
+                - --eval
+                - "db.adminCommand('ping')"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+          exec:
+            command:
+              - mongo
+              - --disableImplicitSessions
+              - --eval
+              - "db.adminCommand('ping')"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
@@ -51,16 +59,7 @@ spec:
           volumeMounts:
             - name: mongodb-persistent-storage
               mountPath: /data/db
-            - name: mongodb-keyfile
-              mountPath: /data/configdb/keyfile
-              subPath: keyfile
       volumes:
         - name: mongodb-persistent-storage
           persistentVolumeClaim:
             claimName: mongodb-pvc
-        - name: mongodb-keyfile
-          secret:
-            secretName: mongodb-keyfile
-            items:
-              - key: mongodb-keyfile
-                path: keyfile
