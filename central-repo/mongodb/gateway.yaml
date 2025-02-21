@@ -5,7 +5,8 @@ metadata:
   namespace: mongodb
 spec:
   addresses:
-    - "172.2.0.20"
+    - type: IPAddress
+      value: "172.2.0.20"
   gatewayClassName: eg
   listeners:
     - name: redis
