@@ -6,7 +6,7 @@ metadata:
 spec:
   addresses:
     - type: IPAddress
-      value: "172.2.0.2"
+      value: "172.22.0.2"
   gatewayClassName: eg
   listeners:
     - name: mongodb
