@@ -5,8 +5,8 @@ metadata:
 spec:
   accessModes:
   - ReadWriteMany
-  storageClassName: azurefile-csi-premium
+  storageClassName: local-path
   resources:
     requests:
-      storage: 300Gi
+      storage: 1Gi
 

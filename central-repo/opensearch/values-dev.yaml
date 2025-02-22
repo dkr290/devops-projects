@@ -5,7 +5,7 @@ master:
     clusterName: "opensearch-cluster"
     nodeGroup: master
     masterService: "opensearch-cluster-master"
-    replicas: 2
+    replicas: 1
     # Enable master roles
     roles:
       - master
@@ -103,7 +103,7 @@ data:
     roles:
       - data
       - ingest
-    replicas: 2
+    replicas: 1
     resources:
       requests:
         cpu: "500m"
@@ -191,7 +191,7 @@ client:
     masterService: "opensearch-cluster-master"
     roles:
       - remote_cluster_client
-    replicas: 2
+    replicas: 1
 
     resources:
       requests:
@@ -266,7 +266,7 @@ client:
 dashboard:
   enabled: true
   dashboard:
-    replicaCount: 2
+    replicaCount: 1
     opensearchHosts: "http://opensearch-cluster-master:9200"
   serviceMonitor:
     # Set to true to enable the ServiceMonitor resource
@@ -276,7 +276,7 @@ httproute:
   enabled: true
   name: ops-dashboard-httproute
   hostnames:
-    - "dashboard.172.18.0.4.nip.io"
+    - "dashboard.172.22.0.3.nip.io"
   rules:
     backendrefs:
       - group: ""
@@ -292,7 +292,7 @@ apiroute:
   enabled: true
   name: api-httproute
   hostnames:
-    - "api.172.18.0.4.nip.io"
+    - "api.172.22.0.3.nip.io"
   rules:
     backendrefs:
       - group: ""
