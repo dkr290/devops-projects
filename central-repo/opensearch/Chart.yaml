@@ -39,7 +39,7 @@ dependencies:
     alias: client
     condition: client.enabled
   - name: dashboard
-    version: 2.27.0
+    version: 2.27.1
     repository: file://./charts/dashboard/
     alias: dashboard
     condition: dashboard.enabled
