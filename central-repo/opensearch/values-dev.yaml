@@ -266,7 +266,7 @@ client:
 dashboard:
   enabled: true
   dashboard:
-    replicaCount: 1
+    replicaCount: 2
     opensearchHosts: "http://opensearch-cluster-master:9200"
   serviceMonitor:
     # Set to true to enable the ServiceMonitor resource
