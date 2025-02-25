@@ -26,7 +26,7 @@ ollama:
       # The more you add, the longer the container will take to start if models are not present
       pull:
         - mxbai-embed-large
-        - deepseek-r1:8b
+        - llama2.3
 
       # -- List of models to load in memory at container startup
       # run:
