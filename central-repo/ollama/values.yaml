@@ -26,7 +26,7 @@ ollama:
       # The more you add, the longer the container will take to start if models are not present
       pull:
         - mxbai-embed-large
-        - llama3.2
+        - deepseek-r1:8b
 
       # -- List of models to load in memory at container startup
       # run:
@@ -82,7 +82,7 @@ ollama:
     # -- Enable autoscaling
     enabled: true
     minReplicas: 1
-    maxReplicas: 3
+    maxReplicas: 2
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 80
   # -- Additional volumes on the output Deployment definition.
