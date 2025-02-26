@@ -73,7 +73,7 @@ ollama:
     - values.yaml
 
 mongodb:
-  enabled: false
+  enabled: true
   name: mongodb
   project: default
   path: central-repo/mongodb
