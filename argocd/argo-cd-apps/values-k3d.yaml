@@ -40,7 +40,7 @@ gotasks:
 
 ## opensearch application
 opensearch:
-  enabled: false
+  enabled: true
   name: opensearch
   project: default
   path: central-repo/opensearch
@@ -73,7 +73,7 @@ ollama:
     - values.yaml
 
 mongodb:
-  enabled: true
+  enabled: false
   name: mongodb
   project: default
   path: central-repo/mongodb
