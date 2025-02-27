@@ -26,9 +26,9 @@ master:
           security:
             ssl:
               transport:
-                pemcert_filepath: "/usr/share/opensearch/config/node-cert.pem"
-                pemkey_filepath: "/usr/share/opensearch/config/node-key.pem"
-                pemtrustedcas_filepath: "/usr/share/opensearch/config/root-ca.pem"
+                pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
+                pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
+                pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
                 enforce_hostname_verification: false
               http:
                 enabled: false
@@ -72,7 +72,7 @@ master:
 
     extraVolumeMounts:
       - name: opensearch-certificates
-        mountPath: /usr/share/opensearch/config # Adjust path as required by the plugin
+        mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
         readOnly: true
       # - name: internal-users
       #   mountPath: /usr/share/opensearch/config/opensearch-security/internal_users.yml
@@ -125,9 +125,9 @@ data:
           security:
             ssl:
               transport:
-                pemcert_filepath: "/usr/share/opensearch/config/node-cert.pem"
-                pemkey_filepath: "/usr/share/opensearch/config/node-key.pem"
-                pemtrustedcas_filepath: "/usr/share/opensearch/config/root-ca.pem"
+                pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
+                pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
+                pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
                 enforce_hostname_verification: false
               http:
                 enabled: false
@@ -167,7 +167,7 @@ data:
 
     extraVolumeMounts:
       - name: opensearch-certificates
-        mountPath: /usr/share/opensearch/config # Adjust path as required by the plugin
+        mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
         readOnly:
           true
           # - name: snapshots
