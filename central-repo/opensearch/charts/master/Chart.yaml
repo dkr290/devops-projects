@@ -3,10 +3,10 @@ name: master
 description: Openserch master
 
 type: application
-version: 2.18.0
+version: 2.28.0
 
 dependencies:
   - name: opensearch
-    version: 2.18.0
+    version: 2.28.0
     repository: https://opensearch-project.github.io/helm-charts/
     alias: opensearch
