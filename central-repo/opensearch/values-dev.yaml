@@ -59,9 +59,9 @@ master:
       - name: opensearch-certificates
         secret:
           secretName: opensearch-certificates
-      - name: internal-users
-        configMap:
-          name: internal-users
+      # - name: internal-users
+      #   configMap:
+      #     name: internal-users
       # - name: snapshots
       #   persistentVolumeClaim:
       #     claimName: snapshots
@@ -70,9 +70,9 @@ master:
       - name: opensearch-certificates
         mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
         readOnly: true
-      - name: internal-users
-        mountPath: /usr/share/opensearch/config/opensearch-security/internal_users.yml
-        subPath: internal_users.yml
+      # - name: internal-users
+      #   mountPath: /usr/share/opensearch/config/opensearch-security/internal_users.yml
+      #   subPath: internal_users.yml
       # - name: snapshots
       #   mountPath: /mnt/snapshots
 
@@ -158,8 +158,7 @@ data:
           secretName: opensearch-certificates
       # - name: internal-users
       #   configMap:
-      #     name:
-      #       internal-users
+      #     name: internal-users
       # - name: snapshots
       #   persistentVolumeClaim:
       #     claimName: snapshots
@@ -170,8 +169,7 @@ data:
         readOnly: true
       # - name: internal-users
       #   mountPath: /usr/share/opensearch/config/opensearch-security/internal_users.yml
-      #   subPath:
-      #     internal_users.yml
+      #   subPath: internal_users.yml
       # - name: snapshots
       #   mountPath: /mnt/snapshots
 
@@ -200,6 +198,7 @@ client:
     roles:
       - remote_cluster_client
     replicas: 2
+
     resources:
       requests:
         cpu: "512m"
@@ -269,6 +268,7 @@ client:
     serviceMonitor:
       # Set to true to enable the ServiceMonitor resource
       enabled: false
+
 dashboard:
   enabled: true
   dashboard:
@@ -282,7 +282,7 @@ httproute:
   enabled: true
   name: ops-dashboard-httproute
   hostnames:
-    - "dashboard.172.22.0.5.nip.io"
+    - "dashboard.172.22.0.3.nip.io"
   rules:
     backendrefs:
       - group: ""
@@ -298,7 +298,7 @@ apiroute:
   enabled: true
   name: api-httproute
   hostnames:
-    - "api.172.22.0.5.nip.io"
+    - "api.172.22.0.3.nip.io"
   rules:
     backendrefs:
       - group: ""
