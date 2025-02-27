@@ -180,6 +180,12 @@ data:
           privileged: true
         command: ["sh", "-c", "sysctl -w vm.max_map_count=262144"]
     sysctlVmMaxMapCount: 262144
+    extraEnvs:
+      - name: DISABLE_INSTALL_DEMO_CONFIG
+        value: "true"
+      - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+        value: Parola1234##22
+
     serviceMonitor:
       # Set to true to enable the ServiceMonitor resource
       enabled: false
