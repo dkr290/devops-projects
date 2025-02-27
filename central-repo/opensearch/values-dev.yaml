@@ -9,6 +9,7 @@ master:
     # Enable master roles
     roles:
       - master
+      - remote_cluster_client
     resources:
       requests:
         cpu: "200m"
@@ -25,9 +26,9 @@ master:
           security:
             ssl:
               transport:
-                pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
-                pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
-                pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
+                pemcert_filepath: "/usr/share/opensearch/config/node-cert.pem"
+                pemkey_filepath: "/usr/share/opensearch/config/node-key.pem"
+                pemtrustedcas_filepath: "/usr/share/opensearch/config/root-ca.pem"
                 enforce_hostname_verification: false
               http:
                 enabled: false
@@ -35,6 +36,9 @@ master:
             allow_default_init_securityindex: true
             nodes_dn:
               - 'CN=nodes.example.com,OU=IT,O=IT,L=Luxembourg,ST=Luxembourg,C=LU'
+            authcz:
+              admin_dn:
+                - CN=admin,OU=IT,O=IT,L=Luxembourg,ST=Luxembourg,C=LU
             audit.type: internal_opensearch
             enable_snapshot_restore_privilege: true
             check_snapshot_restore_write_privileges: true
@@ -68,7 +72,7 @@ master:
 
     extraVolumeMounts:
       - name: opensearch-certificates
-        mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
+        mountPath: /usr/share/opensearch/config # Adjust path as required by the plugin
         readOnly: true
       # - name: internal-users
       #   mountPath: /usr/share/opensearch/config/opensearch-security/internal_users.yml
@@ -121,9 +125,9 @@ data:
           security:
             ssl:
               transport:
-                pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
-                pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
-                pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
+                pemcert_filepath: "/usr/share/opensearch/config/node-cert.pem"
+                pemkey_filepath: "/usr/share/opensearch/config/node-key.pem"
+                pemtrustedcas_filepath: "/usr/share/opensearch/config/root-ca.pem"
                 enforce_hostname_verification: false
               http:
                 enabled: false
@@ -155,102 +159,19 @@ data:
     extraVolumes:
       - name: opensearch-certificates
         secret:
-          secretName: opensearch-certificates
-      # - name: internal-users
-      #   configMap:
-      #     name: internal-users
-      # - name: snapshots
+          secretName:
+            opensearch-certificates
+            # - name: snapshots
       #   persistentVolumeClaim:
       #     claimName: snapshots
 
     extraVolumeMounts:
       - name: opensearch-certificates
-        mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
-        readOnly: true
-      # - name: internal-users
-      #   mountPath: /usr/share/opensearch/config/opensearch-security/internal_users.yml
-      #   subPath: internal_users.yml
-      # - name: snapshots
+        mountPath: /usr/share/opensearch/config # Adjust path as required by the plugin
+        readOnly:
+          true
+          # - name: snapshots
       #   mountPath: /mnt/snapshots
-
-    extraInitContainers:
-      - name: sysctl
-        image: busybox:1.31
-        securityContext:
-          privileged: true
-        command: ["sh", "-c", "sysctl -w vm.max_map_count=262144"]
-    sysctlVmMaxMapCount: 262144
-    serviceMonitor:
-      # Set to true to enable the ServiceMonitor resource
-      enabled: false
-client:
-  enabled: true
-  opensearch:
-    clusterName: "opensearch-cluster"
-    nodeGroup: "client"
-    masterService: "opensearch-cluster-master"
-    roles:
-      - remote_cluster_client
-    replicas: 2
-
-    resources:
-      requests:
-        cpu: "512m"
-        memory: "512Mi"
-
-    persistence:
-      enabled: false
-    config:
-      opensearch.yml: |
-        cluster.name: opensearch-cluster
-        network.host: 0.0.0.0
-        plugins:
-          security:
-            ssl:
-              transport:
-                pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
-                pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
-                pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
-                enforce_hostname_verification: false
-              http:
-                enabled: false
-                pemcert_filepath: "/usr/share/opensearch/config/certs/node-cert.pem"
-                pemkey_filepath: "/usr/share/opensearch/config/certs/node-key.pem"
-                pemtrustedcas_filepath: "/usr/share/opensearch/config/certs/root-ca.pem"
-            allow_unsafe_democertificates: false
-            allow_default_init_securityindex: true
-            nodes_dn:
-              - 'CN=nodes.example.com,OU=IT,O=IT,L=Luxembourg,ST=Luxembourg,C=LU'
-            audit.type: internal_opensearch
-            enable_snapshot_restore_privilege: true
-            check_snapshot_restore_write_privileges: true
-            restapi:
-              roles_enabled: ["all_access", "security_rest_api_access"]
-            system_indices:
-              enabled: true
-              indices:
-                [
-                  ".opendistro-alerting-config",
-                  ".opendistro-alerting-alert*",
-                  ".opendistro-anomaly-results*",
-                  ".opendistro-anomaly-detector*",
-                  ".opendistro-anomaly-checkpoints",
-                  ".opendistro-anomaly-detection-state",
-                  ".opendistro-reports-*",
-                  ".opendistro-notifications-*",
-                  ".opendistro-notebooks",
-                  ".opendistro-asynchronous-search-response*",
-                ]
-
-    extraVolumes:
-      - name: opensearch-certificates
-        secret:
-          secretName: opensearch-certificates
-
-    extraVolumeMounts:
-      - name: opensearch-certificates
-        mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
-        readOnly: true
 
     extraInitContainers:
       - name: sysctl
@@ -297,7 +218,7 @@ apiroute:
     backendrefs:
       - group: ""
         kind: Service
-        name: opensearch-cluster-client
+        name: opensearch-cluster-master
         port: 9200
         weight: 1
     matches:

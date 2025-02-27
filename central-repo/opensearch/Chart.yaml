@@ -24,22 +24,17 @@ appVersion: "2.28.0"
 
 dependencies:
   - name: master
-    version: 2.31.0
-    repository: file://./charts/master/
+    version: 2.28.0
+    repository: file://./charts/master
     alias: master
     condition: master.enabled
   - name: data
-    version: 2.31.0
-    repository: file://./charts/data/
+    version: 2.28.0
+    repository: file://./charts/data
     alias: data
     condition: data.enabled
-  - name: client
-    version: 2.31.0
-    repository: file://./charts/client/
-    alias: client
-    condition: client.enabled
   - name: dashboard
     version: 2.27.1
-    repository: file://./charts/dashboard/
+    repository: file://./charts/dashboard
     alias: dashboard
     condition: dashboard.enabled

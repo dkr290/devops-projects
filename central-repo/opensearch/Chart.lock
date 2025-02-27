@@ -1,15 +1,12 @@
 dependencies:
 - name: master
-  repository: file://./charts/master/
-  version: 2.31.0
+  repository: file://./charts/master
+  version: 2.28.0
 - name: data
-  repository: file://./charts/data/
-  version: 2.31.0
-- name: client
-  repository: file://./charts/client/
-  version: 2.31.0
+  repository: file://./charts/data
+  version: 2.28.0
 - name: dashboard
-  repository: file://./charts/dashboard/
+  repository: file://./charts/dashboard
   version: 2.27.1
-digest: sha256:294a66a149f058819b96f1bd1a8abd0e82799293ea60e2d31ad312952461b33d
-generated: "2025-02-22T22:38:37.798630055+01:00"
+digest: sha256:a0f7f181e41ce8393943600f57e77e9610a2a18aaa0385069383dbe96b787256
+generated: "2025-02-27T08:49:48.473323738+01:00"
