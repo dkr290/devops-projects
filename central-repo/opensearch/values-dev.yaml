@@ -36,9 +36,6 @@ master:
             allow_default_init_securityindex: true
             nodes_dn:
               - 'CN=nodes.example.com,OU=IT,O=IT,L=Luxembourg,ST=Luxembourg,C=LU'
-            authcz:
-              admin_dn:
-                - CN=admin,OU=IT,O=IT,L=Luxembourg,ST=Luxembourg,C=LU
             audit.type: internal_opensearch
             enable_snapshot_restore_privilege: true
             check_snapshot_restore_write_privileges: true
@@ -135,9 +132,6 @@ data:
             allow_default_init_securityindex: true
             nodes_dn:
               - 'CN=nodes.example.com,OU=IT,O=IT,L=Luxembourg,ST=Luxembourg,C=LU'
-            authcz:
-              admin_dn:
-                - CN=admin,OU=IT,O=IT,L=Luxembourg,ST=Luxembourg,C=LU
             audit.type: internal_opensearch
             enable_snapshot_restore_privilege: true
             check_snapshot_restore_write_privileges: true

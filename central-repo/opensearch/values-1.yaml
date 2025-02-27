@@ -43,7 +43,8 @@ master:
               - 'CN=*.k8s-dev.bankingcircle.net,OU=AA,O=Bankingcircle,L=Luxembourg,ST=Luxembourg,C=LU'
             authcz:
               admin_dn:
-                - 'CN=admin,OU=AA,O=Bankingcircle,L=Luxembourg,ST=Luxembourg,C=LU'
+                - CN=admin,OU=IT,O=IT,L=Luxembourg,ST=Luxembourg,C=LU
+
             audit.type: internal_opensearch
             enable_snapshot_restore_privilege: true
             check_snapshot_restore_write_privileges: true
