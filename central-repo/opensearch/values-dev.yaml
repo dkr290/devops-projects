@@ -194,7 +194,7 @@ data:
       enabled: false
 
 dashboard:
-  enabled: true
+  enabled: false
   dashboard:
     replicaCount: 1
     opensearchHosts: "http://opensearch-cluster-master:9200"
