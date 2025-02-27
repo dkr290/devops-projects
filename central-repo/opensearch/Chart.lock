@@ -9,4 +9,4 @@ dependencies:
   repository: file://./charts/dashboard
   version: 2.27.1
 digest: sha256:a0f7f181e41ce8393943600f57e77e9610a2a18aaa0385069383dbe96b787256
-generated: "2025-02-27T08:49:48.473323738+01:00"
+generated: "2025-02-27T09:48:52.493356648+01:00"
