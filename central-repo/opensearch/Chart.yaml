@@ -34,7 +34,7 @@ dependencies:
     alias: data
     condition: data.enabled
   - name: dashboard
-    version: 2.27.1
+    version: 2.25.0
     repository: file://./charts/dashboard
     alias: dashboard
     condition: dashboard.enabled
