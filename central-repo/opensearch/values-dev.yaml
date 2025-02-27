@@ -5,7 +5,7 @@ master:
     clusterName: "opensearch-cluster"
     nodeGroup: master
     masterService: "opensearch-cluster-master"
-    replicas: 2
+    replicas: 3
     # Enable master roles
     roles:
       - master
@@ -104,7 +104,7 @@ data:
     roles:
       - data
       - ingest
-    replicas: 2
+    replicas: 3
     resources:
       requests:
         cpu: "500m"
