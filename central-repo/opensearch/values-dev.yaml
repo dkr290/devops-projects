@@ -282,7 +282,7 @@ httproute:
   enabled: true
   name: ops-dashboard-httproute
   hostnames:
-    - "dashboard.172.22.0.3.nip.io"
+    - "dashboard.172.22.0.5.nip.io"
   rules:
     backendrefs:
       - group: ""
@@ -298,7 +298,7 @@ apiroute:
   enabled: true
   name: api-httproute
   hostnames:
-    - "api.172.22.0.3.nip.io"
+    - "api.172.22.0.5.nip.io"
   rules:
     backendrefs:
       - group: ""
