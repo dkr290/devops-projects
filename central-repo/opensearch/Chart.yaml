@@ -33,11 +33,6 @@ dependencies:
     repository: file://./charts/data/
     alias: data
     condition: data.enabled
-  - name: client
-    version: 2.31.0
-    repository: file://./charts/client/
-    alias: client
-    condition: client.enabled
   - name: dashboard
     version: 2.27.1
     repository: file://./charts/dashboard/
