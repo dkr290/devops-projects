@@ -1,0 +1,3 @@
+dashboard:
+  replicaCount: 2
+  opensearchHosts: "https://opensearch-cluster-master:9200"
