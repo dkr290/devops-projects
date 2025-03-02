@@ -63,7 +63,7 @@ apiroute:
     - matches:
         - path:
             type: PathPrefix
-            value: /qdrant/dashboard
+            value: /qdrant/dashboard/*
       filters:
         - type: URLRewrite
           urlRewrite:
