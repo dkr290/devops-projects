@@ -60,22 +60,21 @@ apiroute:
           name: qd-qdrant-app
           port: 6333
           weight: 1
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /qdrant/dashboard/*
-      filters:
-        - type: URLRewrite
-          urlRewrite:
-            path:
-              type: ReplacePrefixMatch
-              replacePrefixMatch: "/dashboard"
-      backendRefs:
+    - backendRefs:
         - group: ""
           kind: Service
           name: qd-qdrant-app
           port: 6333
           weight: 1
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              replacePrefixMatch: /dashboard
+      matches:
+        - path:
+            type: PathPrefix
+            value: /qdrant-dashboard
 
     - matches:
         - path:
