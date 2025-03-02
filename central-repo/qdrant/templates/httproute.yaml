@@ -7,6 +7,10 @@ spec:
   parentRefs:
     - name: default-gateway
       namespace: envoy-gateway-system
+  hostnames:
+  {{- range .Values.httproute.hostnames }}
+    - {{ . }}    
+  {{- end }}
   rules:
     {{- toYaml .Values.apiroute.rules | nindent 4 }}
 

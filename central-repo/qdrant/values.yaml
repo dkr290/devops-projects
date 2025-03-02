@@ -43,40 +43,19 @@ qdrant:
 apiroute:
   enabled: true
   name: qdrant
+  hostnames:
+    - "qdrant.172.22.0.3.nip.io"
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /qdrant
-      filters:
-        - type: URLRewrite
-          urlRewrite:
-            path:
-              type: ReplacePrefixMatch
-              replacePrefixMatch: "/"
+            value: /
       backendRefs:
         - group: ""
           kind: Service
           name: qd-qdrant-app
           port: 6333
           weight: 1
-    - backendRefs:
-        - group: ""
-          kind: Service
-          name: qd-qdrant-app
-          port: 6333
-          weight: 1
-      filters:
-        - type: URLRewrite
-          urlRewrite:
-            path:
-              type: ReplacePrefixMatch
-              replacePrefixMatch: "/dashboard"
-      matches:
-        - path:
-            type: PathPrefix
-            value: /qdrant-dashboard
-
     - matches:
         - path:
             type: PathPrefix
