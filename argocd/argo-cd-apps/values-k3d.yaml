@@ -85,3 +85,20 @@ mongodb:
       selfHeal: true
       prune: true
   targetRevision: main
+
+## opensearch application
+qdrant:
+  enabled: true
+  name: qdrant
+  project: default
+  path: central-repo/qdrant
+  repo: https://github.com/dkr290/devops-projects.git
+  namespace: qdrant
+  syncPolicy:
+    manual: true
+    automated:
+      selfHeal: true
+      prune: true
+  targetRevision: main
+  valueFiles:
+    - values.yaml

@@ -1,0 +1,36 @@
+{{- if hasKey .Values "qdrant" }}
+{{- if .Values.qdrant.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.qdrant.name }}
+  namespace: argocd
+  finalizers:
+    # The default behaviour is foreground cascading deletion
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.qdrant.project }}
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: {{ .Values.qdrant.namespace }}
+  source:
+    path: {{ .Values.qdrant.path }}
+    repoURL: {{ .Values.qdrant.repo }}
+    targetRevision: {{ .Values.qdrant.targetRevision }}
+    helm:
+      releaseName: qd
+      {{- with .Values.qdrant.valueFiles }}
+      valueFiles:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  syncPolicy:
+  {{- if not .Values.qdrant.syncPolicy.manual }}
+    automated:
+    {{- with .Values.qdrant.syncPolicy.automated }}
+    {{- toYaml . | nindent 6 }}
+    {{- end}}
+  {{- end }}
+    syncOptions:
+    - PrunePropagationPolicy=foreground
+{{- end }}
+{{- end }}

@@ -1,0 +1,72 @@
+qdrant:
+  replicaCount: 3
+
+  image:
+    repository: docker.io/qdrant/qdrant
+    pullpolicy: ifnotpresent
+    tag: ""
+    useunprivilegedimage: false
+  nameOverride: "qdrant-app"
+  fullnameoverride: "qdrant-app"
+  env:
+    {}
+    # - name: QDRANT_ALLOW_RECOVERY_MODE
+    #   value: true
+
+  # checks - Readiness and liveness checks can only be enabled for either http (REST) or grpc (multiple checks not supported)
+  # grpc checks are only available from k8s 1.24+ so as of per default we check http
+
+  ingress:
+    enabled: false
+
+  resources:
+    limits:
+      cpu: 2
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  updateVolumeFsOwnership: true
+
+  persistence:
+    accessModes: ["ReadWriteOnce"]
+    size: 1Gi
+    storageClassName: local-path
+
+  snapshotPersistence:
+    enabled: true
+    accessModes: ["ReadWriteOnce"]
+    size: 1Gi
+    storageClassName: local-path
+
+apiroute:
+  enabled: true
+  name: qdrant
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /qdrant
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: "/"
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: qd-qdrant-app
+          port: 6333
+          weight: 1
+        - group: ""
+          kind: Service
+          name: qd-qdrant-app
+          port: 6334
+          weight: 1
+        - group: ""
+          kind: Service
+          name: qd-qdrant-app
+          port: 6335
+          weight: 1
