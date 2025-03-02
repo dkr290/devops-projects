@@ -60,11 +60,33 @@ apiroute:
           name: qd-qdrant-app
           port: 6333
           weight: 1
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /grpc
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: "/"
+      backendRefs:
         - group: ""
           kind: Service
           name: qd-qdrant-app
           port: 6334
           weight: 1
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /p2p
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: "/"
+      backendRefs:
         - group: ""
           kind: Service
           name: qd-qdrant-app
