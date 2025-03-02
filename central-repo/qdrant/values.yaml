@@ -70,7 +70,8 @@ apiroute:
         - type: URLRewrite
           urlRewrite:
             path:
-              replacePrefixMatch: /dashboard
+              type: ReplacePrefixMatch
+              replacePrefixMatch: "/dashboard"
       matches:
         - path:
             type: PathPrefix
