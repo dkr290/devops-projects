@@ -44,7 +44,7 @@ apiroute:
   enabled: true
   name: qdrant
   hostnames:
-    - "qdrant.172.22.0.3.nip.io"
+    - "qdrant.172.22.0.5.nip.io"
   rules:
     - matches:
         - path:
