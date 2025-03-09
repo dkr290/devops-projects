@@ -35,11 +35,7 @@ spec:
   hostnames:
     - "qdrant-grpc.172.22.0.5.nip.io"
   rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /
-      backendRefs:
+    - backendRefs:
         - group: ""
           kind: Service
           name: qd-qdrant-app 
