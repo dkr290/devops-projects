@@ -40,7 +40,7 @@ gotasks:
 
 ## opensearch application
 opensearch:
-  enabled: true
+  enabled: false
   name: opensearch
   project: default
   path: central-repo/opensearch
