@@ -24,3 +24,21 @@ spec:
           weight: {{ .backendRefs.weight }}
   {{- end }}
 {{- end }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GRPCRoute
+metadata:
+  name: qdrant-grpcroute
+spec:
+  parentRefs:
+    - name: qdrant-gateway
+  hostnames:
+    - "qdrant-grpc.172.22.0.5.nip.io"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: qd-qdrant-app 
+          port: 6334

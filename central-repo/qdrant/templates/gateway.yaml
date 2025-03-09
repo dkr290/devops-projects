@@ -9,7 +9,7 @@ spec:
       protocol: HTTP
       port: 6333
     - name: grpc
-      protocol: grpc
+      protocol: HTTP
       port: 6334
     - name: p2p
       protocol: p2p 
