@@ -44,47 +44,18 @@ apiroute:
   enabled: true
   name: qdrant
   hostnames:
-    - "qdrant.172.22.0.5.nip.io"
-  rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /
+    - hostname: "qdrant.172.22.0.5.nip.io"
       backendRefs:
-        - group: ""
-          kind: Service
-          name: qd-qdrant-app
-          port: 6333
-          weight: 1
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /grpc
-      filters:
-        - type: URLRewrite
-          urlRewrite:
-            path:
-              type: ReplacePrefixMatch
-              replacePrefixMatch: "/"
+        name: qd-qdrant-app
+        port: 6333
+        weight: 1
+    - hostname: "qdrant-grpc.172.22.0.5.nip.io"
       backendRefs:
-        - group: ""
-          kind: Service
-          name: qd-qdrant-app
-          port: 6334
-          weight: 1
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /p2p
-      filters:
-        - type: URLRewrite
-          urlRewrite:
-            path:
-              type: ReplacePrefixMatch
-              replacePrefixMatch: "/"
+        name: qd-qdrant-app
+        port: 6334
+        weight: 1
+    - hostname: "qdrant-p2p.172.22.0.5.nip.io"
       backendRefs:
-        - group: ""
-          kind: Service
-          name: qd-qdrant-app
-          port: 6335
-          weight: 1
+        name: qd-qdrant-app
+        port: 6335
+        weight: 1

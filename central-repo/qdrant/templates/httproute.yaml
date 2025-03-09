@@ -5,13 +5,22 @@ metadata:
   name: {{ .Values.apiroute.name }}
 spec:
   parentRefs:
-    - name: default-gateway
-      namespace: envoy-gateway-system
+    - name: qdrant-gateway
   hostnames:
   {{- range .Values.apiroute.hostnames }}
-    - {{ . }}    
+    - {{ .hostname }}
   {{- end }}
   rules:
-    {{- toYaml .Values.apiroute.rules | nindent 4 }}
-
+  {{- range .Values.apiroute.hostnames }}
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: {{ .backendRefs.name }}
+          port: {{ .backendRefs.port }}
+          weight: {{ .backendRefs.weight }}
+  {{- end }}
 {{- end }}
