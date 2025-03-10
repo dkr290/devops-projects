@@ -77,8 +77,8 @@ ollama:
       memory: 512Mi
       cpu: "4"
     limits:
-      memory: 14Gi
-      cpu: "8"
+      memory: 28Gi
+      cpu: "16"
   # Configure autoscaling
   autoscaling:
     # -- Enable autoscaling
