@@ -28,6 +28,7 @@ ollama:
         - mxbai-embed-large
         - llama3.2
         - nomic-embed-text
+        - deepseek-r1
 
       # -- List of models to load in memory at container startup
       # run:
