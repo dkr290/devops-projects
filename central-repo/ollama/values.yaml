@@ -74,7 +74,7 @@ ollama:
   # ref: http://kubernetes.io/docs/user-guide/compute-resources/
   resources:
     requests:
-      memory: 512Mi
+      memory: 18Gi
       cpu: "4"
     limits:
       memory: 28Gi
