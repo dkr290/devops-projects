@@ -59,22 +59,18 @@ master:
     extraVolumes:
       - name: opensearch-certificates
         secret:
-          secretName: opensearch-certificates
-      # - name: internal-users
-      #   configMap:
-      #     name: internal-users
-      # - name: snapshots
+          secretName:
+            opensearch-certificates
+            # - name: snapshots
       #   persistentVolumeClaim:
       #     claimName: snapshots
 
     extraVolumeMounts:
       - name: opensearch-certificates
         mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
-        readOnly: true
-      # - name: internal-users
-      #   mountPath: /usr/share/opensearch/config/opensearch-security/internal_users.yml
-      #   subPath: internal_users.yml
-      # - name: snapshots
+        readOnly:
+          true
+          # - name: snapshots
       #   mountPath: /mnt/snapshots
 
     extraInitContainers:
@@ -157,9 +153,6 @@ data:
       - name: opensearch-certificates
         secret:
           secretName: opensearch-certificates
-      # - name: internal-users
-      #   configMap:
-      #     name: internal-users
       # - name: snapshots
       #   persistentVolumeClaim:
       #     claimName: snapshots
@@ -168,9 +161,6 @@ data:
       - name: opensearch-certificates
         mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
         readOnly: true
-      # - name: internal-users
-      #   mountPath: /usr/share/opensearch/config/opensearch-security/internal_users.yml
-      #   subPath: internal_users.yml
       # - name: snapshots
       #   mountPath: /mnt/snapshots
 
