@@ -57,7 +57,7 @@ opensearch:
 
 ## opensearch application
 ollama:
-  enabled: true
+  enabled: false
   name: ollama
   project: default
   path: central-repo/ollama
