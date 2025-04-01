@@ -88,7 +88,7 @@ mongodb:
 
 ## opensearch application
 qdrant:
-  enabled: true
+  enabled: false
   name: qdrant
   project: default
   path: central-repo/qdrant
