@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: argo-events
+  name: operate-workflow-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argo-webhook-role
+rules:
+  - apiGroups: ["argoproj.io"]
+    resources:
+      [
+        "workflows",
+        "workflowtemplates",
+        "cronworkflows",
+        "clusterworkflowtemplates",
+      ]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "watch", "patch"]
+    # logs get/watch are used to get the pods logs for script outputs, and for log archival
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argo-webhook-binding
+  namespace: argo-events
+subjects:
+  - kind: ServiceAccount
+    name: operate-workflow-sa
+    namespace: argo-events
+roleRef:
+  kind: ClusterRole
+  name: argo-webhook-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argo-webhook-binding
+  namespace: workflows
+subjects:
+  - kind: ServiceAccount
+    name: operate-workflow-sa
+    namespace: argo-events
+roleRef:
+  kind: ClusterRole
+  name: argo-webhook-role
+  apiGroup: rbac.authorization.k8s.io

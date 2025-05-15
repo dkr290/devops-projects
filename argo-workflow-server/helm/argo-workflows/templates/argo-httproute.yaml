@@ -1,0 +1,25 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ .Values.argo.httproute.name }}
+  namespace: {{ .Values.argo.httproute.namespace }}
+spec:
+  {{- with .Values.argo.httproute }}
+  hostnames:
+    {{- toYaml .hostnames | nindent 4}}
+  parentRefs:
+    {{- toYaml .parentRefs | nindent 4}}
+  {{- end }}
+  rules:
+    - backendRefs:
+        - group: ""
+          kind: Service
+          name: {{ .Values.argo.httproute.backend.name }}
+          port: {{ .Values.argo.httproute.backend.port }}
+          weight: 1
+      matches:
+        - path:
+            value: /
+            type: PathPrefix
+      timeouts:
+        request: 300s

@@ -1,0 +1,25 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ .Values.events.httproute.name }}
+  namespace: {{ .Values.events.httproute.namespace }}
+spec:
+  {{- with .Values.events.httproute }}
+  hostnames:
+    {{- toYaml .hostnames | nindent 4}}
+  parentRefs:
+    {{- toYaml .parentRefs | nindent 4}}
+  {{- end }}
+  rules:
+    - backendRefs:
+        - group: ""
+          kind: Service
+          name: {{ .Values.argo.events.eventSourceName }}-eventsource-svc
+          port: {{ index  .Values.eventsource.service.ports 0 "port" }}
+          weight: 1
+      matches:
+        - path:
+            value: {{ .Values.eventsource.webhook.test.endpoint }}
+            type: PathPrefix
+      timeouts:
+        request: 300s

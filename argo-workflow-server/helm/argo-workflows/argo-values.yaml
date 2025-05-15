@@ -1,0 +1,154 @@
+# -- Restrict Argo to operate only in a single namespace (the namespace of the
+# Helm release) by apply Roles and RoleBindings instead of the Cluster
+# equivalents, and start workflow-controller with the --namespaced flag. Use it
+# in clusters with strict access policy.
+argo:
+  singleNamespace: false
+  workflow:
+    serviceAccount:
+      # -- Specifies whether a service account should be created
+      create: true
+      # -- Labels applied to created service account
+      labels: {}
+      # -- Annotations applied to created service account
+      annotations: {}
+      # -- Service account which is used to run workflows
+      name: "argo-workflow"
+      # -- Secrets with credentials to pull images from a private registry. Same format as `.Values.images.pullSecrets`
+      pullSecrets: []
+    rbac:
+      # -- Adds Role and RoleBinding for the above specified service account to be able to run workflows.
+      # A Role and Rolebinding pair is also created for each namespace in controller.workflowNamespaces (see below)
+      create: true
+      # -- Extra service accounts to be added to the RoleBinding
+      serviceAccounts:
+        - name: default
+        #   namespace: my-namespace
+  controller:
+    serviceMonitor:
+      # -- Enable a prometheus ServiceMonitor
+      enabled: true
+      # -- Prometheus ServiceMonitor labels
+      additionalLabels: {}
+      # -- Prometheus ServiceMonitor namespace
+      namespace: "" # "monitoring"
+
+    # -- Specify all namespaces where this workflow controller instance will manage
+    # workflows. This controls where the service account and RBAC resources will
+    # be created. Only valid when singleNamespace is false.
+    workflowNamespaces:
+      - workflows
+      - argo
+      - argo-events
+
+    logging:
+      # -- Set the logging level (one of: `debug`, `info`, `warn`, `error`)
+      level: info
+      # -- Set the glog logging level
+      globallevel: "0"
+      # -- Set the logging format (one of: `text`, `json`)
+      format: "text"
+
+    # -- Resource limits and requests for the controller
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+
+  # executor controls how the init and wait container should be customized
+  executor:
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+
+    autoscaling:
+      # -- Enable Horizontal Pod Autoscaler ([HPA]) for the Argo Server
+      enabled: true
+    logging:
+      # -- Set the logging level (one of: `debug`, `info`, `warn`, `error`)
+      level: info
+      # -- Set the glog logging level
+      globallevel: "0"
+      # -- Set the logging format (one of: `text`, `json`)
+      format: "text"
+
+  server:
+    # secure: true
+    autoscaling:
+      # -- Enable Horizontal Pod Autoscaler ([HPA]) for the Argo Server
+      enabled: true
+      # -- Minimum number of replicas for the Argo Server [HPA]
+      minReplicas: 1
+      # -- Maximum number of replicas for the Argo Server [HPA]
+      maxReplicas: 5
+    logging:
+      # -- Set the logging level (one of: `debug`, `info`, `warn`, `error`)
+      level: info
+      # -- Set the glog logging level
+      globallevel: "0"
+      # -- Set the logging format (one of: `text`, `json`)
+      format: "text"
+    authModes:
+      ["server"]
+      # -- The root URL of the OIDC identity provider
+
+  # -- Use static credentials for S3 (eg. when not using AWS IRSA)
+  useStaticCredentials: true
+  artifactRepository:
+    archiveLogs: false
+    s3:
+      bucket: argo-artifacts # INFO: Needs to be created
+      endpoint: argo-artifacts.argo.svc:9000
+      insecure: true
+      accessKeySecret:
+        name: "argo-artifacts"
+        key: rootUser
+      secretKeySecret:
+        name: "argo-artifacts"
+        key: rootPassword
+
+  httproute:
+    name: argo-httproute
+    namespace: argo
+    hostnames:
+      - argo.IP.nip.io
+    parentRefs:
+      - group: gateway.networking.k8s.io
+        kind: Gateway
+        name: default-gateway
+        namespace: envoy-gateway-system
+    backend:
+      name: wf-argo-workflows-server
+      port: 2746
+
+events:
+  eventSourceName: test-jobs-webhook
+  eventName: test
+
+  sensor:
+    name: test-webhook-sensor
+    namespace: argo-events
+
+  eventsource:
+    namespace: argo-events
+    service:
+      ports:
+        - port: 12000
+          targetPort: 12000
+    webhook:
+      test:
+        port: "12000"
+        endpoint: /test
+        method: POST
+
+  httproute:
+    name: test-jobs-httproute
+    namespace: argo-events
+    hostnames:
+      - argo-events.IP.nip.io
+    parentRefs:
+      - group: gateway.networking.k8s.io
+        kind: Gateway
+        name: default-gateway
+        namespace: envoy-gateway-system
