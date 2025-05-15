@@ -59,22 +59,18 @@ master:
     extraVolumes:
       - name: opensearch-certificates
         secret:
-          secretName: opensearch-certificates
-      # - name: internal-users
-      #   configMap:
-      #     name: internal-users
-      # - name: snapshots
+          secretName:
+            opensearch-certificates
+            # - name: snapshots
       #   persistentVolumeClaim:
       #     claimName: snapshots
 
     extraVolumeMounts:
       - name: opensearch-certificates
         mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
-        readOnly: true
-      # - name: internal-users
-      #   mountPath: /usr/share/opensearch/config/opensearch-security/internal_users.yml
-      #   subPath: internal_users.yml
-      # - name: snapshots
+        readOnly:
+          true
+          # - name: snapshots
       #   mountPath: /mnt/snapshots
 
     extraInitContainers:
@@ -157,9 +153,6 @@ data:
       - name: opensearch-certificates
         secret:
           secretName: opensearch-certificates
-      # - name: internal-users
-      #   configMap:
-      #     name: internal-users
       # - name: snapshots
       #   persistentVolumeClaim:
       #     claimName: snapshots
@@ -168,9 +161,6 @@ data:
       - name: opensearch-certificates
         mountPath: /usr/share/opensearch/config/certs # Adjust path as required by the plugin
         readOnly: true
-      # - name: internal-users
-      #   mountPath: /usr/share/opensearch/config/opensearch-security/internal_users.yml
-      #   subPath: internal_users.yml
       # - name: snapshots
       #   mountPath: /mnt/snapshots
 
@@ -196,6 +186,23 @@ dashboard:
   dashboard:
     replicaCount: 1
     opensearchHosts: "http://opensearch-cluster-master:9200"
+    config:
+      # Default OpenSearch Dashboards configuration from docker image of Dashboards
+
+      opensearch_dashboards.yml: |
+        opensearch.hosts: [https://localhost:9200]
+        opensearch.ssl.verificationMode: none
+        opensearch.username: kibanaserver
+        opensearch.password: kibanaserver
+        opensearch.requestHeadersWhitelist: [authorization, securitytenant]
+
+        opensearch_security.multitenancy.enabled: false
+        opensearch_security.multitenancy.tenants.preferred: [Private, Global]
+        opensearch_security.readonly_mode.roles: [kibana_read_only]
+        # Use this setting if you are running opensearch-dashboards without https
+        opensearch_security.cookie.secure: false
+        server.host: '0.0.0.0'
+
   serviceMonitor:
     # Set to true to enable the ServiceMonitor resource
     enabled: false
@@ -217,7 +224,7 @@ httproute:
   enabled: true
   name: ops-dashboard-httproute
   hostnames:
-    - "dashboard.172.22.0.4.nip.io"
+    - "dashboard.172.22.0.3.nip.io"
   rules:
     backendrefs:
       - group: ""
@@ -233,7 +240,7 @@ apiroute:
   enabled: true
   name: api-httproute
   hostnames:
-    - "api.172.22.0.4.nip.io"
+    - "api.172.22.0.3.nip.io"
   rules:
     backendrefs:
       - group: ""

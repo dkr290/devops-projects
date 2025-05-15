@@ -40,7 +40,7 @@ gotasks:
 
 ## opensearch application
 opensearch:
-  enabled: false
+  enabled: true
   name: opensearch
   project: default
   path: central-repo/opensearch
@@ -57,7 +57,7 @@ opensearch:
 
 ## opensearch application
 ollama:
-  enabled: true
+  enabled: false
   name: ollama
   project: default
   path: central-repo/ollama
@@ -88,7 +88,7 @@ mongodb:
 
 ## opensearch application
 qdrant:
-  enabled: true
+  enabled: false
   name: qdrant
   project: default
   path: central-repo/qdrant
