@@ -14,65 +14,6 @@ data "aws_ami" "gpu_ami" {
   }
 }
 
-# Simple VPC
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
-}
-
-resource "aws_subnet" "main" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "us-east-1a" # Specific AZ for better spot capacity
-}
-
-resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.main.id
-}
-
-resource "aws_route_table" "rt" {
-  vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.gw.id
-  }
-}
-
-resource "aws_route_table_association" "a" {
-  subnet_id      = aws_subnet.main.id
-  route_table_id = aws_route_table.rt.id
-}
-
-# Security group
-resource "aws_security_group" "gpu_sg" {
-  name        = "spot-gpu-sg"
-  description = "Security group for GPU spot instance"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    description = "SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = var.ssh_inbound
-  }
-
-  ingress {
-    description = "Jupyter"
-    from_port   = 8888
-    to_port     = 8898
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
 # SPOT INSTANCE - 24GB GPU
 resource "aws_spot_instance_request" "gpu_spot" {
   count                  = var.instance_type == "spot" ? 1 : 0
@@ -125,29 +66,6 @@ resource "aws_instance" "gpu_ondemand" {
     Name = "24gb-gpu-ondemand"
   }
 }
-locals {
-  instance_public_ip = var.instance_type == "spot" ? (length(aws_spot_instance_request.gpu_spot) > 0 ? aws_spot_instance_request.gpu_spot[0].public_ip : "") : (length(aws_instance.gpu_ondemand) > 0 ? aws_instance.gpu_ondemand[0].public_ip : "")
-}
-# Outputs
-output "public_ip" {
-  value = local.instance_public_ip
-}
 
-output "ssh_command" {
-  value = "ssh -i ~/.ssh/${var.key_name}.pem ubuntu@${local.instance_public_ip}"
-}
 
-output "jupyter_url" {
-  value = "http://${local.instance_public_ip}:8888"
-}
 
-output "instance_type" {
-  value = var.instance_type
-}
-output "cost_estimate" {
-  value = var.instance_type == "spot" ? "Spot instance: ~$0.35-0.40/hour" : "On-demand instance: ~$1.20/hour"
-}
-
-output "deep_learning_ami_info" {
-  value = "Using Deep Learning AMI: ${data.aws_ami.gpu_ami.name}"
-}
