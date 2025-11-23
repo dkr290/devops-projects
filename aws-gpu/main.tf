@@ -18,7 +18,7 @@ data "aws_ami" "gpu_ami" {
 resource "aws_spot_instance_request" "gpu_spot" {
   count                  = var.instance_type == "spot" ? 1 : 0
   ami                    = data.aws_ami.gpu_ami.id
-  instance_type          = "g5.2xlarge" # A10G 24GB GPU
+  instance_type          = "g5.xlarge" # A10G 24GB GPU 4CPU
   subnet_id              = aws_subnet.main.id
   vpc_security_group_ids = [aws_security_group.gpu_sg.id]
   key_name               = var.key_name # CHANGE THIS
@@ -30,7 +30,7 @@ resource "aws_spot_instance_request" "gpu_spot" {
   instance_interruption_behavior = "stop"
 
   # Set reasonable max price (current spot ~$0.32)
-  spot_price = "0.50" # Max you're willing to pay
+  spot_price = "0.39" # Max you're willing to pay
 
   associate_public_ip_address = true
 
@@ -41,7 +41,8 @@ resource "aws_spot_instance_request" "gpu_spot" {
   }
 
   tags = {
-    Name = "24gb-gpu-spot-cheap"
+    Name = "gpu-spot-training-node"
+    Env  = "dev"
   }
 }
 
@@ -49,7 +50,7 @@ resource "aws_instance" "gpu_ondemand" {
   count = var.instance_type == "ondemand" ? 1 : 0
 
   ami                    = data.aws_ami.gpu_ami.id
-  instance_type          = "g5.2xlarge"
+  instance_type          = "g5.xlarge"
   subnet_id              = aws_subnet.main.id
   vpc_security_group_ids = [aws_security_group.gpu_sg.id]
   key_name               = var.key_name
