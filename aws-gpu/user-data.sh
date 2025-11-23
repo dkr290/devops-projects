@@ -6,8 +6,8 @@ apt-get upgrade -y
 # Install NVIDIA drivers (single command)
 sudo ubuntu-drivers install --gpgpu
 sudo ubuntu-drivers install --gpgpu nvidia:535-server
-apt-get install -y nvidia-driver-535
-
+sudo apt-get install -y nvidia-driver-535
+sudo apt install nvidia-cuda-toolkit
 # Verify installation immediately
 if nvidia-smi &> /dev/null; then
     echo "SUCCESS: NVIDIA drivers installed correctly"
