@@ -51,10 +51,10 @@ func NewStoryVideoGenerator(config GeneratorConfig) (*StoryVideoGenerator, error
 	g.SegmentsDir = filepath.Join(g.OutputDir, "segments")
 
 	// Create directories
-	if err := os.MkdirAll(g.OutputDir, 0755); err != nil {
+	if err := os.MkdirAll(g.OutputDir, 0o755); err != nil {
 		return nil, fmt.Errorf("failed to create output dir: %w", err)
 	}
-	if err := os.MkdirAll(g.SegmentsDir, 0755); err != nil {
+	if err := os.MkdirAll(g.SegmentsDir, 0o755); err != nil {
 		return nil, fmt.Errorf("failed to create segments dir: %w", err)
 	}
 
@@ -206,7 +206,7 @@ func (g *StoryVideoGenerator) GenerateSegment(
 		"--sample_shift", fmt.Sprintf("%.1f", g.SampleShift),
 		"--sample_guide_scale", fmt.Sprintf("%.1f", g.SampleGuideScale),
 		"--prompt", prompt,
-		//	"--seed", fmt.Sprintf("%d", seed),
+		"--base_seed", fmt.Sprintf("%d", seed),
 	}
 
 	if g.OffloadModel {
@@ -298,7 +298,7 @@ func (g *StoryVideoGenerator) StitchVideos(segmentFiles []string, outputPath str
 		content.WriteString(fmt.Sprintf("file '%s'\n", absPath))
 	}
 
-	if err := os.WriteFile(concatFile, []byte(content.String()), 0644); err != nil {
+	if err := os.WriteFile(concatFile, []byte(content.String()), 0o644); err != nil {
 		return fmt.Errorf("failed to create concat file: %w", err)
 	}
 
