@@ -206,7 +206,7 @@ func (g *StoryVideoGenerator) GenerateSegment(
 		"--sample_shift", fmt.Sprintf("%.1f", g.SampleShift),
 		"--sample_guide_scale", fmt.Sprintf("%.1f", g.SampleGuideScale),
 		"--prompt", prompt,
-		"--seed", fmt.Sprintf("%d", seed),
+		//	"--seed", fmt.Sprintf("%d", seed),
 	}
 
 	if g.OffloadModel {
