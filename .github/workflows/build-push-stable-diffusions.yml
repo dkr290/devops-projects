@@ -16,5 +16,5 @@ jobs:
       name: Build and push sd image generator docker image
       docker_image_name: ghcr.io/${{ github.repository }}/sd
       version: "1.0.4"
-      folder: devops-projects/stable-diffusions
+      folder: sd
       dockerfileName: Dockerfile
