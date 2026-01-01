@@ -2,6 +2,8 @@ name: Docker build and push sd app
 
 on:
   push:
+    paths:
+      - "sd/**"
     branches:
       - main
   pull_request:
@@ -10,7 +12,7 @@ on:
   workflow_dispatch:
 jobs:
   # This workflow contains a single job called "build"
-  build-api-service:
+  build-sd-service:
     uses: dkr290/devops-projects/.github/workflows/docker-build-template.yml@main
     with:
       name: Build and push sd image generator docker image
