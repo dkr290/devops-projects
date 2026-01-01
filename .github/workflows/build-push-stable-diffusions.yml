@@ -19,4 +19,4 @@ jobs:
       docker_image_name: ghcr.io/${{ github.repository }}/sd
       version: "1.0.4"
       folder: sd
-      dockerfileName: Dockerfile
+      dockerfileName: sd/Dockerfile
