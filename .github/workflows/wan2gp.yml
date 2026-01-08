@@ -16,4 +16,4 @@ jobs:
       docker_image_name: ghcr.io/${{ github.repository }}/wan2gp
       version: "1.0.0"
       folder: .
-      dockerfileName: Dockerfile
+      dockerfileName: wan2gp/Dockerfile
