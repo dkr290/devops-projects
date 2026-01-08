@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 jobs:
   build-api-service:
-    uses: dkr290/wan2gp/.github/workflows/docker-build-template-new.yml@main
+    uses: dkr290/wan2gp/.github/workflows/docker-build-push.yml@main
     with:
       name: Build and push go-ai-gen image generator docker image
       docker_image_name: ghcr.io/${{ github.repository }}/wan2gp
