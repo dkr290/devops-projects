@@ -31,7 +31,7 @@ RUN git clone https://github.com/thu-ml/SageAttention.git /tmp/sage && \
 RUN pip3 install light2xv
 
 # 5. Startup Script
-COPY run.sh /run.sh
+COPY ./run.sh /run.sh
 RUN chmod +x /run.sh
 
 EXPOSE 7860
