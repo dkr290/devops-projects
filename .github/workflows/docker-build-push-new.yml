@@ -1,0 +1,111 @@
+name: Build and Push
+
+on:
+  workflow_call:
+    inputs:
+      docker_image_name:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+      folder:
+        required: true
+        type: string
+      name:
+        required: false
+        type: string
+        default: ""
+      dockerfileName:
+        required: false
+        type: string
+        default: "Dockerfile"
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    name: ${{ inputs.name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check if tag exists in GHCR
+        id: check-tag
+        run: |
+          IMAGE="${{ inputs.docker_image_name }}:${{ inputs.version }}"
+
+          echo "Checking: $IMAGE"
+
+          if docker manifest inspect "$IMAGE" >/dev/null 2>&1; then
+            echo "✓ Tag exists, skipping build"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "✗ Tag not found, will build"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Skip build - tag already exists
+        if: steps.check-tag.outputs.exists == 'true'
+        run: echo "✓ Docker image tag ${{ inputs.version }} already exists in GHCR. Skipping build."
+
+      - name: Free Disk Space (Ubuntu)
+
+        if: steps.check-tag.outputs.exists == 'false'
+        uses: jlumbroso/free-disk-space@main
+        with:
+          # This might remove tools that we won't need anyway
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: Check available disk space
+        if: steps.check-tag.outputs.exists == 'false'
+        run: |
+          echo "Available disk space:"
+          df -h
+          echo "Docker disk usage:"
+          docker system df
+
+      - name: Set up Docker Buildx
+        if: steps.check-tag.outputs.exists == 'false'
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            image=moby/buildkit:latest
+
+      - name: Log in to GitHub Container Registry
+        if: steps.check-tag.outputs.exists == 'false'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        if: steps.check-tag.outputs.exists == 'false'
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ inputs.docker_image_name }}
+          tags: |
+            type=raw,value=${{ inputs.version }}
+            type=sha,prefix={{branch}}-
+            type=ref,event=branch
+            type=ref,event=pr
+
+      - name: Build and push Docker image
+        if: steps.check-tag.outputs.exists == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ inputs.dockerfileName }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ inputs.docker_image_name }}:${{ inputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
