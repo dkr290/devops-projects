@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
 # 3. Install PyTorch & Wan2GP
 RUN pip3 install --upgrade pip setuptools wheel
 # Use Torch 2.7+ for better Wan 2.2 support
-RUN pip3 install torch==2.7.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+RUN pip3 install torch torchvision torchaudio 
 RUN git clone https://github.com/deepbeepmeep/Wan2GP.git . && \
   pip3 install -r requirements.txt
 
