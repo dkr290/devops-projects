@@ -12,7 +12,7 @@ jobs:
   build-ampere:
     uses: dkr290/devops-projects/.github/workflows/docker-build-push.yml@main
     with:
-      name: Build and push go-ai-gen image generator docker image
+      name: Build and push  rtx3xx ampere wan2gp
       docker_image_name: ghcr.io/${{ github.repository }}/wan2gp
       version: "rtx3x-ampere.0.2"
       folder: wan2gp
@@ -22,7 +22,7 @@ jobs:
     uses: dkr290/devops-projects/.github/workflows/docker-build-push.yml@main
     needs: build-ampere
     with:
-      name: Build and push go-ai-gen image generator docker image
+      name: Build and push rtx4xx ada
       docker_image_name: ghcr.io/${{ github.repository }}/wan2gp
       version: "rtx4x-ada.0.2"
       folder: wan2gp
@@ -32,7 +32,7 @@ jobs:
     uses: dkr290/devops-projects/.github/workflows/docker-build-push.yml@main
     needs: build-ada
     with:
-      name: Build and push go-ai-gen image generator docker image
+      name: Build and push blackwell
       docker_image_name: ghcr.io/${{ github.repository }}/wan2gp
       version: "rtx4x-blackwell.0.2"
       folder: wan2gp
