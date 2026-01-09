@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
+FROM nvidia/cuda:12.8.0-devel-ubuntu22.04
 
 # 1. Setup Environment
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -17,9 +17,9 @@ RUN apt-get update && apt-get install -y \
 # 3. Install PyTorch & Wan2GP
 RUN pip3 install --upgrade pip setuptools wheel
 # Use Torch 2.7+ for better Wan 2.2 support
-RUN pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu128 
-RUN pip install -U "triton<3.4"
-RUN python -m pip install "setuptools<=75.8.2" --force-reinstall && \
+RUN pip3 install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu128 
+RUN pip3 install -U "triton<3.4"
+RUN python3 -m pip install "setuptools<=75.8.2" --force-reinstall && \
   git clone https://github.com/thu-ml/SageAttention && \
   cd SageAttention && \
   pip install -e .
@@ -27,13 +27,12 @@ RUN python -m pip install "setuptools<=75.8.2" --force-reinstall && \
 RUN git clone https://github.com/deepbeepmeep/Wan2GP.git . && \
   pip3 install -r requirements.txt
 
-RUN pip install flash-attn==2.7.2.post1
+RUN pip3 install flash-attn==2.7.2.post1
 
 # Install Light2xv for FP4 support (Epic speed on RTX 5090)
 RUN pip3 install light2xv
 
 
-RUN ls -ltrh
 
 # 5. Startup Script
 COPY run.sh .

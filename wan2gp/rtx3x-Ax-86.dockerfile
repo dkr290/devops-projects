@@ -1,4 +1,5 @@
-FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
+FROM nvidia/cuda:12.6.0-devel-ubuntu22.04
+
 
 # 1. Setup Environment
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -17,12 +18,12 @@ RUN apt-get update && apt-get install -y \
 # 3. Install PyTorch & Wan2GP
 RUN pip3 install --upgrade pip setuptools wheel
 # Use Torch 2.7+ for better Wan 2.2 support
-RUN pip install torch==2.6.0+cu126 torchvision==0.21.0+cu126 torchaudio==2.6.0+cu126 --index-url https://download.pytorch.org/whl/cu126
-RUN pip install -U "triton<3.3"
-RUN python -m pip install "setuptools<=75.8.2" --force-reinstall && \
-  git clone https://github.com/thu-ml/SageAttention && \
-  cd SageAttention && \
-  pip install -e .
+RUN pip3 install torch==2.6.0+cu126 torchvision==0.21.0+cu126 torchaudio==2.6.0+cu126 --index-url https://download.pytorch.org/whl/cu126
+RUN pip3 install -U "triton<3.3"
+RUN python3 -m pip install "setuptools<=75.8.2" --force-reinstall && \
+  git clone https://github.com/thu-ml/SageAttention /tmp/sage && \
+  cd /tmp/sage && pip3 install -e . && \
+  cd /app && rm -rf /tmp/sage
 
 
 
@@ -39,7 +40,6 @@ RUN pip3 install flash-attn==2.7.2.post1 --no-build-isolation
 RUN pip3 install light2xv
 
 
-RUN ls -ltrh
 
 # 5. Startup Script
 COPY run.sh .
