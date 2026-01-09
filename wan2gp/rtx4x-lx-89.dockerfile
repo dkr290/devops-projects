@@ -20,9 +20,9 @@ RUN pip3 install --upgrade pip setuptools wheel && \
   pip3 install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu128 && \
   pip3 install -U "triton<3.4" && \
   python3 -m pip install "setuptools<=75.8.2" --force-reinstall && \
-  git clone https://github.com/thu-ml/SageAttention && \
-  cd SageAttention && \
-  pip install -e .
+  git clone https://github.com/thu-ml/SageAttention /tmp/sage && \
+  cd /tmp/sage && pip3 install -e . --no-build-isolation && \
+  cd /app && rm -rf /tmp/sage
 
 RUN git clone https://github.com/deepbeepmeep/Wan2GP.git . && \
   pip3 install -r requirements.txt
