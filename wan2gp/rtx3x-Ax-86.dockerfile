@@ -36,8 +36,6 @@ RUN pip3 install flash-attn==2.7.2.post1 --no-build-isolation
 
 
 
-# Install Light2xv for FP4 support (Epic speed on RTX 5090)
-RUN pip3 install light2xv
 
 
 
