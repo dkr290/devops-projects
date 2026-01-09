@@ -30,8 +30,11 @@ RUN git clone https://github.com/thu-ml/SageAttention.git /tmp/sage && \
 # Install Light2xv for FP4 support (Epic speed on RTX 5090)
 RUN pip3 install light2xv
 
+
+RUN ls -ltrh
+
 # 5. Startup Script
-COPY wan2gp/run.sh .
+COPY run.sh .
 RUN chmod +x run.sh
 
 EXPOSE 7860
@@ -43,4 +46,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=120s \
 # Install curl for healthcheck
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-CMD ["/run.sh"]
+CMD ["./run.sh"]
