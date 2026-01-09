@@ -15,13 +15,12 @@ RUN apt-get update && apt-get install -y \
   python3.10 python3.10-dev python3-pip git wget ffmpeg libsm6 libxext6 ninja-build aria2 \
   && rm -rf /var/lib/apt/lists/*
 
-# Use Torch 2.7+ for better Wan 2.2 support
-RUN pip3 install torch==2.6.0+cu126 torchvision==0.21.0+cu126 torchaudio==2.6.0+cu126 --index-url https://download.pytorch.org/whl/cu126
-RUN pip3 install -U "triton<3.3"
-
-RUN python3 -m pip install "setuptools<=75.8.2" --force-reinstall && \
+RUN pip3 install --upgrade pip setuptools wheel && \
+  pip3 install torch==2.6.0+cu126 torchvision==0.21.0+cu126 torchaudio==2.6.0+cu126 --index-url https://download.pytorch.org/whl/cu126 && \
+  pip3 install -U "triton<3.3" && \
+  python3 -m pip install "setuptools<=75.8.2" --force-reinstall && \
   git clone https://github.com/thu-ml/SageAttention /tmp/sage && \
-  cd /tmp/sage && pip3 install -e . && \
+  cd /tmp/sage && pip3 install -e . --no-build-isolation && \
   cd /app && rm -rf /tmp/sage
 
 
