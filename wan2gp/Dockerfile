@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
   FORCE_CUDA="1" \
   HF_HUB_ENABLE_HF_TRANSFER=1
 
-WORKDIR /workspace
+WORKDIR /app
 
 # 2. Install Dependencies
 RUN apt-get update && apt-get install -y \
@@ -30,9 +30,10 @@ RUN git clone https://github.com/thu-ml/SageAttention.git /tmp/sage && \
 # Install Light2xv for FP4 support (Epic speed on RTX 5090)
 RUN pip3 install light2xv
 
+RUN ls -l
 # 5. Startup Script
-COPY run.sh /run.sh
-RUN chmod +x /run.sh
+COPY run.sh .
+RUN chmod +x run.sh
 
 EXPOSE 7860
 
