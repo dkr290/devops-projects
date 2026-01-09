@@ -104,7 +104,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ inputs.folder }}
-          file: ${{ inputs.dockerfileName }}
+          file: ${{ inputs.folder }}/${{ inputs.dockerfileName }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ inputs.docker_image_name }}:${{ inputs.version }}
           cache-from: type=gha
