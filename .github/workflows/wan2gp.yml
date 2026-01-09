@@ -9,11 +9,31 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
-  build-api-service:
+  build-ampere:
     uses: dkr290/devops-projects/.github/workflows/docker-build-push.yml@main
     with:
       name: Build and push go-ai-gen image generator docker image
       docker_image_name: ghcr.io/${{ github.repository }}/wan2gp
-      version: "1.0.0"
+      version: "rtx3x-ampere.0.2"
       folder: wan2gp
-      dockerfileName: Dockerfile
+      dockerfileName: rtx3x-Ax-86.dockerfile
+
+  build-ada:
+    uses: dkr290/devops-projects/.github/workflows/docker-build-push.yml@main
+    needs: build-ampere
+    with:
+      name: Build and push go-ai-gen image generator docker image
+      docker_image_name: ghcr.io/${{ github.repository }}/wan2gp
+      version: "rtx4x-ada.0.2"
+      folder: wan2gp
+      dockerfileName: rtx4x-lx-89.dockerfile
+
+  build-blackwell:
+    uses: dkr290/devops-projects/.github/workflows/docker-build-push.yml@main
+    needs: build-ada
+    with:
+      name: Build and push go-ai-gen image generator docker image
+      docker_image_name: ghcr.io/${{ github.repository }}/wan2gp
+      version: "rtx4x-blackwell.0.2"
+      folder: wan2gp
+      dockerfileName: rtx5x-Ax-90.dockerfile

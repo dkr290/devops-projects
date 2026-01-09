@@ -3,7 +3,7 @@ FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
 # 1. Setup Environment
 ENV DEBIAN_FRONTEND=noninteractive \
   PYTHONUNBUFFERED=1 \
-  TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0;12.0" \
+  TORCH_CUDA_ARCH_LIST="9.0" \
   FORCE_CUDA="1" \
   HF_HUB_ENABLE_HF_TRANSFER=1
 
@@ -15,20 +15,17 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 # 3. Install PyTorch & Wan2GP
-RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
-  pip3 install --upgrade pip setuptools wheel
-
-RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
-  pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
-
+RUN pip3 install --upgrade pip setuptools wheel
+# Use Torch 2.7+ for better Wan 2.2 support
+RUN pip3 install torch torchvision torchaudio 
 RUN git clone https://github.com/deepbeepmeep/Wan2GP.git . && \
   pip3 install -r requirements.txt
 
 # 4. Install SVI Pro 2 & Acceleration Kernels
-# This layer will be cached after first build
-RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
-  --mount=type=cache,target=/tmp,sharing=locked \
-  pip3 install flash-attn --no-build-isolation
+# SageAttention is vital for long videos (SVI Pro 2)
+RUN pip3 install flash-attn --no-build-isolation
+RUN git clone https://github.com/thu-ml/SageAttention.git /tmp/sage && \
+  cd /tmp/sage && pip3 install . && rm -rf /tmp/sage
 
 
 # Install Light2xv for FP4 support (Epic speed on RTX 5090)
