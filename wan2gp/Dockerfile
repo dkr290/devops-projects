@@ -30,9 +30,8 @@ RUN git clone https://github.com/thu-ml/SageAttention.git /tmp/sage && \
 # Install Light2xv for FP4 support (Epic speed on RTX 5090)
 RUN pip3 install light2xv
 
-RUN ls -l
 # 5. Startup Script
-COPY run.sh .
+COPY wan2gp/run.sh .
 RUN chmod +x run.sh
 
 EXPOSE 7860
