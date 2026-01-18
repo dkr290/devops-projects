@@ -34,7 +34,7 @@ RUN sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' /opt/
 #RUN pip install flash-attn==2.7.2.post1
 
 RUN pip install --no-cache-dir flash-attn==2.7.2.post1 \
-  --index-url https://download.pytorch.org/whl/cu128
+  --index-url https://download.pytorch.org/whl/cu121
 
 
 # Copy and set up our startup and update scripts
