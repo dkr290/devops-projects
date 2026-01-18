@@ -32,14 +32,15 @@ RUN sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' /opt/
   && python3 -m pip install --no-cache-dir gradio==5.35.0 sageattention==1.0.6 \
   && rm -rf /root/.cache/pip
 
+# Define the build argument
 ARG INSTALL_FLASH_ATTN=0
-RUN if [ "${INSTALL_FLASH_ATTN}" = "1" ]; then \
-  pip install flash-attn==2.7.2.post1; \
+
+# Use a single RUN command with proper shell syntax
+RUN if [ "$INSTALL_FLASH_ATTN" = "1" ]; then \
+  pip install --no-cache-dir flash-attn==2.7.2.post1; \
   else \
-  echo "skipping flash-attr" \
+  echo "Skipping flash-attn installation"; \
   fi
-
-
 
 
 # Copy and set up our startup and update scripts
