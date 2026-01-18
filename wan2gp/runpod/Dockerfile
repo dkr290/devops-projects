@@ -31,7 +31,14 @@ RUN sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' /opt/
   && python3 -m pip install --no-cache-dir -r /opt/wan2gp_source/requirements.txt \
   && python3 -m pip install --no-cache-dir gradio==5.35.0 sageattention==1.0.6 \
   && rm -rf /root/.cache/pip
-RUN pip install flash-attn==2.7.2.post1
+
+ARG INSTALL_FLASH_ATTN=0
+RUN if [ "${INSTALL_FLASH_ATTN}" = "1" ]; then \
+  pip install flash-attn==2.7.2.post1; \
+  else \
+  echo "skipping flash-attr" \
+  fi
+
 
 
 
