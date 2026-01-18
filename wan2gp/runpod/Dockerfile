@@ -13,10 +13,11 @@ FROM pytorch/pytorch:2.6.0-cuda12.4-cudnn9-devel
 #   - Ampere (8.0, 8.6, 8.7) for RTX 30xx series
 #   - Ada Lovelace (8.9) for RTX 40xx series
 #   - Hopper (9.0) for RTX 50xx (future) and RTX A6000 Ada
+## //todo for 9.0
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
-    TORCH_CUDA_ARCH_LIST="8.6 8.9 9.0"
+    TORCH_CUDA_ARCH_LIST="8.6 8.9"
 # Optional Wan2GP environment variables can be set here or via start.sh/runtime:
 # WGP_PROFILE="3"
 # WGP_LORA_DIR="/workspace/loras" # Assuming models/loras are mounted to /workspace

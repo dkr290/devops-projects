@@ -12,7 +12,7 @@ jobs:
   build-wan2gp:
     uses: dkr290/devops-projects/.github/workflows/docker-build-push.yml@main
     with:
-      name: Build and push  rtx3xx ampere wan2gp
+      name: Build and push wan2gp
       docker_image_name: ghcr.io/${{ github.repository }}/wan2gp
       version: "runpod-1.0.0"
       folder: wan2gp/runpod
