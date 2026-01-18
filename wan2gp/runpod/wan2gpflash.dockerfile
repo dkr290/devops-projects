@@ -32,7 +32,8 @@ RUN sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' /opt/
   && python3 -m pip install --no-cache-dir gradio==5.35.0 sageattention==1.0.6 \
   && rm -rf /root/.cache/pip
 
-
+COPY wan2gp/runpod/wheels/ /wheels/
+RUN python3 -m pip install --no-cache-dir /wheels/flash_attn-*.whl && rm -rf /wheels
 
 # Copy and set up our startup and update scripts
 COPY start-wan2gp.sh /usr/local/bin/start-wan2gp.sh
