@@ -80,13 +80,13 @@ fi
 echo "Updating Python dependencies from requirements.txt..."
 sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' requirements.txt
 python3 -m pip install --no-cache-dir -r requirements.txt
-python3 -m pip install --no-cache-dir gradio==5.35.0 sageattention==1.0.6
+#python3 -m pip install --no-cache-dir gradio==5.35.0 sageattention==1.0.6
 echo "Dependencies updated."
 
 # Step 6: Restart the Wan2GP application with the new code.
 # This uses the same command as the original start-wan2gp.sh script.
 echo "Restarting Wan2GP application in the background..."
-nohup python3 wgp.py --server-name 127.0.0.1 --server-port 7860 --save-masks > /workspace/wan2gp.log 2>&1 &
+nohup python3 wgp.py --server-name 0.0.0.0 --server-port 7860 --save-masks > /workspace/wan2gp.log 2>&1 &
 
 echo ""
 echo "✅ --- Wan2GP Update Complete ---"

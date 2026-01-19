@@ -30,7 +30,6 @@ RUN git clone https://github.com/deepbeepmeep/Wan2GP.git /opt/wan2gp_source \
 RUN sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' /opt/wan2gp_source/requirements.txt \
   && python3 -m pip install --no-cache-dir -r /opt/wan2gp_source/requirements.txt \
   #&& python3 -m pip install --no-cache-dir gradio==5.35.0 sageattention==1.0.6 \
-  && python3 -m pip install --no-cache-dir gradio==5.35.0 \
   && rm -rf /root/.cache/pip
 
 #RUN pip install --no-cache-dir "setuptools<75.0.0" wheel "triton==3.4.0"
@@ -55,7 +54,7 @@ RUN chmod +x /usr/local/bin/start-wan2gp.sh \
   && chmod +x /usr/local/bin/restart-wan2gp.sh
 
 # Expose ports for authenticated Gradio interface and Jupyter Lab
-EXPOSE 7862 8888
+EXPOSE 7860 8888
 
 # Use our startup script as the main command
 CMD ["/usr/local/bin/start-wan2gp.sh"] 

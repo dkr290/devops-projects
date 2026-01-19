@@ -19,7 +19,7 @@ echo "Starting Wan2GP application in background..."
 cd /workspace/Wan2GP
 
 # Start Wan2gp directly on its working port 
-SERVER_NAME="127.0.0.1"
+SERVER_NAME="0.0.0.0"
 SERVER_PORT="7860"
 
 echo "Starting Wan2GP on $SERVER_NAME:$SERVER_PORT"
