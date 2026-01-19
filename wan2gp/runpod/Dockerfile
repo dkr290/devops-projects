@@ -33,14 +33,13 @@ RUN sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' /opt/
   && python3 -m pip install --no-cache-dir gradio==5.35.0 \
   && rm -rf /root/.cache/pip
 
-RUN pip install --no-cache-dir "triton==3.3.0"
-
+RUN pip install --no-cache-dir "setuptools<75.0.0" wheel "triton==3.4.0"
 # 2. Build SageAttention 2.2.0 from source 
 # This is much faster than the flash-attn build (approx 5 mins)
-RUN python3 -m pip install "setuptools<=75.8.2" --force-reinstall && \
-  git clone https://github.com/thu-ml/SageAttention /opt/SageAttention && \
+RUN git clone https://github.com/thu-ml/SageAttention /opt/SageAttention && \
   cd /opt/SageAttention && \
-  pip install .
+  TORCH_CUDA_ARCH_LIST="8.6;8.9;9.0" \
+  python3 -m pip install --no-build-isolation -e .
 
 # Copy and set up our startup and update scripts
 COPY start-wan2gp.sh /usr/local/bin/start-wan2gp.sh
