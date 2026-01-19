@@ -29,10 +29,18 @@ RUN git clone https://github.com/deepbeepmeep/Wan2GP.git /opt/wan2gp_source \
 # now use a single, clean RUN command for better maintainability.
 RUN sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' /opt/wan2gp_source/requirements.txt \
   && python3 -m pip install --no-cache-dir -r /opt/wan2gp_source/requirements.txt \
-  && python3 -m pip install --no-cache-dir gradio==5.35.0 sageattention==1.0.6 \
+  #&& python3 -m pip install --no-cache-dir gradio==5.35.0 sageattention==1.0.6 \
+  && python3 -m pip install --no-cache-dir gradio==5.35.0 \
   && rm -rf /root/.cache/pip
 
+RUN pip install --no-cache-dir "triton==3.3.0"
 
+# 2. Build SageAttention 2.2.0 from source 
+# This is much faster than the flash-attn build (approx 5 mins)
+RUN python3 -m pip install "setuptools<=75.8.2" --force-reinstall && \
+  git clone https://github.com/thu-ml/SageAttention /opt/SageAttention && \
+  cd /opt/SageAttention && \
+  pip install .
 
 # Copy and set up our startup and update scripts
 COPY start-wan2gp.sh /usr/local/bin/start-wan2gp.sh
