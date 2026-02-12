@@ -15,5 +15,14 @@ jobs:
       name: Build and push swarmUI
       docker_image_name: ghcr.io/${{ github.repository }}/swarm-ui
       version: "runpod-swarmui-1.0.2"
-      folder: swarmui
+      folder: swarmui/swarmui
+      dockerfileName: Dockerfile
+
+  build-swarmUI-packed:
+    uses: dkr290/devops-projects/.github/workflows/docker-build-push.yml@main
+    with:
+      name: Build and push swarmUI-Comfy
+      docker_image_name: ghcr.io/${{ github.repository }}/swarm-ui-compfy
+      version: "runpod-swarmui-1.0.1"
+      folder: swarmui/swarmui-buildin
       dockerfileName: Dockerfile
