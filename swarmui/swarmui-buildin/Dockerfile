@@ -1,4 +1,4 @@
-FROM runpod/pytorch:2.8.0-py3.11-cuda12.8.1-cudnn-devel-ubuntu22.04
+FROM runpod/base:0.6.3-cuda12.1.0
 
 # ============================================================
 # SwarmUI for RunPod — Pre-baked for fast startup
