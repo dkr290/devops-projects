@@ -1,4 +1,4 @@
-name: Docker build and push wan2GP app
+name: Docker build and push swarmUI
 
 on:
   push:
