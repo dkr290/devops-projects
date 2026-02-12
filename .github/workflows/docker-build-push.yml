@@ -58,7 +58,6 @@ jobs:
           # This might remove tools that we won't need anyway
           tool-cache: true
           android: true
-          dotnet: true
           haskell: true
           large-packages: true
           docker-images: true
