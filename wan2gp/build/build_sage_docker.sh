@@ -15,18 +15,30 @@ docker run --rm --gpus all \
     bash -c '
         set -e
         echo "Installing build dependencies..."
-        pip install --no-cache-dir "triton==3.2.0" "setuptools<75.8.2" "wheel" 
+        pip install --no-cache-dir "triton==3.2.0" "setuptools<75.8.2" "wheel" "ninja"    
+
         echo "Cloning SageAttention..."
         git clone https://github.com/thu-ml/SageAttention /tmp/sage
         cd /tmp/sage
         git checkout v2.2.0
         
         echo "Building wheel for multiple architectures..."
-        export TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0+PTX"
-        # THE FIX: Force the compiler to respect the hardware register limit
-        # This prevents the "Exit Code 255" crash during ptxas optimization
-        export NVCC_APPEND_FLAGS="-maxrregcount=255"
-        export MAX_JOBS=8
+        export TORCH_CUDA_ARCH_LIST="8.6;8.9;9.0"
+
+         # 1. Limit registers per thread
+        export NVCC_APPEND_FLAGS="-maxrregcount=128 --ptxas-options=-v"
+        
+        # 2. Reduce optimization level temporarily for problematic kernels
+        # export NVCC_APPEND_FLAGS="$NVCC_APPEND_FLAGS -O1"
+        
+        # 3. Split compilation to reduce memory pressure
+        export MAX_JOBS=4  # Reduce parallel compilation jobs
+        
+        # 4. Alternative: Use separate compilation mode
+        #export NVCC_APPEND_FLAGS="$NVCC_APPEND_FLAGS -dc"
+        
+           
+
         pip wheel --no-build-isolation --no-deps -w /output .
         
         echo "Build complete!"
