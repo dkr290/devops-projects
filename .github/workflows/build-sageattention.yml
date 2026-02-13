@@ -16,6 +16,26 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Free Disk Space (Ubuntu)
+        if: steps.check-tag.outputs.exists == 'false'
+        uses: jlumbroso/free-disk-space@main
+        with:
+          # This might remove tools that we won't need anyway
+          tool-cache: true
+          android: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: Check available disk space
+        if: steps.check-tag.outputs.exists == 'false'
+        run: |
+          echo "Available disk space:"
+          df -h
+          echo "Docker disk usage:"
+          docker system df
+
       - name: Build Wheel in Docker
         run: |
           mkdir -p dist
