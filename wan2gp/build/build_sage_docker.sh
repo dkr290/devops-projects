@@ -32,7 +32,7 @@ docker run --rm --gpus all \
         # export NVCC_APPEND_FLAGS="$NVCC_APPEND_FLAGS -O1"
         
         # 3. Split compilation to reduce memory pressure
-        export MAX_JOBS=4  # Reduce parallel compilation jobs
+        export MAX_JOBS=2  # Reduce parallel compilation jobs
         
         # 4. Alternative: Use separate compilation mode
         #export NVCC_APPEND_FLAGS="$NVCC_APPEND_FLAGS -dc"
