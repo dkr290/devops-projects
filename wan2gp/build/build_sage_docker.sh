@@ -15,7 +15,7 @@ docker run --rm --gpus all \
     bash -c '
         set -e
         echo "Installing build dependencies..."
-        pip install --no-cache-dir "triton==3.2.0" "setuptools<75.8.2" "wheel" "ninja"    
+        pip install --no-cache-dir "triton>=3.3.0,<3.4.0" "setuptools<75.8.2" "wheel" "ninja"    
 
         echo "Cloning SageAttention..."
         git clone https://github.com/thu-ml/SageAttention /tmp/sage
@@ -26,7 +26,7 @@ docker run --rm --gpus all \
         export TORCH_CUDA_ARCH_LIST="8.6;8.9;9.0"
 
          # 1. Limit registers per thread
-        export NVCC_APPEND_FLAGS="-maxrregcount=128 --ptxas-options=-v"
+        export NVCC_APPEND_FLAGS="--threads 4 -Xptxas=-v"
         
         # 2. Reduce optimization level temporarily for problematic kernels
         # export NVCC_APPEND_FLAGS="$NVCC_APPEND_FLAGS -O1"
