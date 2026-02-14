@@ -41,9 +41,12 @@ RUN pip install --no-cache-dir "triton==3.4.0"
 #   TORCH_CUDA_ARCH_LIST="8.6;8.9;9.0" \
 #   python3 -m pip install --no-build-isolation -e .
 
-RUN wget https://huggingface.co/ModelsLab/Sage_2_plus_plus_build/resolve/main/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl && \
-  pip install sageattention-2.2.0-cp311-cp311-linux_x86_64.whl && \
-  rm sageattention-2.2.0-cp311-cp311-linux_x86_64.whl
+# RUN wget https://huggingface.co/ModelsLab/Sage_2_plus_plus_build/resolve/main/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl && \
+#   pip install sageattention-2.2.0-cp311-cp311-linux_x86_64.whl && \
+#   rm sageattention-2.2.0-cp311-cp311-linux_x86_64.whl
+
+## Copy the pre-build one build for 8.6 and 8.9 archs only 
+RUN pip install ./wheels/sageattention-2.2.0-cp311-cp311-8689_linux_x86_64.whl
 
 # Copy and set up our startup and update scripts
 COPY start-wan2gp.sh /usr/local/bin/start-wan2gp.sh
