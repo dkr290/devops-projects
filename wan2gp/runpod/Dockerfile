@@ -33,7 +33,7 @@ RUN sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' /opt/
   && rm -rf /root/.cache/pip
 
 #RUN pip install --no-cache-dir "setuptools<75.0.0" wheel "triton==3.4.0"
-RUN pip install --no-cache-dir "triton==3.4.0"
+RUN pip install --no-cache-dir "triton>=3.3.0,<3.4.0" "setuptools<75.8.2"
 # 2. Build SageAttention 2.2.0 from source 
 # This is much faster than the flash-attn build (approx 5 mins)
 # RUN git clone https://github.com/thu-ml/SageAttention /opt/SageAttention && \
