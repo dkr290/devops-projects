@@ -46,8 +46,8 @@ RUN pip install --no-cache-dir "triton>=3.3.0,<3.4.0" "setuptools<75.8.2"
 #   rm sageattention-2.2.0-cp311-cp311-linux_x86_64.whl
 
 ## Copy the pre-build one build for 8.6 and 8.9 archs only 
-COPY wheels/sageattention-2.2.0-cp311-cp311-8689_linux_x86_64.whl /tmp/
-RUN pip install --no-cache-dir /tmp/sageattention-*.whl \
+COPY wheels/arch8689/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl  /tmp/
+RUN pip install --no-cache-dir /tmp/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl \
   && rm /tmp/sageattention-*.whl
 
 
