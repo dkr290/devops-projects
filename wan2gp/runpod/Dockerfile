@@ -46,7 +46,11 @@ RUN pip install --no-cache-dir "triton==3.4.0"
 #   rm sageattention-2.2.0-cp311-cp311-linux_x86_64.whl
 
 ## Copy the pre-build one build for 8.6 and 8.9 archs only 
-RUN pip install ./wheels/sageattention-2.2.0-cp311-cp311-8689_linux_x86_64.whl
+COPY wheels/sageattention-2.2.0-cp311-cp311-8689_linux_x86_64.whl /tmp/
+RUN pip install --no-cache-dir /tmp/sageattention-*.whl \
+  && rm /tmp/sageattention-*.whl
+
+
 
 # Copy and set up our startup and update scripts
 COPY start-wan2gp.sh /usr/local/bin/start-wan2gp.sh
