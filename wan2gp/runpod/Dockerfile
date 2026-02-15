@@ -40,12 +40,15 @@ RUN sed -i \
   && python3 -m pip install --no-cache-dir   -r /opt/wan2gp_source/requirements.txt \
   && rm -rf /root/.cache/pip
 
-# Install CUDA 12.x compatible onnxruntime-gpu separately
-RUN pip install --no-cache-dir onnxruntime-gpu \
+# Install CUDA 12.x compatible onnxruntime-gpu
+# Option 1: Use the stable release (recommended, simpler)
+RUN pip install --no-cache-dir onnxruntime-gpu==1.22.0 \
   --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/onnxruntime-cuda-12/pypi/simple/
-# Install CUDA 12.x compatible onnxruntime-gpu separately
-RUN pip install --no-cache-dir onnxruntime-gpu \
-  --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/onnxruntime-cuda-12/pypi/simple/
+
+
+# # Option 2: Use the nightly/dev build from the CUDA 12 nightly feed
+# RUN pip install --no-cache-dir onnxruntime-gpu==1.25.0.dev20260210001 \
+#     --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/onnxruntime-cuda-12-nightly/pypi/simple/
 
 
 
