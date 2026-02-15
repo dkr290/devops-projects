@@ -27,10 +27,27 @@ RUN git clone https://github.com/deepbeepmeep/Wan2GP.git /opt/wan2gp_source \
 # Install Python dependencies from the source code.
 # The GitHub Actions workflow is configured to maximize build space, so we can
 # now use a single, clean RUN command for better maintainability.
-RUN sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' /opt/wan2gp_source/requirements.txt \
-  && python3 -m pip install --no-cache-dir -r /opt/wan2gp_source/requirements.txt \
-  #&& python3 -m pip install --no-cache-dir gradio==5.35.0 sageattention==1.0.6 \
+# RUN sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' /opt/wan2gp_source/requirements.txt \
+#   && python3 -m pip install --no-cache-dir -r /opt/wan2gp_source/requirements.txt \
+#   #&& python3 -m pip install --no-cache-dir gradio==5.35.0 sageattention==1.0.6 \
+#   && rm -rf /root/.cache/pip
+
+RUN sed -i \
+  -e 's/^torch>=/#torch>=/' \
+  -e 's/^torchvision>=/#torchvision>=/' \
+  -e 's/^onnxruntime/#onnxruntime/' \
+  /opt/wan2gp_source/requirements.txt \
+  && python3 -m pip install --no-cache-dir   -r /opt/wan2gp_source/requirements.txt \
   && rm -rf /root/.cache/pip
+
+# Install CUDA 12.x compatible onnxruntime-gpu separately
+RUN pip install --no-cache-dir onnxruntime-gpu \
+  --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/onnxruntime-cuda-12/pypi/simple/
+# Install CUDA 12.x compatible onnxruntime-gpu separately
+RUN pip install --no-cache-dir onnxruntime-gpu \
+  --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/onnxruntime-cuda-12/pypi/simple/
+
+
 
 #RUN pip install --no-cache-dir "setuptools<75.0.0" wheel "triton==3.4.0"
 RUN pip install --no-cache-dir "triton>=3.3.0,<3.4.0" "setuptools<75.8.2"

@@ -86,18 +86,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        if: steps.check-tag.outputs.exists == 'false'
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ inputs.docker_image_name }}
-          tags: |
-            type=raw,value=${{ inputs.version }}
-            type=sha,prefix={{branch}}-
-            type=ref,event=branch
-            type=ref,event=pr
-
       - name: Build and push Docker image
         if: steps.check-tag.outputs.exists == 'false'
         uses: docker/build-push-action@v6
