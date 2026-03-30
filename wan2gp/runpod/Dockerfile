@@ -1,5 +1,6 @@
 # Use the official RunPod base image, which includes a pre-configured environment.
-FROM runpod/pytorch:2.8.0-py3.11-cuda12.8.1-cudnn-devel-ubuntu22.04
+#FROM runpod/pytorch:2.8.0-py3.11-cuda12.8.1-cudnn-devel-ubuntu22.04
+FROM runpod/pytorch:2.7.1-py3.10-cuda12.8.1-cudnn-devel-ubuntu22.04
 
 # Set environment variables for non-interactive installs.
 ENV DEBIAN_FRONTEND=noninteractive
@@ -24,21 +25,23 @@ RUN rm -f /etc/apt/sources.list.d/cuda*.list && \
 RUN git clone https://github.com/deepbeepmeep/Wan2GP.git /opt/wan2gp_source \
   && cd /opt/wan2gp_source \
   && git checkout main 
-# Install Python dependencies from the source code.
-# The GitHub Actions workflow is configured to maximize build space, so we can
-# now use a single, clean RUN command for better maintainability.
-# RUN sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' /opt/wan2gp_source/requirements.txt \
-#   && python3 -m pip install --no-cache-dir -r /opt/wan2gp_source/requirements.txt \
-#   #&& python3 -m pip install --no-cache-dir gradio==5.35.0 sageattention==1.0.6 \
+
+
+# RUN sed -i \
+#   -e 's/^torch>=/#torch>=/' \
+#   -e 's/^torchvision>=/#torchvision>=/' \
+#   -e 's/^onnxruntime/#onnxruntime/' \
+#   /opt/wan2gp_source/requirements.txt \
+#   && python3 -m pip install --no-cache-dir   -r /opt/wan2gp_source/requirements.txt \
 #   && rm -rf /root/.cache/pip
 
 RUN sed -i \
   -e 's/^torch>=/#torch>=/' \
-  -e 's/^torchvision>=/#torchvision>=/' \
   -e 's/^onnxruntime/#onnxruntime/' \
   /opt/wan2gp_source/requirements.txt \
   && python3 -m pip install --no-cache-dir   -r /opt/wan2gp_source/requirements.txt \
   && rm -rf /root/.cache/pip
+
 
 # Install CUDA 12.x compatible onnxruntime-gpu
 # Option 1: Use the stable release (recommended, simpler)
@@ -69,6 +72,8 @@ RUN pip install --no-cache-dir "triton>=3.3.0,<3.4.0" "setuptools<75.8.2"
 COPY wheels/arch8689/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl  /tmp/
 RUN pip install --no-cache-dir /tmp/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl \
   && rm /tmp/sageattention-*.whl
+## Install GGUF enhancer 
+RUN pip install https://github.com/deepbeepmeep/kernels/releases/download/GGUF_Kernels/llamacpp_gguf_cuda-1.0.2+torch271cu128py310-cp310-cp310-linux_x86_64.whl
 
 
 
