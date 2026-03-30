@@ -1,0 +1,106 @@
+crds:
+  upgradeJob:
+    enabled: true
+grafana:
+  replicas: 1
+  assertNoLeakedSecrets: false
+  persistence:
+    enabled: true
+    storageClassName: zrs-managed-csi-premium
+    size: 20Gi
+    accessModes:
+      - ReadWriteOnce
+  # Disable the default Prometheus datasource that kube-prometheus-stack creates
+  sidecar:
+    datasources:
+      enabled: true
+      defaultDatasourceEnabled: false
+
+  # Delete stale datasources
+  deleteDatasources:
+    - name: Prometheus
+      orgId: 1
+    - name: Loki
+      orgId: 1
+
+  additionalDataSources:
+    - name: Thanos-Query
+      type: prometheus
+      access: proxy
+      url: http://thanos-query.monitoring.svc.cluster.local:10902
+      isDefault: true
+      jsonData:
+        timeInterval: 30s
+        customQueryParameters: "dedup=true&partial_response=true"
+      editable: true
+
+    - name: Loki-backend
+      type: loki
+      access: proxy
+      url: http://scaledloki-gateway:80
+      isDefault: false
+      timeout: 900
+      editable: true
+  deploymentStrategy:
+    type: Recreate
+  podAntiAffinity: soft
+  grafana.ini:
+    server:
+      #root_url: __grafana-rooturl__
+      root_url: "https://grafana.nip.io"
+    users:
+      viewers_can_edit: "True"
+  plugins:
+    - digrich-bubblechart-panel
+    - grafana-clock-panel
+    - grafana-singlestat-panel
+    - yesoreyeram-infinity-datasource
+
+prometheus:
+  enabled: true
+  thanosService:
+    enabled: true
+  prometheusSpec:
+    replicas: 3
+    enableAdminAPI: true
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 8Gi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: #// to add for k8s 
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+    retention: 30d
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    replicaExternalLabelName: "prometheus_replica"
+    externalLabels:
+      cluster: "devops-k8s"
+    thanos:
+      image: quay.io/thanos/thanos:v0.41.0
+      version: v0.41.0
+      objectStorageConfig:
+        existingSecret:
+          name: thanos-objstore-config
+          key: thanos-storage-config.yaml ## to change for k8s 
+
+      # Pod anti-affinity for HA - spread replicas across nodes
+    podAntiAffinity: soft
+    podAntiAffinityTopologyKey: kubernetes.io/hostname
+
+
+#prometheus node exporter
+prometheus-node-exporter:
+  priorityClassName: system-node-critical
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi

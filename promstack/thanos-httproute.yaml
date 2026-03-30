@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: thanos-route
+  namespace: monitoring
+spec:
+  parentRefs:
+    - name: default-envoy-gw
+      namespace: envoy-gateway-system
+  hostnames:
+    - "thanos.nip.io"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: thanos-query
+          port: 10902

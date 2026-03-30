@@ -1,6 +1,5 @@
 # Use the official RunPod base image, which includes a pre-configured environment.
-#FROM runpod/pytorch:2.8.0-py3.11-cuda12.8.1-cudnn-devel-ubuntu22.04
-FROM runpod/pytorch:2.7.1-py3.10-cuda12.8.1-cudnn-devel-ubuntu22.04
+FROM runpod/pytorch:2.8.0-py3.11-cuda12.8.1-cudnn-devel-ubuntu22.04
 
 # Set environment variables for non-interactive installs.
 ENV DEBIAN_FRONTEND=noninteractive
@@ -72,8 +71,8 @@ RUN pip install --no-cache-dir "triton>=3.3.0,<3.4.0" "setuptools<75.8.2"
 COPY wheels/arch8689/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl  /tmp/
 RUN pip install --no-cache-dir /tmp/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl \
   && rm /tmp/sageattention-*.whl
-## Install GGUF enhancer 
-RUN pip install https://github.com/deepbeepmeep/kernels/releases/download/GGUF_Kernels/llamacpp_gguf_cuda-1.0.2+torch271cu128py310-cp310-cp310-linux_x86_64.whl
+## Install GGUF enhancer does not work with this image needs to be build  
+# RUN pip install https://github.com/deepbeepmeep/kernels/releases/download/GGUF_Kernels/llamacpp_gguf_cuda-1.0.2+torch271cu128py310-cp310-cp310-linux_x86_64.whl
 
 
 

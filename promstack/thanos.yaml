@@ -1,0 +1,59 @@
+
+objstoreConfig:
+  create: false # already created the secret manually
+  name: "thanos-objstore-config"
+  key: "thanos-storage-config.yaml"
+
+serviceMonitor:
+  # -- If `true`, create `ServiceMonitor` resources to support collecting metrics via the _Prometheus Operator_.
+  enabled: true
+
+compact:
+  # -- If `true`, create the _Thanos Compact_ component.
+  enabled: true
+
+  deduplication:
+    # -- If `true`, enable deduplication via the _Compact_ component.
+    enabled: true
+    # -- (string) If specified override the default deduplication function.
+    func:
+  # -- Additional args for the _Compact_ pod default container.
+  # more info here https://github.com/thanos-io/thanos/blob/main/docs/components/compact.md
+  extraArgs:
+    - --retention.resolution-raw=30d
+    - --retention.resolution-5m=60d
+    - --retention.resolution-1h=365d
+    - --consistency-delay=30m
+
+  persistence:
+    # -- If `true`, create a `PersistentVolumeClaim` for the _Compact_ pod data.
+    enabled: true
+    storageClass: #//todo
+    size: 50Gi # -- If `true`, retain the _Compact_ PVC after the pod is deleted.
+
+query:
+  # -- If `true`, create the _Query_ component.
+  enabled: true
+  replicas: 3
+  additionalReplicaLabels:
+    - prometheus_replica
+    - prometheus
+    - cluster
+  extraArgs:
+    - "--endpoint=dns+prometheus-stack-kube-prom-thanos-discovery.monitoring.svc.cluster.local:10901"
+    - "--endpoint=dns+thanos-store-gateway-headless.monitoring.svc.cluster.local:10901"
+    - "--query.replica-label=prometheus_replica"
+
+storegateway:
+  enabled: true
+
+  # The gateway needs a small cache for efficiency
+  persistence:
+    enabled: true
+    storageClass: ## //todo
+    size: 100Gi
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
