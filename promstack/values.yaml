@@ -6,8 +6,8 @@ grafana:
   assertNoLeakedSecrets: false
   persistence:
     enabled: true
-    storageClassName: zrs-managed-csi-premium
-    size: 20Gi
+    storageClassName: local-path
+    size: 10Gi
     accessModes:
       - ReadWriteOnce
   # Disable the default Prometheus datasource that kube-prometheus-stack creates
@@ -47,7 +47,7 @@ grafana:
   grafana.ini:
     server:
       #root_url: __grafana-rooturl__
-      root_url: "https://grafana.nip.io"
+      root_url: "http://172.19.0.3.nip.io"
     users:
       viewers_can_edit: "True"
   plugins:
@@ -65,20 +65,20 @@ prometheus:
     enableAdminAPI: true
     resources:
       requests:
-        cpu: 1000m
-        memory: 1Gi
+        cpu: 512m
+        memory: 512Mi
       limits:
         cpu: 2000m
         memory: 8Gi
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: #// to add for k8s 
+          storageClassName: local-path
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 50Gi
-    retention: 30d
+              storage: 20Gi
+    retention: 10d
     podMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelectorNilUsesHelmValues: false
     replicaExternalLabelName: "prometheus_replica"

@@ -20,29 +20,25 @@ compact:
   # -- Additional args for the _Compact_ pod default container.
   # more info here https://github.com/thanos-io/thanos/blob/main/docs/components/compact.md
   extraArgs:
-    - --retention.resolution-raw=30d
-    - --retention.resolution-5m=60d
-    - --retention.resolution-1h=365d
+    - --retention.resolution-raw=10d
+    - --retention.resolution-5m=30d
+    - --retention.resolution-1h=90d
     - --consistency-delay=30m
 
   persistence:
     # -- If `true`, create a `PersistentVolumeClaim` for the _Compact_ pod data.
     enabled: true
-    storageClass: #//todo
+    storageClass: local-path
     size: 50Gi # -- If `true`, retain the _Compact_ PVC after the pod is deleted.
 
 query:
   # -- If `true`, create the _Query_ component.
   enabled: true
   replicas: 3
-  additionalReplicaLabels:
-    - prometheus_replica
-    - prometheus
-    - cluster
   extraArgs:
-    - "--endpoint=dns+prometheus-stack-kube-prom-thanos-discovery.monitoring.svc.cluster.local:10901"
-    - "--endpoint=dns+thanos-store-gateway-headless.monitoring.svc.cluster.local:10901"
+    - "--endpoint=dns+promgraf-kube-prometheus-s-thanos-discovery.monitoring.svc.cluster.local:10901"
     - "--query.replica-label=prometheus_replica"
+    - "--query.replica-label=prometheus"
 
 storegateway:
   enabled: true
@@ -51,7 +47,7 @@ storegateway:
   persistence:
     enabled: true
     storageClass: ## //todo
-    size: 100Gi
+    size: 20Gi
 
 metrics:
   enabled: true

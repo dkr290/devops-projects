@@ -5,15 +5,15 @@ metadata:
   namespace: monitoring
 spec:
   parentRefs:
-    - name: default-envoy-gw
+    - name: default-gateway
       namespace: envoy-gateway-system # Usually where the Gateway is defined
   hostnames:
-    - "grafana.nip.io"
+    - "grafana.172.19.0.3.nip.io"
   rules:
     - matches:
         - path:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: prometheus-stack-grafana
+        - name: promgraf-grafana
           port: 80
