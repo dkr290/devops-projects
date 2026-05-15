@@ -50,23 +50,4 @@ echo "Wan2GP started with PID $WAN2GP_PID"
 ln -sf "$LOG_FILE" /workspace/logs/wan2gp_latest.log
 
 
-# echo "Starting Wan2GP on $SERVER_NAME:$SERVER_PORT"
-# nohup python3 wgp.py --server-name $SERVER_NAME --server-port $SERVER_PORT --save-masks > /workspace/wan2gp.log 2>&1 &
-# echo "Wan2GP started on internal port $SERVER_PORT, logs in /workspace/wan2gp.log"
-#
-# echo "Starting RunPod services..."
-# if [ -f "/start.sh" ]; then
-#     /start.sh
-# else
-#     echo "No /start.sh found, keeping container alive by monitoring log for debugging."
-#     tail -f /workspace/wan2gp.log
-# fi 
-
-echo "Starting RunPod services..."
-if [ -f "/start.sh" ]; then
-    /start.sh
-else
-    echo "No /start.sh found, waiting for Wan2GP process..."
-    wait $WAN2GP_PID
-fi
 
