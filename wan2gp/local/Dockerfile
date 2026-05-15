@@ -17,7 +17,6 @@ RUN rm -f /etc/apt/sources.list.d/cuda*.list && \
   apt-get install -y --no-install-recommends \
   python3.11 \
   python3.11-dev \
-  python3-setuptools \
   python3-pip \
   git \
   ffmpeg \
@@ -50,6 +49,7 @@ RUN git clone https://github.com/deepbeepmeep/Wan2GP.git /opt/wan2gp_source \
   && git checkout main 
 
 
+RUN pip install --upgrade pip setuptools wheel
 
 RUN python -m pip install --no-cache-dir  -r /opt/wan2gp_source/requirements.txt \
   && rm -rf /root/.cache/pip
