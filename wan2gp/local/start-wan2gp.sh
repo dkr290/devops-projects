@@ -49,5 +49,7 @@ echo "Wan2GP started with PID $WAN2GP_PID"
 # Symlink latest log for convenience
 ln -sf "$LOG_FILE" /workspace/logs/wan2gp_latest.log
 
+# Keep container alive
+wait $WAN2GP_PID
 
 
