@@ -18,7 +18,6 @@ RUN rm -f /etc/apt/sources.list.d/cuda*.list && \
   python3.11 \
   python3.11-dev \ 
   python3.11-venv \
-  python3-pip \
   git \
   ffmpeg \
   tmux \
@@ -32,12 +31,13 @@ RUN rm -f /etc/apt/sources.list.d/cuda*.list && \
   && rm -rf /var/lib/apt/lists/*
 
 # Make python3.11 the default
+
+# Make python3.11 the default
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1 \
-  && update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 
+  && update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
 
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 -- --break-system-packages \
-  && python3.11 -m pip install --break-system-packages --upgrade setuptools wheel
-
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 \
+  && python3.11 -m pip install --upgrade setuptools wheel
 
 # Install PyTorch 2.10.0 for CUDA 13.x
 RUN pip install --no-cache-dir \
