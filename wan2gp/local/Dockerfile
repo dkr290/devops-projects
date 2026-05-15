@@ -53,7 +53,7 @@ RUN python -m pip install --no-cache-dir  -r /opt/wan2gp_source/requirements.txt
 
 
 ## Copy the pre-build one build for 8.6 
-COPY wheels/arch8689/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl  /tmp/
+COPY wheels/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl  /tmp/
 RUN pip install --no-cache-dir /tmp/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl \
   && rm /tmp/sageattention-*.whl
 ## Install GGUF enhancer does not work with this image needs to be build  
