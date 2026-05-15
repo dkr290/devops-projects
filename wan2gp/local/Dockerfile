@@ -11,6 +11,9 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Install system dependencies + Python
 RUN rm -f /etc/apt/sources.list.d/cuda*.list && \
   apt-get update && \
+  apt-get install -y --no-install-recommends software-properties-common && \
+  add-apt-repository ppa:deadsnakes/ppa && \
+  apt-get update && \
   apt-get install -y --no-install-recommends \
   python3.11 \
   python3.11-dev \
