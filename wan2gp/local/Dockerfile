@@ -1,5 +1,5 @@
 # Use the official RunPod base image, which includes a pre-configured environment.
-FROM nvidia/cuda:13.1.0-cudnn-devel-ubuntu22.04
+FROM nvidia/cuda:13.1.1-cudnn-devel-ubuntu24.04
 
 # Set environment variables for non-interactive installs.
 ENV DEBIAN_FRONTEND=noninteractive
@@ -14,7 +14,7 @@ RUN rm -f /etc/apt/sources.list.d/cuda*.list && \
   apt-get install -y --no-install-recommends \
   python3.11 \
   python3.11-dev \
-  python3.11-distutils \
+  python3-setuptools \
   python3-pip \
   git \
   ffmpeg \
