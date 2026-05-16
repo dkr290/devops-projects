@@ -71,7 +71,6 @@ RUN pip install https://github.com/nunchaku-ai/nunchaku/releases/download/v1.2.1
 COPY start-wan2gp.sh /usr/local/bin/start-wan2gp.sh
 COPY update-wan2gp.sh /usr/local/bin/update-wan2gp.sh
 COPY restart-wan2gp.sh /usr/local/bin/restart-wan2gp.sh
-COPY gpu_dashboard.py /usr/local/bin/gpu_dashboard.py
 RUN chmod +x /usr/local/bin/start-wan2gp.sh \
   && chmod +x /usr/local/bin/update-wan2gp.sh \
   && chmod +x /usr/local/bin/restart-wan2gp.sh
