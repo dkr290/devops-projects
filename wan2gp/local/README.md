@@ -1,4 +1,27 @@
+
+# Prerequisites
+
+- install cuda 
+- Install the container toolkit in order docker to work 
+
+```
+sudo apt-get -y install cuda-toolkit-13-1
+sudo apt install -y nvidia-container-toolkit
+
+```
+
+- if not done install latest cuda drivers 
+
+```
+
+sudo  ubuntu-drivers install
+```
+
+
 # Installation
+
+
+
 
 - To start the container:
 
