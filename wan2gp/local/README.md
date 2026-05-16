@@ -39,7 +39,7 @@ docker run --gpus all -it --rm \
 ```
 - Or simply in background mode 
 
-```
+```bash
 docker run --gpus all \
    -d --name wan2gp \
    -p 7860:7860 \
@@ -52,3 +52,32 @@ docker run --gpus all \
 
 ```
 
+# Undervold the RTX card 
+
+- create the following script and make it executable 
+
+```
+
+cat /usr/local/bin/3090-powerlimit.sh 
+#!/bin/bash
+nvidia-smi -pl 300
+
+```
+
+- Create systemd service 
+
+
+```
+cat /etc/systemd/system/3090-powerlimit.service 
+[Unit]
+Description=Permanent RTX 3090 Power Limit
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/3090-powerlimit.sh
+
+[Install]
+WantedBy=multi-user.target
+
+```
