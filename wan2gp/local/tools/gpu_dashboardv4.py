@@ -20,7 +20,7 @@ except ImportError:
 DANGER_REF = [
     # (metric, warn_val, danger_val, unit, note)
     ("GPU Temp",        75,  83, "°C", "VRAM likely >95°C when GPU hits 83°C"),
-    ("VRAM Temp",       90, 100, "°C", "GDDR6X throttles ~110°C, degrades above 95°C"),
+    ("VRAM Temp",       98, 105, "°C", "GDDR6X throttles ~110°C, degrades above 100°C"),
     ("VRAM Clock drop", 10,  20,  "%", "Drop from 9501 MHz baseline = VRAM overheating"),
     ("GFX Clock drop",  10,  20,  "%", "Sudden drop mid-workload = thermal/power throttle"),
     ("Power %",         85,  95,  "%", "Sustained 95%+ of TDP = VRM heat risk"),
