@@ -4,7 +4,6 @@ NVIDIA GPU Monitor — RTX 3090 focused
 Tracks VRAM clock drops as indirect VRAM temperature signal.
 Press h to toggle the danger reference panel.
 Needs installation of gddr6 for VRAM temps.
-Run gddr6 before this script
 """
 import curses
 import time
@@ -245,7 +244,7 @@ def main(stdscr):
                 w(row, 42, f"  VRAM {t_mem}°C {bar(t_mem, 110, 12)}",
                   C(color_temp(t_mem)) | BOLD)
             else:
-                w(row, 42, "  VRAM N/A → watch VRAM clock drop below", DIM)
+                w(row, 42, "  VRAM N/A → watch VRAM clock drop below and the temp from gddr6", DIM)
             row += 1
             # gddr6 VRAM temp (direct memory controller read)
             gddr6_temps = get_gddr6_temps()
