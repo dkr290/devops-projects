@@ -270,7 +270,7 @@ def main(stdscr):
             t_shut = safe(pynvml.nvmlDeviceGetTemperatureThreshold, hnd,
                           pynvml.NVML_TEMPERATURE_THRESHOLD_SHUTDOWN)
             if t_slow != "N/A":
-                w(row, 4, f"Thresholds:  Slowdown {t_slow}°C   Shutdown {t_shut}°C", DIM)
+                w(row, 4, f"GPU temp Thresholds:  Slowdown {t_slow}°C   Shutdown {t_shut}°C", DIM)
                 row += 1
 
 
