@@ -14,6 +14,6 @@ jobs:
     with:
       name: Build and push wan2gp
       docker_image_name: ghcr.io/${{ github.repository }}/wan2gp
-      version: "wan2gp-v11.66"
+      version: "wan2gp-v11.77"
       folder: wan2gp/local
       dockerfileName: Dockerfile
