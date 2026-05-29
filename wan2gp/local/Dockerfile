@@ -45,7 +45,12 @@ RUN pip install --no-cache-dir \
   torchvision==0.25.0 \
   torchaudio==2.10.0 \
   --index-url https://download.pytorch.org/whl/cu130
-
+# ==========================================
+# CACHE BUSTER FOR FRESH CODE SELECTION
+# ==========================================
+# This ARG will receive a unique value every build, forcing 
+# Docker to ignore the cache from this point onward.
+ARG CACHE_BUST=1
 # Clone the application source code to a "safe" location that won't be volume-mounted.
 RUN git clone https://github.com/deepbeepmeep/Wan2GP.git /opt/wan2gp_source \
   && cd /opt/wan2gp_source \

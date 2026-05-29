@@ -96,3 +96,6 @@ jobs:
           tags: ${{ inputs.docker_image_name }}:${{ inputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # Add this build-args section below:
+          build-args: |
+            CACHE_BUST=${{ github.run_id }}-${{ github.run_attempt }}
