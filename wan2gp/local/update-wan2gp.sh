@@ -7,26 +7,10 @@ set -e
 # Note: Changes are temporary. A full pod restart will revert to the
 # version specified in the Dockerfile.
 
-# Safety Net: Define a function to handle errors gracefully.
-function error_handler {
-  echo ""
-  echo "❌ ERROR: The update script failed on line $1."
-  echo "An error occurred, and the update could not be completed."
-
-  # Restore the backup script if it exists, to prevent a broken state.
-  if [ -f "/workspace/Wan2GP/wgp.py.bak" ] && [ ! -f "/workspace/Wan2GP/wgp.py" ]; then
-    echo "Restoring backup of wgp.py..."
-    mv /workspace/Wan2GP/wgp.py.bak /workspace/Wan2GP/wgp.py
-    echo "Backup restored. You may need to restart the application manually."
-  fi
-  exit 1
-}
-trap 'error_handler $LINENO' ERR
 
 echo "--- Starting Wan2GP Live Update ---"
 
 # Step 1: Ensure 'lsof' is available to find the process by port.
-# The base RunPod image may not include this tool.
 if ! command -v lsof &> /dev/null; then
     echo "Installing lsof..."
     # This requires root, which is the default in RunPod containers.
@@ -74,14 +58,6 @@ echo "Successfully pulled latest code from the 'main' branch."
 if [ -f "/workspace/Wan2GP/wgp.py.bak" ]; then
     rm /workspace/Wan2GP/wgp.py.bak
 fi
-
-# Step 5: Update Python dependencies.
-# This follows the same logic as the original Dockerfile setup.
-echo "Updating Python dependencies from requirements.txt..."
-sed -i -e 's/^torch>=/#torch>=/' -e 's/^torchvision>=/#torchvision>=/' requirements.txt
-python3 -m pip install --no-cache-dir -r requirements.txt
-#python3 -m pip install --no-cache-dir gradio==5.35.0 sageattention==1.0.6
-echo "Dependencies updated."
 
 # Step 6: Restart the Wan2GP application with the new code.
 # This uses the same command as the original start-wan2gp.sh script.
