@@ -1,0 +1,47 @@
+backend: llama-cpp
+gpu_layers: 42
+context_size: 24576
+f16: false
+mmap: true
+# Inside your model's configuration file (e.g., models/qwen.yaml)
+# Crucial: These tell LocalAI how to pass tools to Qwen and handle the reply
+system_prompt: "You are an advanced AI assistant with real-time web access. You must use your search tools for any queries requiring current events, weather, stocks, or real-time web information. Do not answer from your internal training data for real-time queries."
+
+mcp:
+  remote: |
+    {
+      "mcpServers": {
+        "duckduckgo-mcp": {
+          "url": "http://duckduckgo-mcp:8020/mcp"
+        }
+      }
+    }
+
+agent:
+  max_attempts: 2
+  max_iterations: 3
+  enable_reasoning: false       # Disabling this stops the loop hallucination
+  enable_re_evaluation: false
+  tool_format: "auto"
+function:
+    grammar:
+        disable: true
+    automatic_tool_parsing_fallback: true
+known_usecases:
+    - chat
+min_p: 0
+name: qwen3-coder-30b-a3b-instruct
+options:
+    - use_jinja:true
+parameters:
+    model: Qwen3-Coder-30B-A3B-Instruct-Q5_K_M.gguf
+repeat_penalty: 1.05
+stopwords:
+  - "<|im_end|>"
+  - "</s>"
+temperature: 0.2
+template:
+    use_tokenizer_template: true
+top_k: 40
+top_p: 0.9
+

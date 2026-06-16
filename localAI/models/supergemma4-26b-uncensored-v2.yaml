@@ -1,0 +1,52 @@
+backend: llama-cpp
+function:
+    automatic_tool_parsing_fallback: true
+    grammar:
+        disable: true
+known_usecases:
+    - chat
+    - completion
+name: supergemma4-26b-uncensored-v2
+options:
+    - use_jinja:true
+parameters:
+    model: llama-cpp/models/supergemma4-26b-uncensored-gguf-v2/supergemma4-26b-uncensored-fast-v2-Q4_K_M.gguf
+
+
+mcp:
+  stdio: |
+    {
+      "mcpServers": {
+        "ddg": {
+          "command": "docker",
+          "env": {
+            "MAX_RESULTS": "10"
+          },
+          "args": [
+            "run", "-i", "--rm", "-e", "MAX_RESULTS",
+            "ghcr.io/mudler/mcps/duckduckgo:master"
+          ]
+        }
+      }
+    }
+system_prompt: |
+  You MUST call tools using strict JSON only.
+  Example:
+  {"tool": "search", "arguments": {"query": "weather in Paris"}}
+  NEVER answer from internal knowledge when the user asks for:
+  - current events
+  - real-time data
+  - news
+  - weather
+  - prices
+  - anything requiring internet access
+  ALWAYS call the search tool instead.
+
+assistant_prompt: |
+  IMPORTANT: If the user asks for ANY information that could require the internet,
+  you MUST call the search tool using JSON.
+  Do NOT answer from internal knowledge.
+agent:
+  max_iterations: 5
+template:
+    use_tokenizer_template: false

@@ -1,0 +1,35 @@
+services:
+  local-ai:
+    image: localai/localai:latest-gpu-nvidia-cuda-13
+    container_name: local-ai
+    restart: "no"
+    ports:
+      - "8080:8080"
+    volumes:
+      # Note: Docker Compose handles explicit absolute or relative paths best.
+      # If ~ doesn't resolve in your compose version, swap ~ for your full home path (e.g., /home/user/)
+      - /home/dani/localai/data:/data
+      - /home/dani/localai/backends:/backends
+      - /home/dani/localai/configuration:/configuration
+      - /home/dani/localai/models:/models
+      - /home/dani/localai/images:/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  duckduckgo-mcp:
+    image: mekayelanik/duckduckgo-mcp:stable
+    container_name: duckduckgo-mcp
+    restart: unless-stopped
+    ports:
+      - "8020:8020"
+    environment:
+      - PORT=8020
+      - NODE_ENV=production
+      - PROTOCOL=HTTP
+      - ENABLE_HTTPS=false
+      - HTTP_VERSION_MODE=auto

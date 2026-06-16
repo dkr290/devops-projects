@@ -1,0 +1,39 @@
+backend: llama-cpp
+context_size: 24576
+description: Imported from https://huggingface.co/reedmayhew/UD-2.0-Qwen3.6-35B-A3B-Claude-4.6-Opus-Reasoning-Distilled-GGUF/resolve/main/Qwen3.6-35B-A3B-Claude-4.6-Opus-Reasoning-Distilled-UD-Q4_K_S.gguf
+function:
+    enabled: true
+    type: openai
+    automatic_tool_parsing_fallback: true
+    grammar:
+        disable: true
+
+known_usecases:
+    - chat
+min_p: 0
+name: Qwen3.6-35B-A3B-Claude-4.6-Opus-Reasoning-Distilled-UD-Q4_K_S.gguf
+# -----------------------------
+# ENABLE OPENAI TOOL CALLING
+# -----------------------------
+
+function_call: auto
+options:
+    - 'use_jinja: true'
+parameters:
+    flash_attn: true
+    gpu_layers: 30
+    mlock: true
+    no_mmap: true
+    presence_penalty: 1.5
+    repeat_penalty: 1
+    temperature: 0.7
+    threads: 12
+    top_k: 20
+    top_p: 0.8
+presence_penalty: 1.5
+repeat_penalty: 1
+temperature: 0.7
+template:
+  use_tokenizer_template: true
+top_k: 20
+top_p: 0.8

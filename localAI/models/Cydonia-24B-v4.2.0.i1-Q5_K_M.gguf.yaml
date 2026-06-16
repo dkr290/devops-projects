@@ -1,0 +1,18 @@
+backend: llama-cpp
+description: Imported from https://huggingface.co/mradermacher/Cydonia-24B-v4.2.0-i1-GGUF/resolve/main/Cydonia-24B-v4.2.0.i1-Q5_K_M.gguf
+function:
+    automatic_tool_parsing_fallback: true
+    grammar:
+        disable: true
+known_usecases:
+    - chat
+name: Cydonia-24B-v4.2.0.i1-Q5_K_M.gguf
+options:
+    - use_jinja:true
+    - no_kv_offload:true
+parameters:
+    model: Cydonia-24B-v4.2.0.i1-Q5_K_M.gguf
+    n_ctx: 8192          # 8k context window (very stable for 24GB VRAM)
+    n_gpu_layers: 35
+template:
+    use_tokenizer_template: true

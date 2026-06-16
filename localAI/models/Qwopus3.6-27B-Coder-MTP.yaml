@@ -1,0 +1,44 @@
+agent:
+    enable_re_evaluation: false
+    enable_reasoning: false
+    max_attempts: 2
+    max_iterations: 3
+    tool_format: auto
+backend: llama-cpp
+context_size: 24576
+f16: false
+function:
+    automatic_tool_parsing_fallback: true
+    grammar:
+        disable: true
+gpu_layers: 62
+known_usecases:
+  - chat
+  - coding
+  - tool_calling
+mcp:
+    remote: |
+        {
+          "mcpServers": {
+            "duckduckgo-mcp": {
+              "url": "http://duckduckgo-mcp:8020/mcp"
+            }
+          }
+        }
+min_p: 0.05
+mmap: true
+name: Qwopus3.6-27B-Coder-MTP
+options:
+    - use_jinja:true
+parameters:
+    model: Qwopus3.6-27B-Coder-MTP-Q5_K_M.gguf
+repeat_penalty: 1.15
+stopwords:
+  - "\n\nUser:"
+  - "\n\nAssistant:"
+system_prompt: You are an advanced AI assistant with real-time web access. You must use your search tools for any queries requiring current events, weather, stocks, live prices, or real-time web information. Do not answer these types of queries from your internal training data. If you are unable to retrieve the information via the search tools, inform the user that you cannot find the data. Always cite the source of the real-time information you provide.
+temperature: 0.2
+template:
+    use_tokenizer_template: true
+top_k: 100
+top_p: 0.9
