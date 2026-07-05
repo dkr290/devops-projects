@@ -60,6 +60,7 @@ RUN git clone https://github.com/deepbeepmeep/Wan2GP.git /opt/wan2gp_source \
 RUN pip install --upgrade pip setuptools wheel
 
 RUN python -m pip install --no-cache-dir  -r /opt/wan2gp_source/requirements.txt \
+  && pip install mmgp==3.7.6 \
   && rm -rf /root/.cache/pip
 
 
@@ -68,10 +69,10 @@ COPY wheels/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl  /tmp/
 COPY wheels/spas_sage_attn-0.1.0-cp311-cp311-linux_x86_64.whl /tmp/
 
 RUN pip install --no-cache-dir \
-      /tmp/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl \
-      /tmp/spas_sage_attn-0.1.0-cp311-cp311-linux_x86_64.whl \
+  /tmp/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl \
+  /tmp/spas_sage_attn-0.1.0-cp311-cp311-linux_x86_64.whl \
   && rm -f /tmp/sageattention-*.whl \
-         /tmp/spas_sage_attn-*.whl
+  /tmp/spas_sage_attn-*.whl
 ## Install GGUF enhancer does not work with this image needs to be build  
 # RUN pip install https://github.com/deepbeepmeep/kernels/releases/download/GGUF_Kernels/llamacpp_gguf_cuda-1.0.2+torch271cu128py310-cp310-cp310-linux_x86_64.whl
 RUN pip install https://github.com/deepbeepmeep/kernels/releases/download/GGUF_Kernels/llamacpp_gguf_cuda-1.0.2+torch210cu13py311-cp311-cp311-linux_x86_64.whl
