@@ -43,7 +43,7 @@ docker run --rm --gpus all \
         sed -i "s/\"-Xcompiler\", \"-include,cassert\", //g" setup.py
 
         echo ">>> Setting arch for RTX 3090 (SM 8.6)"
-        export TORCH_CUDA_ARCH_LIST="8.6"
+        export TORCH_CUDA_ARCH_LIST="8.0;8.6"
 
         echo ">>> Fixing NVCC for CUDA 13.x"
         export NVCC_PREPEND_FLAGS="-include assert.h"
