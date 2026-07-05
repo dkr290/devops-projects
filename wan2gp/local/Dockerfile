@@ -60,7 +60,6 @@ RUN git clone https://github.com/deepbeepmeep/Wan2GP.git /opt/wan2gp_source \
 RUN pip install --upgrade pip setuptools wheel
 
 RUN python -m pip install --no-cache-dir  -r /opt/wan2gp_source/requirements.txt \
-  && pip install mmgp==3.7.6 \
   && rm -rf /root/.cache/pip
 
 
