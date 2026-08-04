@@ -27,6 +27,9 @@ docker run --rm --gpus all \
 
         echo ">>> Installing pip"
         curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
+        
+	      echo ">>> Creating python symlink (required by SpargeAttn setup.py internals)"
+        ln -sf /usr/local/bin/python3.11 /usr/local/bin/python
 
         echo ">>> Installing PyTorch 2.10 cu130"
         python3.11 -m pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 \
@@ -38,6 +41,8 @@ docker run --rm --gpus all \
         echo ">>> Cloning SpargeAttention"
         git clone https://github.com/woct0rdho/SpargeAttn.git /tmp/SpargeAttn
         cd /tmp/SpargeAttn
+        git submodule update --init --recursive
+
 
         echo ">>> Patching setup.py"
         sed -i "s/\"-Xcompiler\", \"-include,cassert\", //g" setup.py
@@ -51,8 +56,10 @@ docker run --rm --gpus all \
         echo ">>> Building wheel"
         python3.11 -m pip wheel -v --no-deps --no-build-isolation . -w /output
 
+      	echo ">>> Verifying instantiation files were generated"
+        find csrc/qattn/instantiations_sm80 -name "*.cu" | wc -l
+
         echo ">>> Done. Wheels saved in /output"
     '
 
 ls -lh "$OUTPUT_DIR"/*.whl
-
