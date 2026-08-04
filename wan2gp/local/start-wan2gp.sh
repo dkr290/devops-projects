@@ -24,12 +24,6 @@ else
     echo "Application files already present"
 fi
 
-# Create log directory
-mkdir -p /workspace/logs
-LOG_FILE="/workspace/logs/wan2gp_$(date +%Y%m%d_%H%M%S).log"
-
-# Start our application in the background
-echo "Starting Wan2GP application in background..."
 cd /workspace/Wan2GP
 
 # Start Wan2gp directly on its working port 
@@ -37,19 +31,15 @@ SERVER_NAME="0.0.0.0"
 SERVER_PORT="7860"
 
 echo "Starting Wan2GP on $SERVER_NAME:$SERVER_PORT"
-echo "Log file: $LOG_FILE"
-echo "Also streaming to stdout..."
+echo "Streaming logs to stdout (use 'docker logs -f wan2gp' to follow)..."
 
-# Use tee to log to file AND stdout simultaneously
-python3 wgp.py --server-name "$SERVER_NAME" --server-port "$SERVER_PORT" --save-masks 2>&1 | tee "$LOG_FILE" &
+python3 wgp.py --server-name "$SERVER_NAME" --server-port "$SERVER_PORT" --save-masks &
+
 WAN2GP_PID=$!
 
-echo "Wan2GP started with PID $WAN2GP_PID"
-
-# Symlink latest log for convenience
-ln -sf "$LOG_FILE" /workspace/logs/wan2gp_latest.log
-
-# Keep container alive
 wait $WAN2GP_PID
+
+
+
 
 
