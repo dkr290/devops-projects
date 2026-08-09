@@ -1,0 +1,26 @@
+// in opencode.json
+// .config/opencode
+
+// example for localai
+
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "LocalAI": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "LocalAI (local)",
+      "options": {
+        "baseURL": "http://localai:8080/v1"
+      },
+      "models": {
+        "Qwopus3.6-27B-Coder-Compat-MTP-GGUF": {
+          "name": "Qwopus3.6-27B-Coder-Compat-MTP-GGUF",
+          "limit": {
+            "context": 32000,
+            "output": 4096
+          }
+        }
+      }
+    }
+  }
+}
