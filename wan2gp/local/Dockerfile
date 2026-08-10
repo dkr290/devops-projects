@@ -54,7 +54,7 @@ ARG CACHE_BUST=1
 # Clone the application source code to a "safe" location that won't be volume-mounted.
 RUN git clone https://github.com/deepbeepmeep/Wan2GP.git /opt/wan2gp_source \
   && cd /opt/wan2gp_source \
-  && git checkout main 
+  && git checkout main
 
 
 RUN pip install --upgrade pip setuptools wheel
@@ -63,9 +63,12 @@ RUN python -m pip install --no-cache-dir  -r /opt/wan2gp_source/requirements.txt
   && rm -rf /root/.cache/pip
 
 
-## Copy the pre-build one build for 8.6 
+## Copy the pre-build one build for 8.6
 COPY wheels/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl  /tmp/
 COPY wheels/spas_sage_attn-0.1.0-cp311-cp311-linux_x86_64.whl /tmp/
+
+# pinn version of safetensors
+RUN pip install --no-cache-dir safetensors==0.4.5
 
 RUN pip install --no-cache-dir \
   /tmp/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl \
