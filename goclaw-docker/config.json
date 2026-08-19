@@ -1,0 +1,88 @@
+{
+  "data_dir": "/app/data",
+  "branding": {},
+  "security": {
+    "allow_private_ips": true,
+    "allowed_hosts": ["192.168.1.101", "localai.local"]
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "/app/workspace",
+      "restrict_to_workspace": true,
+      "provider": "localai",
+      "model": "llama3.3",
+      "max_tokens": 8192,
+      "temperature": 0.7,
+      "max_tool_iterations": 30,
+      "context_window": 200000,
+      "max_tool_calls": 25,
+      "subagents": {
+        "maxConcurrent": 20,
+        "maxSpawnDepth": 1
+      },
+      "memory": {}
+    }
+  },
+  "providers": {
+    "localai": {
+      "base_url": "http://192.168.1.101:8080",
+      "api_key": "not-needed",
+      "model": "llama3.3",
+      "request": {
+        "allowPrivateNetwork": true
+      }
+    }
+  },
+  "gateway": {
+    "host": "0.0.0.0",
+    "port": 18790,
+    "allowed_origins": ["*"],
+    "max_message_chars": 32000,
+    "rate_limit_rpm": 20
+  },
+  "tools": {
+    "execApproval": {
+      "security": "full",
+      "ask": "off"
+    },
+    "web_fetch": {},
+    "browser": {
+      "enabled": true,
+      "headless": true,
+      "cookie_sync_enabled": true
+    },
+    "rate_limit_per_hour": 150,
+    "document_parser": {},
+    "mcp_servers": {
+      "kubernetes": {
+        "transport": "streamable-http",
+        "url": "http://kubernetes-mcp:8081/mcp",
+        "tool_prefix": "k8s_",
+        "timeout_sec": 30,
+        "enabled": true
+      }
+    }
+  },
+  "skills": {
+    "max_upload_size_mb": 20,
+    "slash_commands": {}
+  },
+  "sessions": {},
+  "database": {},
+  "tts": {
+    "openai": {},
+    "openai_compat": {},
+    "elevenlabs": {},
+    "edge": {},
+    "minimax": {},
+    "gemini": {}
+  },
+  "cron": {},
+  "telemetry": {},
+  "tailscale": {
+    "hostname": ""
+  },
+  "hooks": {},
+  "packages": {},
+  "system_messages": {}
+}

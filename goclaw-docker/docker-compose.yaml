@@ -1,0 +1,125 @@
+services:
+  # ssh-tunnel:
+  #   hostname: localhost
+  #   image: alpine:latest
+  #   container_name: ssh-tunnel
+  #   command: >
+  #     sh -c "
+  #       apk add --no-cache openssh-client sshpass &&
+  #       mkdir -p /root/.ssh &&
+  #       sshpass -p '${SSH_PASSWORD}' ssh -N -L 0.0.0.0:8080:192.168.1.101:8080 -o StrictHostKeyChecking=no ${SSH_USER}@192.168.1.101
+  #     "
+  #   environment:
+  #     - SSH_USER=${SSH_USER:-dani}
+  #     - SSH_PASSWORD=${SSH_PASSWORD}
+  #   ports:
+  #     - "8080:8080"
+  #   restart: unless-stopped
+  #   networks:
+  #     - goclaw-network
+
+  # PostgreSQL with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg18
+    environment:
+      POSTGRES_USER: goclaw
+      POSTGRES_PASSWORD: goclaw
+      POSTGRES_DB: goclaw
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U goclaw -d goclaw"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks: # <-- ADD THIS
+      - goclaw-network
+
+  # pgAdmin - PostgreSQL GUI
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: goclaw-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "5050:80"
+    volumes:
+      - ./pgadmin_data:/var/lib/pgadmin
+    user: 5050:5050
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - goclaw-network
+
+  # GoClaw Gateway
+  goclaw:
+    image:
+      ghcr.io/nextlevelbuilder/goclaw:latest
+      # not needed and only if local ssh tunnel
+      # network_mode: host  # <-- ADD THIS
+      #extra_hosts:  # <-- ADD THIS
+      #- "host.docker.internal:127.0.0.1"
+    container_name: goclaw
+    environment:
+      #GOCLAW_POSTGRES_DSN: postgres://goclaw:goclaw@localhost:5432/goclaw?sslmode=disable
+      GOCLAW_POSTGRES_DSN: postgres://goclaw:goclaw@postgres:5432/goclaw?sslmode=disable
+      GOCLAW_GATEWAY_TOKEN: ed21ff609cc51f534a69d8c9a92f5c49
+      GOCLAW_ENCRYPTION_KEY: b2ce07fb8d37d1b7638655e0e71c971f43e48491e187be2bfafb323abb31c15f
+      # Correct environment variable for LLM Provider URLs:
+      GOCLAW_ALLOW_PRIVATE_PROVIDER_URLS: "true"
+      GOCLAW_ALLOW_PRIVATE_IPS: "true"
+      GOCLAW_DEFAULT_TENANT_ID: "0193a5b0-7000-7000-8000-000000000001"
+      GOCLAW_CONFIG: /app/config.json
+      GOCLAW_WORKSPACE: /app/workspace
+      GOCLAW_DATA_DIR: /app/data
+    ports:
+      - "18790:18790"
+    volumes:
+      - ./config.json:/app/config.json:ro
+      - ./workspace:/app/workspace
+      - ./data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    # remove only if running on netwok mode host
+    networks: # <-- ADD THIS
+      - goclaw-network
+
+  #Kuberntes mcp for limited access
+  kubernetes-mcp:
+    image: ghcr.io/containers/kubernetes-mcp-server:latest
+    container_name: kubernetes-mcp
+    command:
+      - --port=8081
+      - --read-only
+      - --toolsets=core
+      - --kubeconfig=/home/nonroot/.kube/config
+    environment:
+      - KUBECONFIG=/home/nonroot/.kube/config
+    volumes:
+      - ./kubeconfig:/home/nonroot/.kube/config:ro
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+    networks:
+      - goclaw-network
+      - k3d-cluster-net
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+networks:
+  goclaw-network:
+    driver: bridge
+  k3d-cluster-net:
+    external: true
+    name: k3d-devops-1

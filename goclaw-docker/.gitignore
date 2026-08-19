@@ -1,0 +1,6 @@
+data/* 
+pgadmin_data/*
+postgres_data/*
+workspace/*
+.env
+kubeconfig
