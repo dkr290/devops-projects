@@ -1,10 +1,6 @@
 {
   "data_dir": "/app/data",
   "branding": {},
-  "security": {
-    "allow_private_ips": true,
-    "allowed_hosts": ["192.168.1.101", "localai.local"]
-  },
   "agents": {
     "defaults": {
       "workspace": "/app/workspace",
@@ -38,7 +34,8 @@
     "port": 18790,
     "allowed_origins": ["*"],
     "max_message_chars": 32000,
-    "rate_limit_rpm": 20
+    "rate_limit_rpm": 20,
+    "mcp_allowed_hosts": ["kubernetes-mcp"]
   },
   "tools": {
     "execApproval": {

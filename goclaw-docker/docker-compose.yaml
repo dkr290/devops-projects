@@ -73,7 +73,9 @@ services:
       GOCLAW_ENCRYPTION_KEY: b2ce07fb8d37d1b7638655e0e71c971f43e48491e187be2bfafb323abb31c15f
       # Correct environment variable for LLM Provider URLs:
       GOCLAW_ALLOW_PRIVATE_PROVIDER_URLS: "true"
-      GOCLAW_ALLOW_PRIVATE_IPS: "true"
+      # Allowlist for MCP server hostnames exempt from the private-IP SSRF block
+      # (separate gate from the provider-URL check above; required for kubernetes-mcp)
+      GOCLAW_MCP_ALLOWED_HOSTS: "kubernetes-mcp"
       GOCLAW_DEFAULT_TENANT_ID: "0193a5b0-7000-7000-8000-000000000001"
       GOCLAW_CONFIG: /app/config.json
       GOCLAW_WORKSPACE: /app/workspace
