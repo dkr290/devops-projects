@@ -62,3 +62,9 @@ kubectl --kubeconfig=./kubeconfig delete pod foo -n default  # should be forbidd
 
 chmod 644 ./kubeconfig
 ```
+
+# Change the Kubeconfig server to the loadbalancer like:
+```
+    docker ps #inspect which server maps the port
+    https://k3d-eg-operator-serverlb:6443
+```

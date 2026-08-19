@@ -58,6 +58,27 @@ services:
       - goclaw-network
 
   # GoClaw Gateway
+
+  # One-shot init: fix ownership of bind-mounted dirs before goclaw starts.
+  # The goclaw image drops privileges to its internal "goclaw" user
+  # (uid 1000 — that's the uid INSIDE the image, not your host uid; do NOT
+  # change this to match your host user). If Docker auto-created ./data or
+  # ./workspace as root:root on a fresh clone, the seeder fails with:
+  #   "mkdir /app/data/skills-store: permission denied"
+  # This init container runs once per `docker compose up`, chowns the dirs
+  # to 1000:1000, and exits.
+  goclaw-init:
+    image: alpine:latest
+    user: "0:0"
+    volumes:
+      - ./data:/data
+      - ./workspace:/workspace
+    command: >
+      sh -c "chown -R 1000:1000 /data /workspace
+      && echo 'goclaw-init: ownership fixed'"
+    networks: []
+    restart: "no"
+
   goclaw:
     image:
       ghcr.io/nextlevelbuilder/goclaw:latest
@@ -89,6 +110,8 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
+      goclaw-init:
+        condition: service_completed_successfully
       postgres:
         condition: service_healthy
     restart: unless-stopped
