@@ -50,7 +50,6 @@ services:
       - "5050:80"
     volumes:
       - ./pgadmin_data:/var/lib/pgadmin
-    user: 5050:5050
     depends_on:
       - postgres
     restart: unless-stopped
