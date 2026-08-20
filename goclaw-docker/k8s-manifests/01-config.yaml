@@ -1,0 +1,67 @@
+# ConfigMap + Secret equivalent to docker-compose environment blocks.
+# Secret values match docker-compose.yaml EXACTLY (values are base64 of the
+# same plain-text credentials used in compose).
+#
+# Apply order: ConfigMap and Secret must exist before Deployments.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: goclaw-config
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: goclaw
+data:
+  # Minimal bootstrap config for PostgreSQL mode.
+  # GUI/DB manages: agents, providers, channels, MCP servers (see Readme-k8s.md).
+  # This file only supplies what has no GUI equivalent or is needed before first login.
+  config.json: |
+    {
+      "gateway": {
+        "host": "0.0.0.0",
+        "port": 18790,
+        "allowed_origins": ["*"],
+        "max_message_chars": 32000,
+        "rate_limit_rpm": 20,
+        "mcp_allowed_hosts": ["kubernetes-mcp"]
+      },
+      "agents": {
+        "defaults": {
+          "workspace": "/app/workspace",
+          "restrict_to_workspace": true,
+          "max_tokens": 8192,
+          "temperature": 0.7,
+          "max_tool_iterations": 30,
+          "context_window": 200000,
+          "max_tool_calls": 25,
+          "subagents": {
+            "maxConcurrent": 20,
+            "maxSpawnDepth": 1
+          }
+        }
+      }
+    }
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: goclaw-secrets
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: goclaw
+type: Opaque
+stringData:
+  # ---- postgres service env (exact match with docker-compose) ----
+  POSTGRES_USER: goclaw
+  POSTGRES_PASSWORD: goclaw
+  POSTGRES_DB: goclaw
+  # ---- pgadmin service env (exact match with docker-compose) ----
+  PGADMIN_DEFAULT_EMAIL: admin@example.com
+  PGADMIN_DEFAULT_PASSWORD: admin
+  # ---- goclaw service env (exact match with docker-compose) ----
+  # NOTE: in compose the DSN points to hostname "postgres" — in k8s the
+  # Service is also named "postgres" inside namespace "goclaw", so the same
+  # value works unchanged.
+  GOCLAW_POSTGRES_DSN: postgres://goclaw:goclaw@postgres:5432/goclaw?sslmode=disable
+  GOCLAW_GATEWAY_TOKEN: ed21ff609cc51f534a69d8c9a92f5c49
+  GOCLAW_ENCRYPTION_KEY: b2ce07fb8d37d1b7638655e0e71c971f43e48491e187be2bfafb323abb31c15f

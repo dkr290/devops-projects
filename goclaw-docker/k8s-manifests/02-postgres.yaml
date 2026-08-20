@@ -1,0 +1,112 @@
+# Equivalent of the `postgres` service in docker-compose.yaml
+#  - image pgvector/pgvector:pg18
+#  - healthcheck pg_isready  -> readinessProbe/livenessProbe
+#  - volume ./postgres_data -> PVC postgres-data
+#  - port 5432 exposed via Service (DNS name "postgres", same as compose)
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: postgres
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: postgres
+spec:
+  replicas: 1
+  # Stateful-style DB: never run two pods against the same PVC during rollout
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+        app.kubernetes.io/name: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: pgvector/pgvector:pg18
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: goclaw-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: goclaw-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: goclaw-secrets
+                  key: POSTGRES_DB
+            # pgvector image keeps data in this subdir by default; pin it
+            # explicitly so the PVC mount point maps 1:1 to compose's
+            # ./postgres_data:/var/lib/postgresql
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+          # compose healthcheck: pg_isready -U goclaw -d goclaw
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "goclaw", "-d", "goclaw"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "goclaw", "-d", "goclaw"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: postgres
+spec:
+  # headless-less ClusterIP is fine; DSN uses "postgres" hostname like compose
+  selector:
+    app: postgres
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432

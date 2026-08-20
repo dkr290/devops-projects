@@ -1,0 +1,199 @@
+# Equivalent of the `goclaw` + `goclaw-init` services in docker-compose.yaml
+#  - goclaw-init (one-shot chown of ./data and ./workspace to 1000:1000)
+#    -> initContainer running the exact same command before goclaw starts
+#  - env vars identical to compose (secrets come from goclaw-secrets,
+#    non-secret values are inlined exactly as in docker-compose.yaml)
+#  - volumes:
+#      ./config.json -> ConfigMap goclaw-config (key config.json), read-only
+#      ./workspace   -> PVC goclaw-workspace
+#      ./data        -> PVC goclaw-data
+#  - depends_on postgres (service_healthy) -> initContainer wait-for-postgres
+#  - port 18790 -> Service (NodePort 18790, same as compose host port)
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: goclaw-data
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: goclaw
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: goclaw-workspace
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: goclaw
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goclaw
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: goclaw
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: goclaw
+  template:
+    metadata:
+      labels:
+        app: goclaw
+        app.kubernetes.io/name: goclaw
+    spec:
+      # goclaw image drops to its internal "goclaw" user (uid 1000 INSIDE the
+      # image) — same comment as in docker-compose.yaml
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+        # ---- wait-for-postgres: replaces compose depends_on(service_healthy) ----
+        - name: wait-for-postgres
+          image: postgres:18-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h postgres -p 5432 -U goclaw -d goclaw; do
+                echo "waiting for postgres..."
+                sleep 2
+              done
+              echo "postgres is ready"
+        # ---- goclaw-init: EXACT same job as the compose one-shot service ----
+        # compose:
+        #   image: alpine:latest, user "0:0"
+        #   command: chown -R 1000:1000 /data /workspace
+        - name: goclaw-init
+          image: alpine:latest
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          command:
+            - sh
+            - -c
+            - |
+              chown -R 1000:1000 /data /workspace \
+                && echo 'goclaw-init: ownership fixed'
+          volumeMounts:
+            - name: goclaw-data
+              mountPath: /data
+            - name: goclaw-workspace
+              mountPath: /workspace
+      containers:
+        - name: goclaw
+          image: ghcr.io/nextlevelbuilder/goclaw:latest
+          ports:
+            - containerPort: 18790
+          env:
+            # ---- secret env vars (values identical to docker-compose) ----
+            - name: GOCLAW_POSTGRES_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: goclaw-secrets
+                  key: GOCLAW_POSTGRES_DSN
+            - name: GOCLAW_GATEWAY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: goclaw-secrets
+                  key: GOCLAW_GATEWAY_TOKEN
+            - name: GOCLAW_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: goclaw-secrets
+                  key: GOCLAW_ENCRYPTION_KEY
+            # ---- plain env vars (exact match with docker-compose) ----
+            - name: GOCLAW_ALLOW_PRIVATE_PROVIDER_URLS
+              value: "true"
+            - name: GOCLAW_MCP_ALLOWED_HOSTS
+              value: "kubernetes-mcp"
+            - name: GOCLAW_DEFAULT_TENANT_ID
+              value: "0193a5b0-7000-7000-8000-000000000001"
+            - name: GOCLAW_CONFIG
+              value: /app/config.json
+            - name: GOCLAW_WORKSPACE
+              value: /app/workspace
+            - name: GOCLAW_DATA_DIR
+              value: /app/data
+          volumeMounts:
+            # compose: ./config.json:/app/config.json:ro
+            - name: goclaw-config
+              mountPath: /app/config.json
+              subPath: config.json
+              readOnly: true
+            # compose: ./workspace:/app/workspace
+            - name: goclaw-workspace
+              mountPath: /app/workspace
+            # compose: ./data:/app/data
+            - name: goclaw-data
+              mountPath: /app/data
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 18790
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 18790
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+      volumes:
+        - name: goclaw-config
+          configMap:
+            name: goclaw-config
+            items:
+              - key: config.json
+                path: config.json
+        - name: goclaw-workspace
+          persistentVolumeClaim:
+            claimName: goclaw-workspace
+        - name: goclaw-data
+          persistentVolumeClaim:
+            claimName: goclaw-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: goclaw
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: goclaw
+spec:
+  # NodePort keeps the exact same host port mapping as compose ("18790:18790").
+  # Switch to ClusterIP + Ingress if you prefer (see Readme-k8s.md).
+  type: NodePort
+  selector:
+    app: goclaw
+  ports:
+    - name: gateway
+      port: 18790
+      targetPort: 18790
+      nodePort: 18790

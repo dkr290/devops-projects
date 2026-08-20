@@ -1,0 +1,95 @@
+# Equivalent of the `pgadmin` service in docker-compose.yaml
+#  - image dpage/pgadmin4:latest
+#  - user 5050:5050 -> securityContext runAsUser/runAsGroup/fsGroup
+#  - PGADMIN_CONFIG_SERVER_MODE: "False"
+#  - volume ./pgadmin_data -> PVC pgadmin-data
+#  - port 5050:80 -> Service port 80, access via ingress/port-forward
+#  - depends_on postgres
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pgadmin-data
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: pgadmin
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: pgadmin
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+        app.kubernetes.io/name: pgadmin
+    spec:
+      # compose: user: 5050:5050
+      securityContext:
+        runAsUser: 5050
+        runAsGroup: 5050
+        fsGroup: 5050
+      containers:
+        - name: pgadmin
+          image: dpage/pgadmin4:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: PGADMIN_DEFAULT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: goclaw-secrets
+                  key: PGADMIN_DEFAULT_EMAIL
+            - name: PGADMIN_DEFAULT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: goclaw-secrets
+                  key: PGADMIN_DEFAULT_PASSWORD
+            # compose: PGADMIN_CONFIG_SERVER_MODE: "False"
+            - name: PGADMIN_CONFIG_SERVER_MODE
+              value: "False"
+          volumeMounts:
+            - name: pgadmin-data
+              mountPath: /var/lib/pgadmin
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: pgadmin-data
+          persistentVolumeClaim:
+            claimName: pgadmin-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgadmin
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: pgadmin
+spec:
+  selector:
+    app: pgadmin
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80

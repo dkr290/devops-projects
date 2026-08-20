@@ -1,0 +1,93 @@
+# Equivalent of the `kubernetes-mcp` service in docker-compose.yaml
+#  - image ghcr.io/containers/kubernetes-mcp-server:latest
+#  - command flags identical to compose
+#  - read-only core toolsets against the cluster it runs IN
+#
+# DIFFERENCE vs compose (by design): instead of mounting an exported
+# ./kubeconfig file, the in-cluster version uses a ServiceAccount with the
+# built-in "view" ClusterRole — same read-only intent as the compose setup
+# described in Readme.md (goclaw-k8s-viewer / view ClusterRoleBinding), but
+# without copying kubeconfig files around. KUBECONFIG env var is still set
+# to the same path for parity; the server falls back to in-cluster config
+# when the file is absent. If you truly want the kubeconfig-file approach,
+# see Readme-k8s.md section "Alternative: kubeconfig Secret".
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubernetes-mcp
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: kubernetes-mcp
+---
+# read-only across the whole cluster — mirrors the compose intent
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubernetes-mcp-view
+  labels:
+    app.kubernetes.io/name: kubernetes-mcp
+subjects:
+  - kind: ServiceAccount
+    name: kubernetes-mcp
+    namespace: goclaw
+roleRef:
+  kind: ClusterRole
+  name: view
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetes-mcp
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: kubernetes-mcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubernetes-mcp
+  template:
+    metadata:
+      labels:
+        app: kubernetes-mcp
+        app.kubernetes.io/name: kubernetes-mcp
+    spec:
+      serviceAccountName: kubernetes-mcp
+      containers:
+        - name: kubernetes-mcp
+          image: ghcr.io/containers/kubernetes-mcp-server:latest
+          # exact same flags as docker-compose command; --cluster-provider=in-cluster
+          # replaces the compose kubeconfig-file mount (SA token auto-mounted below).
+          # The image entrypoint IS kubernetes-mcp-server, so args go in `command`.
+          command:
+            - kubernetes-mcp-server
+            - --port=8081
+            - --read-only
+            - --toolsets=core
+            - --cluster-provider=in-cluster
+          ports:
+            - containerPort: 8081
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetes-mcp
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: kubernetes-mcp
+spec:
+  selector:
+    app: kubernetes-mcp
+  ports:
+    - name: mcp
+      port: 8081
+      targetPort: 8081
