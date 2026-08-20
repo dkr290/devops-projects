@@ -1,44 +1,42 @@
 # goclaw-mcp-rbac.yaml
 
-```yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: goclaw-k8s-viewer
-  namespace: kube-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: goclaw-k8s-viewer-binding
-subjects:
-  - kind: ServiceAccount
-    name: goclaw-k8s-viewer
-    namespace: kube-system
-roleRef:
-  kind: ClusterRole
-  name: view
-  apiGroup: rbac.authorization.k8s.io
+The built-in `view` ClusterRole is **not enough** for the kubernetes-mcp
+observer agent. It is missing the node-level and cluster-scoped read
+permissions that several MCP skills need:
+
+| MCP skill | Required permission | In built-in `view`? |
+|---|---|---|
+| `k8s_nodes_top` | `nodes.metrics.k8s.io` | ✅ yes |
+| `k8s_nodes_log` | `nodes/proxy` | ❌ **no** |
+| `k8s_nodes_stats_summary` | `nodes/stats` | ❌ **no** |
+| `k8s_resources_get` / `k8s_resources_list` on cluster-scoped kinds | `nodes`, `persistentvolumes`, `storageclasses`, `ingressclasses`, `clusterroles`, `clusterrolebindings`, `customresourcedefinitions` | ❌ **no** |
+| Cilium observability | `ciliumnetworkpolicies`, `ciliumclusterwidenetworkpolicies`, `ciliumendpoints`, `ciliumidentities`, `ciliumnodes` | ❌ **no** |
+| Gateway API / Envoy Gateway | `gateways`, `gatewayclasses`, `httproutes`, `tcproutes`, `tlsroutes`, `udproutes`, `grpcroutes`, `referencegrants`, plus `gateway.envoyproxy.io` policy CRDs | ❌ **no** |
+
+A **ready-to-apply** manifest with an extended ClusterRole
+(`goclaw-k8s-observer` = everything `view` has + the missing node,
+cluster-scoped, Cilium, and Gateway API reads, still 100% read-only)
+lives in
+[`roles-examples/goclaw-mcp-rbac.yaml`](roles-examples/goclaw-mcp-rbac.yaml).
+
+Apply it:
+
+```bash
+kubectl apply -f roles-examples/goclaw-mcp-rbac.yaml
 ```
+
+That single file creates:
+- `ServiceAccount/goclaw-k8s-viewer` (namespace `kube-system`)
+- `ClusterRole/goclaw-k8s-observer` (extended read-only)
+- `ClusterRoleBinding/goclaw-k8s-viewer-binding`
+- `Secret/goclaw-k8s-viewer-token` (long-lived SA token, K8s ≥ 1.24)
 
 # Generate a long-lived token + kubeconfig for that ServiceAccount
 
-Since Kubernetes 1.24+, SA tokens aren't auto-created — 
-it needs explicitly via a Secret annotation (this gives you a non-expiring token, unlike kubectl create token which defaults to 1hr):
-```yaml
-# goclaw-mcp-token.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: goclaw-k8s-viewer-token
-  namespace: kube-system
-  annotations:
-    kubernetes.io/service-account.name: goclaw-k8s-viewer
-type: kubernetes.io/service-account-token
+The token Secret is already created by the manifest above (no separate
+`goclaw-mcp-token.yaml` needed). Extract the credentials:
+
 ```
-# apply the configuation 
-```
-kubectl apply -f goclaw-mcp-token.yaml
 TOKEN=$(kubectl get secret goclaw-k8s-viewer-token -n kube-system -o jsonpath='{.data.token}' | base64 -d)
 CA_CERT=$(kubectl get configmap kube-root-ca.crt -n kube-system -o jsonpath='{.data.ca\.crt}')
 API_SERVER=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')
@@ -58,6 +56,10 @@ kubectl config use-context goclaw-k8s-viewer --kubeconfig=./kubeconfig
 
 ```
 kubectl --kubeconfig=./kubeconfig get pods -A          # should work
+kubectl --kubeconfig=./kubeconfig get nodes            # should work (extended role)
+kubectl --kubeconfig=./kubeconfig get --raw /api/v1/nodes/<node-name>/proxy/stats/summary | head -c 200   # should work (k8s_nodes_stats_summary)
+kubectl --kubeconfig=./kubeconfig get ciliumnetworkpolicies -A   # should work (Cilium)
+kubectl --kubeconfig=./kubeconfig get gateways,httproutes -A      # should work (Gateway API)
 kubectl --kubeconfig=./kubeconfig delete pod foo -n default  # should be forbidden
 
 chmod 644 ./kubeconfig
