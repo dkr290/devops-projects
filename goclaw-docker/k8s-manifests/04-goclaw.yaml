@@ -8,7 +8,9 @@
 #      ./workspace   -> PVC goclaw-workspace
 #      ./data        -> PVC goclaw-data
 #  - depends_on postgres (service_healthy) -> initContainer wait-for-postgres
-#  - port 18790 -> Service (NodePort 18790, same as compose host port)
+#  - port 18790 -> Service (ClusterIP; exposed via HTTPRoute 06-httproute.yaml)
+#  - NOTE: compose's `extra_hosts: host.docker.internal:host-gateway` is a
+#    Docker-desktop-ism; pods reach host services via the node's IP directly.
 
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -64,8 +66,10 @@ spec:
         fsGroup: 1000
       initContainers:
         # ---- wait-for-postgres: replaces compose depends_on(service_healthy) ----
+        # uses the same image as the postgres service (pgvector/pgvector:pg18
+        # includes pg_isready)
         - name: wait-for-postgres
-          image: postgres:18-alpine
+          image: pgvector/pgvector:pg18
           command:
             - sh
             - -c
@@ -187,13 +191,12 @@ metadata:
   labels:
     app.kubernetes.io/name: goclaw
 spec:
-  # NodePort keeps the exact same host port mapping as compose ("18790:18790").
-  # Switch to ClusterIP + Ingress if you prefer (see Readme-k8s.md).
-  type: NodePort
+  # ClusterIP: external access goes through Envoy Gateway (06-httproute.yaml).
+  # For quick local access use: kubectl -n goclaw port-forward svc/goclaw 18790:18790
+  type: ClusterIP
   selector:
     app: goclaw
   ports:
     - name: gateway
       port: 18790
       targetPort: 18790
-      nodePort: 18790

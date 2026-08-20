@@ -1,41 +1,13 @@
 # Equivalent of the `kubernetes-mcp` service in docker-compose.yaml
 #  - image ghcr.io/containers/kubernetes-mcp-server:latest
-#  - command flags identical to compose
-#  - read-only core toolsets against the cluster it runs IN
+#  - command flags identical to compose (including --kubeconfig path)
+#  - kubeconfig file mounted from Secret (created from ../kubeconfig)
 #
-# DIFFERENCE vs compose (by design): instead of mounting an exported
-# ./kubeconfig file, the in-cluster version uses a ServiceAccount with the
-# built-in "view" ClusterRole — same read-only intent as the compose setup
-# described in Readme.md (goclaw-k8s-viewer / view ClusterRoleBinding), but
-# without copying kubeconfig files around. KUBECONFIG env var is still set
-# to the same path for parity; the server falls back to in-cluster config
-# when the file is absent. If you truly want the kubeconfig-file approach,
-# see Readme-k8s.md section "Alternative: kubeconfig Secret".
+# RBAC is NOT included here — you create the ServiceAccount / ClusterRole /
+# ClusterRoleBinding separately (see ../roles-examples/goclaw-mcp-rbac.yaml
+# and ../Readme.md). This manifest only mounts the kubeconfig file that
+# references those credentials.
 
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: kubernetes-mcp
-  namespace: goclaw
-  labels:
-    app.kubernetes.io/name: kubernetes-mcp
----
-# read-only across the whole cluster — mirrors the compose intent
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: kubernetes-mcp-view
-  labels:
-    app.kubernetes.io/name: kubernetes-mcp
-subjects:
-  - kind: ServiceAccount
-    name: kubernetes-mcp
-    namespace: goclaw
-roleRef:
-  kind: ClusterRole
-  name: view
-  apiGroup: rbac.authorization.k8s.io
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -54,21 +26,28 @@ spec:
         app: kubernetes-mcp
         app.kubernetes.io/name: kubernetes-mcp
     spec:
-      serviceAccountName: kubernetes-mcp
       containers:
         - name: kubernetes-mcp
           image: ghcr.io/containers/kubernetes-mcp-server:latest
-          # exact same flags as docker-compose command; --cluster-provider=in-cluster
-          # replaces the compose kubeconfig-file mount (SA token auto-mounted below).
-          # The image entrypoint IS kubernetes-mcp-server, so args go in `command`.
+          # exact same flags as docker-compose command; absolute path because
+          # k8s `command` overrides the image entrypoint (/app/kubernetes-mcp-server)
           command:
-            - kubernetes-mcp-server
+            - /app/kubernetes-mcp-server
             - --port=8081
             - --read-only
             - --toolsets=core
-            - --cluster-provider=in-cluster
+            - --kubeconfig=/home/nonroot/.kube/config
+          # compose environment: KUBECONFIG=/home/nonroot/.kube/config
+          env:
+            - name: KUBECONFIG
+              value: /home/nonroot/.kube/config
           ports:
             - containerPort: 8081
+          volumeMounts:
+            - name: kubeconfig
+              mountPath: /home/nonroot/.kube/config
+              subPath: config
+              readOnly: true
           resources:
             requests:
               cpu: 50m
@@ -76,6 +55,13 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+      volumes:
+        - name: kubeconfig
+          secret:
+            secretName: kubernetes-mcp-kubeconfig
+            items:
+              - key: config
+                path: config
 ---
 apiVersion: v1
 kind: Service

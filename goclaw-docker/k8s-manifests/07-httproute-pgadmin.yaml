@@ -1,0 +1,46 @@
+# HTTPRoute for pgAdmin via Envoy Gateway — same pattern as goclaw/argocd:
+# HTTPRoute -> gateway.envoyproxy.io/Backend -> pgadmin Service (port 80).
+# Parent Gateway: default-envoy-gw in envoy-gateway-system.
+#
+# Apply after the pgadmin Deployment/Service exist (03-pgadmin.yaml).
+
+# Backend (Envoy Gateway CRD) — upstream endpoints for the pgadmin Service
+# via its in-cluster DNS name.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: pgadmin-backend
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: pgadmin
+spec:
+  endpoints:
+    - fqdn:
+        hostname: pgadmin.goclaw.svc.cluster.local
+        port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: pgadmin-http
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: pgadmin
+spec:
+  hostnames:
+    - pgadmin.k8s-dev.bankingcircle.net
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: default-envoy-gw
+      namespace: envoy-gateway-system
+  rules:
+    - backendRefs:
+        - group: gateway.envoyproxy.io
+          kind: Backend
+          name: pgadmin-backend
+          weight: 1
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
