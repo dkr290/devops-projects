@@ -28,7 +28,7 @@ metadata:
     app.kubernetes.io/name: goclaw
 spec:
   hostnames:
-    - goclaw.k8s-dev.bankingcircle.net
+    - goclaw.172.19.0.2.nip.io
   parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway
