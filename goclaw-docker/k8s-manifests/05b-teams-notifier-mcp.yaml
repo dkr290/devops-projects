@@ -1,0 +1,228 @@
+# teams-notifier MCP bridge — k8s-only, Python implementation.
+#
+# A tiny FastMCP server that exposes ONE tool, `notify`, and POSTs the payload
+# straight to the Teams Notifier with httpx. Because it calls the notifier's
+# HTTP API directly (instead of translating an OpenAPI spec), there is NO
+# OpenAPI parsing and therefore NO 3.1-vs-3.0 spec parse error — ever.
+#
+#   GoClaw  -->  teams-notifier-mcp:8082/mcp  (this Python MCP server)
+#                  -->  POST https://teams-notifier.k8s-dev.bankingcircle.net/notify
+#
+# Register it in the GoClaw UI -> MCP Integration (k8s stores MCP servers in
+# PostgreSQL, NOT the ConfigMap — same as kubernetes-mcp):
+#   transport   = streamable-http
+#   url         = http://teams-notifier-mcp:8082/mcp
+#   tool_prefix = teams_        -> the agent calls it as `teams_notify`
+# The host is exempted from the private-IP SSRF block via
+# GOCLAW_MCP_ALLOWED_HOSTS / gateway.mcp_allowed_hosts (01-config.yaml +
+# 04-goclaw.yaml).
+#
+# No RBAC / ServiceAccount needed — the pod only makes outbound HTTPS to the
+# teams-notifier service; it does not talk to the Kubernetes API.
+#
+# ----------------------------------------------------------------------------
+# EASY RE-POINTING: everything you might want to change tomorrow lives in the
+# `env:` block of the Deployment below (search for "VALUES"). To point at a
+# different notifier (e.g. prod), change NOTIFIER_URL and re-apply + restart:
+#   kubectl apply -f 05b-teams-notifier-mcp.yaml
+#   kubectl -n goclaw rollout restart deploy/teams-notifier-mcp
+# ----------------------------------------------------------------------------
+#
+# IMAGE NOTE: today the server code is mounted from the ConfigMap below
+# (`server.py`) into a stock `python:3.12-slim` image, and deps (fastmcp,
+# httpx) are installed at container start. When you build your own image, bake
+# the deps + server.py in and replace `image:`/`command:` with your image (see
+# the commented example in the container spec). No other change is needed.
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: teams-notifier-mcp-config
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: teams-notifier-mcp
+data:
+  # requirements for the interim stock-python runtime. When you build an
+  # image, put these in the image's own requirements/Dockerfile instead.
+  requirements.txt: |
+    fastmcp>=2.0
+    httpx>=0.27
+
+  # The MCP server. Exposes `notify`; forwards to NOTIFIER_URL.
+  server.py: |
+    import os
+    import httpx
+    from fastmcp import FastMCP
+
+    # --- config from env (see Deployment "VALUES" block) ---
+    NOTIFIER_URL = os.environ.get(
+        "NOTIFIER_URL", "https://teams-notifier.k8s-dev.bankingcircle.net/notify"
+    )
+    PORT = int(os.environ.get("PORT", "8082"))
+    HOST = os.environ.get("HOST", "0.0.0.0")
+    TIMEOUT = float(os.environ.get("TIMEOUT_SEC", "15"))
+    # Set VERIFY_TLS=false only if the upstream uses a self-signed/internal CA
+    # that the pod does not trust. Default is to verify.
+    VERIFY_TLS = os.environ.get("VERIFY_TLS", "true").lower() not in ("0", "false", "no")
+
+    mcp = FastMCP("teams-notifier")
+
+    @mcp.tool()
+    async def notify(
+        title: str,
+        body: str,
+        team: str,
+        channel: str,
+        status: str | None = None,      # info | success | warning | error
+        action: dict | None = None,     # {"title": <label>, "url": <url>}
+        facts: list[dict] | None = None # [{"title": <k>, "value": <v>}]
+    ) -> dict:
+        """Send a Microsoft Teams notification via the teams-notifier service.
+
+        title/body/team/channel are required. `status` prefixes the title.
+        `action` adds a Details button; `facts` appends key/value lines.
+        """
+        payload = {"title": title, "body": body, "team": team, "channel": channel}
+        if status is not None:
+            payload["status"] = status
+        if action is not None:
+            payload["action"] = action
+        if facts is not None:
+            payload["facts"] = facts
+
+        async with httpx.AsyncClient(verify=VERIFY_TLS, timeout=TIMEOUT) as client:
+            resp = await client.post(
+                NOTIFIER_URL,
+                json=payload,
+                headers={
+                    "Accept": "application/json, application/problem+json",
+                    "Content-Type": "application/json",
+                },
+            )
+        # Return upstream status + body so the agent sees success/failure.
+        try:
+            detail = resp.json()
+        except Exception:
+            detail = resp.text
+        return {"upstream_status": resp.status_code, "response": detail}
+
+    @mcp.tool()
+    async def health() -> dict:
+        """Lightweight liveness/echo of the configured upstream."""
+        return {"notifier_url": NOTIFIER_URL, "verify_tls": VERIFY_TLS}
+
+    if __name__ == "__main__":
+        mcp.run(transport="streamable-http", host=HOST, port=PORT, path="/mcp")
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teams-notifier-mcp
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: teams-notifier-mcp
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: teams-notifier-mcp
+  template:
+    metadata:
+      labels:
+        app: teams-notifier-mcp
+        app.kubernetes.io/name: teams-notifier-mcp
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: teams-notifier-mcp
+          # Interim: stock python + code mounted from ConfigMap + pip install
+          # at start. Replace with your own image once built (see below).
+          image: python:3.12-slim
+          #
+          # ==== WHEN YOU BUILD YOUR OWN IMAGE ====
+          #   image: <your-registry>/teams-notifier-mcp:<tag>
+          #   command: ["python", "/app/server.py"]     # no pip install
+          #   (bake fastmcp+httpx and server.py into the image)
+          # ======================================
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              pip install --quiet --disable-pip-version-check --root-user-action=ignore \
+                -r /app/config/requirements.txt
+              exec python /app/config/server.py
+          # ------------------------- VALUES (edit me) -------------------------
+          # The only things you normally change. Everything else is boilerplate.
+          env:
+            # Target notifier endpoint (the POST URL). Change for prod.
+            - name: NOTIFIER_URL
+              value: "https://teams-notifier.k8s-dev.bankingcircle.net/notify"
+            # Listener for this MCP server (must match the Service port below).
+            - name: PORT
+              value: "8082"
+            - name: HOST
+              value: "0.0.0.0"
+            # Upstream request timeout (seconds).
+            - name: TIMEOUT_SEC
+              value: "15"
+            # Set to "false" ONLY if the upstream TLS cert is not trusted.
+            - name: VERIFY_TLS
+              value: "true"
+          # ----------------------------------------------------------------------
+          ports:
+            - containerPort: 8082
+          readinessProbe:
+            # tcpSocket: a bare GET on /mcp returns a non-2xx MCP handshake
+            # error, so just prove the port is accepting connections.
+            tcpSocket:
+              port: 8082
+            initialDelaySeconds: 15   # allow time for pip install
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 12
+          livenessProbe:
+            tcpSocket:
+              port: 8082
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 50m
+              memory: 96Mi
+            limits:
+              cpu: 500m
+              memory: 384Mi
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: teams-notifier-mcp-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: teams-notifier-mcp
+  namespace: goclaw
+  labels:
+    app.kubernetes.io/name: teams-notifier-mcp
+spec:
+  # ClusterIP: only reached by the goclaw pod in the same namespace.
+  type: ClusterIP
+  selector:
+    app: teams-notifier-mcp
+  ports:
+    - name: mcp
+      port: 8082
+      targetPort: 8082

@@ -23,7 +23,7 @@ data:
         "allowed_origins": ["*"],
         "max_message_chars": 32000,
         "rate_limit_rpm": 20,
-        "mcp_allowed_hosts": ["kubernetes-mcp"]
+        "mcp_allowed_hosts": ["kubernetes-mcp", "teams-notifier-mcp"]
       },
       "agents": {
         "defaults": {

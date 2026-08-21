@@ -125,7 +125,7 @@ spec:
             - name: GOCLAW_ALLOW_PRIVATE_PROVIDER_URLS
               value: "true"
             - name: GOCLAW_MCP_ALLOWED_HOSTS
-              value: "kubernetes-mcp"
+              value: "kubernetes-mcp,teams-notifier-mcp"
             - name: GOCLAW_DEFAULT_TENANT_ID
               value: "0193a5b0-7000-7000-8000-000000000001"
             - name: GOCLAW_CONFIG
