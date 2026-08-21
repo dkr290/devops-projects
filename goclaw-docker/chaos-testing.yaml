@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chaos-crash-loop-deployment
+  namespace: chaos-testing
+  labels:
+    app: crash-tester
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crash-tester
+  template:
+    metadata:
+      labels:
+        app: crash-tester
+    spec:
+      containers:
+      - name: crashy-container
+        image: busybox:latest
+        command: ["/bin/sh", "-c"]
+        args: ["echo 'App starting...'; sleep 3; echo 'Simulating critical failure!'; exit 1"]
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "50m"
+          requests:
+            memory: "32Mi"
+            cpu: "10m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chaos-probe-deployment
+  namespace: chaos-testing
+  labels:
+    app: probe-tester
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: probe-tester
+  template:
+    metadata:
+      labels:
+        app: probe-tester
+    spec:
+      containers:
+      - name: web
+        image: nginx:alpine
+        livenessProbe:
+          httpGet:
+            path: /healthz-that-does-not-exist
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "50m"
+          requests:
+            memory: "32Mi"
+            cpu: "10m"
