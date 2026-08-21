@@ -101,7 +101,7 @@ spec:
               mountPath: /workspace
       containers:
         - name: goclaw
-          image: ghcr.io/nextlevelbuilder/goclaw:latest
+          image: ghcr.io/nextlevelbuilder/goclaw:v3.14.0
           ports:
             - containerPort: 18790
           env:
