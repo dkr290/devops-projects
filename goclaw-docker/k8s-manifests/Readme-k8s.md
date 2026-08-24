@@ -8,11 +8,12 @@ Same images, same env var values, same ports, same storage layout.
 | docker-compose service | Kubernetes object | File |
 |---|---|---|
 | *(implicit project namespace)* | `Namespace/goclaw` | `00-namespace.yaml` |
-| `./config.json` bind-mount | `ConfigMap/goclaw-config` | `01-config.yaml` |
+| `./config.json` bind-mount | `ConfigMap/goclaw-config-bootstrap` (template) → copied to `PVC/goclaw-data` by initContainer | `01-config.yaml`, `04-goclaw.yaml` |
 | env secrets (postgres/pgadmin/goclaw creds) | `Secret/goclaw-secrets` | `01-config.yaml` |
 | `postgres` (`pgvector/pgvector:pg18`) | `Deployment/postgres` + `Service/postgres` + `PVC/postgres-data` | `02-postgres.yaml` |
 | `pgadmin` (`dpage/pgadmin4`, uid 5050) | `Deployment/pgadmin` + `Service/pgadmin` + `PVC/pgadmin-data` | `03-pgadmin.yaml` |
 | `goclaw-init` (one-shot chown 1000:1000) | **initContainer** `goclaw-init` inside the goclaw Pod | `04-goclaw.yaml` |
+| `config.json` bootstrap (copy template to PVC) | **initContainer** `config-init` (copies ConfigMap → PVC, only if missing) | `04-goclaw.yaml` |
 | `depends_on: postgres (service_healthy)` | **initContainer** `wait-for-postgres` (pg_isready loop) | `04-goclaw.yaml` |
 | `goclaw` (gateway on 18790) | `Deployment/goclaw` + `Service/goclaw` (**ClusterIP**, exposed via HTTPRoute) | `04-goclaw.yaml` |
 | *(HTTPS ingress via Envoy Gateway)* | `HTTPRoute/goclaw-http` + `Backend/goclaw-backend` → `https://goclaw.k8s-dev.bankingcircle.net` | `06-httproute.yaml` |
@@ -22,6 +23,7 @@ Same images, same env var values, same ports, same storage layout.
 | volume `./postgres_data` | `PVC/postgres-data` (10Gi) | `02-postgres.yaml` |
 | volume `./pgadmin_data` | `PVC/pgadmin-data` (2Gi) | `03-pgadmin.yaml` |
 | volumes `./data`, `./workspace` | `PVC/goclaw-data`, `PVC/goclaw-workspace` (10Gi each) | `04-goclaw.yaml` |
+| `./config.json` (read-write, persistent) | `PVC/goclaw-data` (subPath `config.json`) | `04-goclaw.yaml` |
 | network `goclaw-network` | in-cluster DNS (`postgres`, `kubernetes-mcp` resolve inside namespace `goclaw`) | — |
 
 ### Identical env var values
@@ -272,7 +274,9 @@ appears in `skill_search` and the message lands in the channel.
 
 ## What the ConfigMap contains (and why)
 
-The `goclaw-config` ConfigMap in `01-config.yaml` is a **minimal bootstrap config** — not the full `config.json` from the Docker setup. In PostgreSQL mode the GUI is the source of truth for:
+The `goclaw-config-bootstrap` ConfigMap in `01-config.yaml` is a **bootstrap template** — not the live config. On first start, the `config-init` initContainer copies it to the `goclaw-data` PVC at `/data/config.json`. The GUI then reads/writes directly to the PVC copy, making changes **persistent across restarts**.
+
+In PostgreSQL mode the GUI is the source of truth for:
 
 - **Providers** (including `localai` at `http://192.168.1.101:8080`) — add via **Providers** page
 - **Agents** (provider/model overrides, skills, workspace) — managed per-agent in **Agents**
@@ -291,9 +295,21 @@ Everything else (`providers.*`, `tools.mcp_servers`, empty `{}` placeholders) wa
 
 ### Updating the minimal config
 
+To change the bootstrap defaults (for new deployments only — existing PVCs keep their GUI-modified config):
+
 ```bash
 kubectl apply -f k8s-manifests/01-config.yaml
+# For existing deployments, delete the PVC copy to reset to new defaults:
+kubectl -n goclaw exec deploy/goclaw -- rm /app/data/config.json
 kubectl -n goclaw rollout restart deploy/goclaw
+```
+
+To reset **all** GUI changes and restore bootstrap defaults:
+
+```bash
+kubectl -n goclaw exec deploy/goclaw -- rm /app/data/config.json
+kubectl -n goclaw rollout restart deploy/goclaw
+# config-init will copy the bootstrap template on next start
 ```
 
 ## Data & persistence
@@ -338,6 +354,9 @@ kubectl -n goclaw run data-copy --rm -i --image=alpine --restart=Never \
 |---|---|
 | PVC stuck `Pending` | `kubectl get sc` — no default StorageClass; install one or set `storageClassName` in the PVCs |
 | `goclaw-init` initContainer fails | `kubectl -n goclaw logs deploy/goclaw -c goclaw-init` — needs runAsUser 0 (already set) |
+| `config-init` initContainer fails | `kubectl -n goclaw logs deploy/goclaw -c config-init` — check ConfigMap `goclaw-config-bootstrap` exists |
+| GUI changes lost after restart | config.json was mounted from ConfigMap (old setup) — ensure you're using the new PVC-based config |
+| GUI cannot save config | `kubectl -n goclaw exec deploy/goclaw -- ls -la /app/config.json` — should show `-rw-r--r-- 1 goclaw goclaw` on PVC, not ConfigMap |
 | goclaw CrashLoop: postgres unreachable | `kubectl -n goclaw logs deploy/goclaw -c wait-for-postgres`; check `svc/postgres` exists |
 | kubernetes-mcp pod stuck `CreateContainerConfigError` | Secret `kubernetes-mcp-kubeconfig` missing — create it from `./kubeconfig` (see deploy step 2) |
 | MCP tools fail with RBAC errors | the kubeconfig's ServiceAccount lacks the permission — verify with `kubectl --kubeconfig=./kubeconfig auth can-i get nodes` etc.; the extended role is in `../roles-examples/goclaw-mcp-rbac.yaml` |

@@ -1,13 +1,17 @@
-# ConfigMap + Secret equivalent to docker-compose environment blocks.
+# ConfigMap (bootstrap template) + Secret equivalent to docker-compose environment blocks.
 # Secret values match docker-compose.yaml EXACTLY (values are base64 of the
 # same plain-text credentials used in compose).
 #
 # Apply order: ConfigMap and Secret must exist before Deployments.
+#
+# NOTE: The ConfigMap is now a BOOTSTRAP TEMPLATE only. On first start,
+# config-init copies it to the goclaw-data PVC. The GUI then reads/writes
+# directly to the PVC copy, making changes persistent across restarts.
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: goclaw-config
+  name: goclaw-config-bootstrap
   namespace: goclaw
   labels:
     app.kubernetes.io/name: goclaw

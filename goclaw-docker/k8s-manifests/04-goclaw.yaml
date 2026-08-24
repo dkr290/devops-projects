@@ -1,12 +1,15 @@
 # Equivalent of the `goclaw` + `goclaw-init` services in docker-compose.yaml
 #  - goclaw-init (one-shot chown of ./data and ./workspace to 1000:1000)
 #    -> initContainer running the exact same command before goclaw starts
+#  - config-init (one-shot copy of bootstrap config.json to PVC)
+#    -> initContainer that copies /bootstrap/config.json to /data/config.json
+#       ONLY IF the file does not already exist (preserves GUI changes)
 #  - env vars identical to compose (secrets come from goclaw-secrets,
 #    non-secret values are inlined exactly as in docker-compose.yaml)
 #  - volumes:
-#      ./config.json -> ConfigMap goclaw-config (key config.json), read-only
-#      ./workspace   -> PVC goclaw-workspace
-#      ./data        -> PVC goclaw-data
+#      /app/config.json -> PVC goclaw-data (subPath config.json, READ-WRITE)
+#      /app/workspace   -> PVC goclaw-workspace
+#      /app/data        -> PVC goclaw-data
 #  - depends_on postgres (service_healthy) -> initContainer wait-for-postgres
 #  - port 18790 -> Service (ClusterIP; exposed via HTTPRoute 06-httproute.yaml)
 #  - NOTE: compose's `extra_hosts: host.docker.internal:host-gateway` is a
@@ -99,9 +102,36 @@ spec:
               mountPath: /data
             - name: goclaw-workspace
               mountPath: /workspace
+        # ---- config-init: copy bootstrap config to PVC on first run ----
+        # Copies /bootstrap/config.json -> /data/config.json ONLY IF the file
+        # does not already exist. This preserves GUI changes across restarts
+        # while still providing version-controlled defaults on first deploy.
+        - name: config-init
+          image: alpine:latest
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          command:
+            - sh
+            - -c
+            - |
+              if [ ! -f /data/config.json ]; then
+                cp /bootstrap/config.json /data/config.json
+                chown 1000:1000 /data/config.json
+                echo "config-init: config.json initialized from bootstrap"
+              else
+                echo "config-init: config.json already exists, preserving GUI changes"
+              fi
+          volumeMounts:
+            - name: goclaw-config-bootstrap
+              mountPath: /bootstrap
+              readOnly: true
+            - name: goclaw-data
+              mountPath: /data
       containers:
         - name: goclaw
           image: ghcr.io/nextlevelbuilder/goclaw:v3.14.0
+          #image: ghcr.io/nextlevelbuilder/goclaw:latest
           ports:
             - containerPort: 18790
           env:
@@ -135,11 +165,11 @@ spec:
             - name: GOCLAW_DATA_DIR
               value: /app/data
           volumeMounts:
-            # compose: ./config.json:/app/config.json:ro
-            - name: goclaw-config
+            # config.json now lives on the goclaw-data PVC (read-write)
+            # GUI changes persist across pod restarts
+            - name: goclaw-data
               mountPath: /app/config.json
               subPath: config.json
-              readOnly: true
             # compose: ./workspace:/app/workspace
             - name: goclaw-workspace
               mountPath: /app/workspace
@@ -170,9 +200,10 @@ spec:
               cpu: "2"
               memory: 2Gi
       volumes:
-        - name: goclaw-config
+        # bootstrap config template (read-only, used once by config-init)
+        - name: goclaw-config-bootstrap
           configMap:
-            name: goclaw-config
+            name: goclaw-config-bootstrap
             items:
               - key: config.json
                 path: config.json
