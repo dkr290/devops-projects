@@ -103,3 +103,13 @@ cd gddr6
 ./build_install.sh
 sudo gddr6
 ```
+
+## if need to backup 
+```
+sudo mv ~/wan2gp-data/workspace/Wan2GP/ckpts ~/backup 
+sudo mv ~/wan2gp-data/workspace/Wan2GP/loras ~/backup 
+sudo mv ~/wan2gp-data/workspace/Wan2GP/finetunes ~/backup
+
+
+
+```
