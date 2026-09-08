@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  llama-server:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    container_name: llama-server
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mount your GGUF models folder here
+      - /home/dani/localai/models:/models
+    environment:
+      # Automatically offload all model layers to NVIDIA GPU
+      - LLAMA_ARG_N_GPU_LAYERS=99
+      # Specify your GGUF model path inside the container
+      - LLAMA_ARG_MODEL=/models/your-model-file.gguf
+      # Set context size limit (adjust as needed)
+      - LLAMA_ARG_CTX_SIZE=16384
+      # Enable Flash Attention for faster CUDA processing
+      - LLAMA_ARG_FLASH_ATTN=true
+      - LLAMA_ARG_HOST=0.0.0.0
+      - LLAMA_ARG_PORT=8080
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  duckduckgo-mcp:
+    image: ghcr.io/dkr290/duckduckgo-mcp/duckduckgo-mcp:0.1.5
+    container_name: duckduckgo-mcp
+    restart: unless-stopped
+    ports:
+      - "8020:8020"
+    environment:
+      - MCP_ADDR=:8020
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - "3000:8080"
+    environment:
+      # Points to the new llama-server service over Docker's internal network
+      - OPENAI_API_BASE_URL=http://llama-server:8080/v1
+      - OPENAI_API_KEY=not-needed
+    volumes:
+      - /home/dani/openwebui/data:/app/backend/data
