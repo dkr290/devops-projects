@@ -59,9 +59,8 @@ RUN git clone https://github.com/deepbeepmeep/Wan2GP.git /opt/wan2gp_source \
 
 RUN pip install --upgrade pip setuptools wheel
 
-RUN python -m pip install --no-cache-dir  -r /opt/wan2gp_source/requirements.txt \
+RUN python -m pip install --no-cache-dir --ignore-installed -r /opt/wan2gp_source/requirements.txt \
   && rm -rf /root/.cache/pip
-
 
 ## Copy the pre-build one build for 8.6
 COPY wheels/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl  /tmp/
