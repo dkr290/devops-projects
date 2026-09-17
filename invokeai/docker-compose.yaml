@@ -1,0 +1,25 @@
+services:
+  invokeai:
+    image: ghcr.io/invoke-ai/invokeai:latest
+    container_name: invokeai
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    environment:
+      - INVOKEAI_ROOT=/invokeai
+      - HF_HOME=/invokeai/.cache/huggingface
+    volumes:
+      # Maps host folder /home/dani/invokeai to container /invokeai root
+      - /home/dani/invokeai:/invokeai
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - invokeai-net
+networks:
+  invokeai-net:
+    driver: bridge

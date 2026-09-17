@@ -1,0 +1,55 @@
+
+services:
+  local-ai:
+    image: localai/localai:latest-gpu-nvidia-cuda-13
+    container_name: local-ai
+    restart: "no"
+    ports:
+      - "8080:8080"
+
+    volumes:
+      # Note: Docker Compose handles explicit absolute or relative paths best.
+      # If ~ doesn't resolve in your compose version, swap ~ for your full home path (e.g., /home/user/)
+      - /home/dani/localai/data:/data
+      - /home/dani/localai/backends:/backends
+      - /home/dani/localai/configuration:/configuration
+      - /home/dani/localai/models:/models
+      - /home/dani/localai/images:/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - localai-net
+
+  duckduckgo-mcp:
+    image: ghcr.io/dkr290/duckduckgo-mcp/duckduckgo-mcp:0.1.5
+    container_name: duckduckgo-mcp
+    restart: unless-stopped
+    ports:
+      - "8020:8020"
+    environment:
+      - MCP_ADDR=:8020
+    networks:
+      - localai-net
+    
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - "3000:8080"
+    environment:
+      # Connects directly to LocalAI using Docker's internal network DNS
+      - OPENAI_API_BASE_URL=http://local-ai:8080/v1
+      - OPENAI_API_KEY=sk-localai
+    volumes:
+      - /home/dani/openwebui/data:/app/backend/data
+    networks:
+      - localai-net
+networks:
+  localai-net:
+    driver: bridge
