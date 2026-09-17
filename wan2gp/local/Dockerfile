@@ -68,16 +68,17 @@ COPY wheels/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl  /tmp/
 COPY wheels/spas_sage_attn-0.1.0-cp311-cp311-linux_x86_64.whl /tmp/
 
 # pinn version of safetensors
-RUN pip install --no-cache-dir safetensors==0.4.5
+#RUN pip install --no-cache-dir safetensors==0.4.5
 
 RUN pip install --no-cache-dir \
   /tmp/sageattention-2.2.0-cp311-cp311-linux_x86_64.whl \
   /tmp/spas_sage_attn-0.1.0-cp311-cp311-linux_x86_64.whl \
   && rm -f /tmp/sageattention-*.whl \
   /tmp/spas_sage_attn-*.whl
-## Install GGUF enhancer does not work with this image needs to be build  
+## Install GGUF enhancer does not work with this image needs to be build
 # RUN pip install https://github.com/deepbeepmeep/kernels/releases/download/GGUF_Kernels/llamacpp_gguf_cuda-1.0.2+torch271cu128py310-cp310-cp310-linux_x86_64.whl
-RUN pip install https://github.com/deepbeepmeep/kernels/releases/download/GGUF_Kernels/llamacpp_gguf_cuda-1.0.2+torch210cu13py311-cp311-cp311-linux_x86_64.whl
+#RUN pip install https://github.com/deepbeepmeep/kernels/releases/download/GGUF_Kernels/llamacpp_gguf_cuda-1.0.2+torch210cu13py311-cp311-cp311-linux_x86_64.whl
+RUN pip install https://github.com/deepbeepmeep/kernels/releases/download/gguf-v1.0.21/llamacpp_gguf_cuda-1.0.21%2Btorch210cu130py311-cp311-cp311-linux_x86_64.whl
 RUN pip install https://github.com/nunchaku-ai/nunchaku/releases/download/v1.2.1/nunchaku-1.2.1+cu13.0torch2.10-cp311-cp311-linux_x86_64.whl
 
 # Copy and set up our startup and update scripts
