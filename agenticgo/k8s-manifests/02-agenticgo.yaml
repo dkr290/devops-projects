@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: agenticgo-data
+  namespace: agenticgo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goclaw
+  namespace: agenticgo
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: agenticgo
+  template:
+    metadata:
+      labels:
+        app: agenticgo
+        app.kubernetes.io/name: agenticgo
+    spec:
+      securityContext:
+        fsGroup: 10001
+      containers:
+        - name: agenticgo
+          image: ghcr.io/dkr290/agenticgo:0.2.1
+          ports:
+            - containerPort: 8080
+          env:
+            # ---- secret env vars (values identical to docker-compose) ----
+            - name: AGENTICGO_EXTRA_EXEC_COMMANDS
+              value: "git,wget"
+            - name: AGENTICGO_KNOWLEDGE_TTL_DAYS
+              value: "30"
+            - name: AGENTICGO_KNOWLEDGE_KEEP
+              value: "1000"
+            - name: AGENTICGO_DEBUG
+              value: "true"
+            - name: AGENTICGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: agenticgo-secret
+                  key: AGENTICGO_SECRET_KEY
+          volumeMounts:
+            # config.json now lives on the goclaw-data PVC (read-write)
+            # GUI changes persist across pod restarts
+            - name: agenticgo-data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+      volumes:
+        - name: agenticgo-data
+          persistentVolumeClaim:
+            claimName: agenticgo-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agenticgo
+  namespace: agenticgo
+spec:
+  type: ClusterIP
+  selector:
+    app: agenticgo
+  ports:
+    - name: agenticgo
+      port: 8080
+      targetPort: 8080

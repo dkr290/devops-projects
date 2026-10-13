@@ -1,0 +1,220 @@
+# Ready-to-apply RBAC for the GoClaw kubernetes-mcp observer agent.
+#
+# Replaces the minimal "built-in view" setup from ../Readme.md with an
+# extended ClusterRole that keeps everything `view` grants AND adds the
+# missing read-only permissions required by the MCP server skills:
+#
+#   k8s_nodes_top           -> nodes.metrics.k8s.io        (already in view)
+#   k8s_nodes_log           -> nodes/proxy                 (MISSING in view)
+#   k8s_nodes_stats_summary -> nodes/stats                 (MISSING in view)
+#   k8s_resources_get/list  -> cluster-scoped kinds: nodes, persistentvolumes,
+#                              storageclasses, ingressclasses, clusterroles,
+#                              clusterrolebindings, customresourcedefinitions
+#   k8s_events_list         -> events (already in view)
+#
+# Still read-only (get/list/watch only, no write verbs anywhere) and still
+# excludes secret data (secret names are listable via view, values are not).
+#
+# Usage:
+#   kubectl apply -f goclaw-mcp-rbac.yaml
+#   # then generate the token + kubeconfig as shown in ../Readme.md
+#
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: goclaw-k8s-viewer
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: goclaw-k8s-viewer
+    app.kubernetes.io/part-of: goclaw
+---
+# Extended read-only role = built-in "view" + node & cluster-scoped reads.
+# We do NOT use aggregation (aggregationRule) so that the role is
+# self-contained and predictable; the full rule list is spelled out below.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: goclaw-k8s-observer
+  labels:
+    app.kubernetes.io/name: goclaw-k8s-viewer
+    app.kubernetes.io/part-of: goclaw
+rules:
+  # ---- everything the built-in `view` ClusterRole already grants ----
+  # core/v1 namespaced resources
+  - apiGroups: [""]
+    resources:
+      - bindings
+      - configmaps
+      - endpoints
+      - events
+      - limitranges
+      - namespaces
+      - namespaces/status
+      - persistentvolumeclaims
+      - persistentvolumeclaims/status
+      - pods
+      - pods/log
+      - pods/status
+      - replicationcontrollers
+      - replicationcontrollers/scale
+      - replicationcontrollers/status
+      - resourcequotas
+      - resourcequotas/status
+      - serviceaccounts
+      - services
+      - services/status
+    verbs: ["get", "list", "watch"]
+  # apps
+  - apiGroups: ["apps"]
+    resources:
+      - controllerrevisions
+      - daemonsets
+      - daemonsets/status
+      - deployments
+      - deployments/scale
+      - deployments/status
+      - replicasets
+      - replicasets/scale
+      - replicasets/status
+      - statefulsets
+      - statefulsets/scale
+      - statefulsets/status
+    verbs: ["get", "list", "watch"]
+  # autoscaling
+  - apiGroups: ["autoscaling"]
+    resources:
+      - horizontalpodautoscalers
+      - horizontalpodautoscalers/status
+    verbs: ["get", "list", "watch"]
+  # batch
+  - apiGroups: ["batch"]
+    resources:
+      - cronjobs
+      - cronjobs/status
+      - jobs
+      - jobs/status
+    verbs: ["get", "list", "watch"]
+  # discovery.k8s.io
+  - apiGroups: ["discovery.k8s.io"]
+    resources:
+      - endpointslices
+    verbs: ["get", "list", "watch"]
+  # networking.k8s.io
+  - apiGroups: ["networking.k8s.io"]
+    resources:
+      - ingresses
+      - ingresses/status
+      - networkpolicies
+    verbs: ["get", "list", "watch"]
+  # Cilium CNI observability (read-only)
+  - apiGroups: ["cilium.io"]
+    resources:
+      - ciliumnetworkpolicies
+      - ciliumclusterwidenetworkpolicies
+      - ciliumendpoints
+      - ciliumidentities
+      - ciliumnodes
+    verbs: ["get", "list", "watch"]
+  # Gateway API (Envoy Gateway / standard)
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources:
+      - gateways
+      - gatewayclasses
+      - httproutes
+      - tcproutes
+      - tlsroutes
+      - udproutes
+      - grpcroutes
+      - referencegrants
+    verbs: ["get", "list", "watch"]
+  # Envoy Gateway custom resources
+  - apiGroups: ["gateway.envoyproxy.io"]
+    resources:
+      - backends
+      - backendtrafficpolicies
+      - clienttrafficpolicies
+      - envoyextensionpolicies
+      - envoypatchpolicies
+      - securitypolicies
+    verbs: ["get", "list", "watch"]
+  # policy
+  - apiGroups: ["policy"]
+    resources:
+      - poddisruptionbudgets
+      - poddisruptionbudgets/status
+    verbs: ["get", "list", "watch"]
+  # metrics.k8s.io (already covered by built-in view; needed by k8s_nodes_top / k8s_pods_top)
+  - apiGroups: ["metrics.k8s.io"]
+    resources:
+      - nodes
+      - pods
+    verbs: ["get", "list", "watch"]
+
+  # ---- ADDITIONS: what built-in `view` is MISSING for the MCP skills ----
+  # k8s_nodes_log  -> GET /api/v1/nodes/<name>/proxy/logs/...
+  # k8s_nodes_stats_summary -> GET /api/v1/nodes/<name>/proxy/stats/summary
+  # (the kubelet Summary API is reached via the apiserver proxy subresource)
+  - apiGroups: [""]
+    resources:
+      - nodes
+      - nodes/proxy
+      - nodes/stats
+      - nodes/status
+    verbs: ["get", "list", "watch"]
+
+  # cluster-scoped kinds that k8s_resources_get / k8s_resources_list may need
+  - apiGroups: [""]
+    resources:
+      - persistentvolumes
+      - persistentvolumes/status
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources:
+      - storageclasses
+      - volumeattachments
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources:
+      - ingressclasses
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources:
+      - clusterroles
+      - clusterrolebindings
+      - roles
+      - rolebindings
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources:
+      - customresourcedefinitions
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: goclaw-k8s-viewer-binding
+  labels:
+    app.kubernetes.io/name: goclaw-k8s-viewer
+    app.kubernetes.io/part-of: goclaw
+subjects:
+  - kind: ServiceAccount
+    name: goclaw-k8s-viewer
+    namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: goclaw-k8s-observer
+  apiGroup: rbac.authorization.k8s.io
+---
+# Long-lived token for the ServiceAccount (Kubernetes >= 1.24)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: goclaw-k8s-viewer-token
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: goclaw-k8s-viewer
+    app.kubernetes.io/part-of: goclaw
+  annotations:
+    kubernetes.io/service-account.name: goclaw-k8s-viewer
+type: kubernetes.io/service-account-token

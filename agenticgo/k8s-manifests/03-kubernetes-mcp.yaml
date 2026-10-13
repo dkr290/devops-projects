@@ -1,0 +1,79 @@
+# Equivalent of the `kubernetes-mcp` service in docker-compose.yaml
+#  - image ghcr.io/containers/kubernetes-mcp-server:latest
+#  - command flags identical to compose (including --kubeconfig path)
+#  - kubeconfig file mounted from Secret (created from ../kubeconfig)
+#
+# RBAC is NOT included here — you create the ServiceAccount / ClusterRole /
+# ClusterRoleBinding separately (see ../roles-examples/goclaw-mcp-rbac.yaml
+# and ../Readme.md). This manifest only mounts the kubeconfig file that
+# references those credentials.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetes-mcp
+  namespace: agenticgo
+  labels:
+    app.kubernetes.io/name: kubernetes-mcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubernetes-mcp
+  template:
+    metadata:
+      labels:
+        app: kubernetes-mcp
+        app.kubernetes.io/name: kubernetes-mcp
+    spec:
+      containers:
+        - name: kubernetes-mcp
+          image: ghcr.io/containers/kubernetes-mcp-server:latest
+          # exact same flags as docker-compose command; absolute path because
+          # k8s `command` overrides the image entrypoint (/app/kubernetes-mcp-server)
+          command:
+            - /app/kubernetes-mcp-server
+            - --port=8081
+            - --read-only
+            - --toolsets=core
+            - --kubeconfig=/home/nonroot/.kube/config
+          # compose environment: KUBECONFIG=/home/nonroot/.kube/config
+          env:
+            - name: KUBECONFIG
+              value: /home/nonroot/.kube/config
+          ports:
+            - containerPort: 8081
+          volumeMounts:
+            - name: kubeconfig
+              mountPath: /home/nonroot/.kube/config
+              subPath: config
+              readOnly: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+      volumes:
+        - name: kubeconfig
+          secret:
+            secretName: kubernetes-mcp-kubeconfig
+            items:
+              - key: config
+                path: config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetes-mcp
+  namespace: agenticgo
+  labels:
+    app.kubernetes.io/name: kubernetes-mcp
+spec:
+  selector:
+    app: kubernetes-mcp
+  ports:
+    - name: mcp
+      port: 8081
+      targetPort: 8081
