@@ -1,3 +1,4 @@
+```
 wan2gp
 pipx install uv
 
@@ -24,7 +25,7 @@ cd SageAttention
 uv pip install --no-build-isolation -e .
 cd Wan2GP
 uv run python -c "import sageattention; print('SageAttention OK')"
-
+```
 ## build the sparge attention with the following buid script
 
 ```bash 
