@@ -12,6 +12,23 @@ Setup notes for:
 |---|---|
 | `LTX-2.5_I2V_StartEnd_TwoStage_GGUF.json` | Start image (required) + end image (optional). 2-stage: low res → latent ×2 upscale + refine |
 | `LTX-2.5_MSR_MultiRef_TwoStage_GGUF.json` | Up to 5 reference images (pic1–4 + background) with LiconStudio MSR V2 LoRA. 2-stage |
+| `LTX-2.5_I2V_Keyframes_Dialog_TwoStage_GGUF.json` | **No MSR.** START + END + optional MID-A/MID-B keyframes at any frame, 5/10 s switch, optional pre-generated dialog audio (lip-sync) |
+| `LTX-2.5_MSR_Keyframes_Dialog_TwoStage_GGUF.json` | **With MSR.** Same as above + 2–3 character reference portraits (pic1–3) to lock identities |
+| `LTX-2.5_I2V_Keyframes_Dialog_SingleStage_GGUF.json` | Same as the no-MSR keyframes workflow, **1 stage only** (no ×2 upscale/refine). Width/height = final size |
+| `LTX-2.5_MSR_Keyframes_Dialog_SingleStage_GGUF.json` | Same as the MSR keyframes workflow, **1 stage only**. Width/height = final size |
+
+### Keyframes + dialog workflows (both variants)
+- **Length:** `duration seconds` in group 2 → frames = seconds × fps + 1 (5 s = 121, 10 s = 241 at 24 fps). Keep fps 24.
+- **Resolution:** stage-1 width/height (÷32), final = ×2. 10 s at 960×544 is heavy on 24 GB → 768×448 or UD-Q5/Q4 if OOM.
+- **START** required, **END** on by default (same characters/scene, end positions). No end → Ctrl+B both `END guide` nodes.
+- **MID-A / MID-B** bypassed by default. Enable = Ctrl+B its LoadImage + preprocess + guide in **stage 1 and stage 2**.
+  Set `frame_idx` to any frame (not only the middle), same value in both stages.
+- **Dialog audio** (voices generated elsewhere): bypassed by default (LTX then generates its own audio).
+  Enable group 4c + `Use dialog audio` node. The track is encoded and locked with a 0 noise mask, so LTX
+  keeps it unchanged and lip-syncs to it. Make it the same length as the video; say in the prompt who speaks which line.
+- **MSR variant:** pic1/pic2 linked; for a 3rd character link pic3 to `pic3` on both MSR guides. Start frame
+  (in-place) and end/mid guides are chained around the MSR guide; `LTXVCropGuides` removes all of them.
+  MSR `audio_ref1/2` = voice identity refs (need AVref LoRA), not the dialog track.
 
 > These workflows have **not been tested in ComfyUI yet**; they were generated from Lightricks' official
 > `LTX-2.5_T2V_I2V_Two_Stage_Distilled.json` and LiconStudio's `LTX2.5-MSR-sample-workflow-V2.json`.
