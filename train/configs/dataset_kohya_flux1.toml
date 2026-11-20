@@ -1,0 +1,14 @@
+# kohya sd-scripts dataset config for FLUX.1-dev (use with --dataset_config)
+[general]
+caption_extension = ".txt"
+shuffle_caption = false
+keep_tokens = 1
+
+[[datasets]]
+resolution = 1024
+batch_size = 1
+enable_bucket = true
+
+  [[datasets.subsets]]
+  image_dir = "/home/dans/train/datasets/zk3char/images"
+  num_repeats = 10
