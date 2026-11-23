@@ -10,8 +10,8 @@ security posture gaps.
 - Catch abnormal network behaviour first: workloads connecting to the
   internet out of the ordinary, suspicious outbound ports or tools (openvpn,
   netcat/socat, reverse shells, miners), and new internet-facing exposure
-  through Envoy Gateway (Gateway API) or LoadBalancer Services. This cluster
-  has no Ingress resources.
+  through Gateway API, Ingress or LoadBalancer Services, according to the
+  cluster's actual ingress stack.
 - Flag weak network isolation: namespaces outside the exemption list with no
   NetworkPolicy, no egress restriction, egress open to the whole internet, or
   ingress open to all namespaces.

@@ -14,9 +14,9 @@ the task and schedule — this checklist does not start runs by itself.
 - Every namespace not in List A must have at least one NetworkPolicy and PSA
   labels.
 - Exposure, egress-anomaly and workload-health checks apply cluster-wide,
-  including both lists. The Envoy Gateway data plane in
-  `envoy-gateway-system` is the main internet-facing surface; always review
-  its Gateways, routes and LoadBalancer Service.
+  including both lists. Discover the ingress stack and review the Gateway API,
+  Ingress and LoadBalancer resources present in the cluster; do not assume a
+  particular controller or namespace.
 - The priority is **deviation from the ordinary**, especially unusual internet
   connectivity. Configuration gaps matter, but a new suspicious connection
   matters more.
@@ -39,9 +39,8 @@ the task and schedule — this checklist does not start runs by itself.
      what would fail the stricter level as Info.
    - **Namespaces with no PSA labels** (outside List A): Warning. Evaluate
      their pods against `baseline` as a fallback.
-   - **Seccomp**: most workloads don't set a profile. Report it as one
-     aggregated count line, not per workload. It is a finding only in
-     `enforce=restricted` namespaces.
+   - **Seccomp**: report missing profiles as one aggregated count line, not per
+     workload. It is a finding only in `enforce=restricted` namespaces.
    - **List B namespaces**: no per-workload findings. Write a short
      **System namespace posture** summary (counts of privileged, root,
      hostNetwork/hostPath workloads). Escalate only on deviation from the
@@ -74,11 +73,12 @@ the task and schedule — this checklist does not start runs by itself.
    Compare against the previous observation and saved knowledge of expected
    external destinations; report only deviations.
 
-   **Hubble flow metrics (Prometheus)** — primary source for new internet
-   destinations and denied egress.
-   > ⚠️ NOT YET AVAILABLE — Hubble metrics are not in Prometheus yet. Skip
-   > these queries; do not report them as a failed check. Use Loki and
-   > Kubernetes objects for egress evidence.
+   **Hubble flow metrics (Prometheus)** — when available, use them to inspect
+   new internet destinations and denied egress. If unavailable, record the
+   coverage limit and use Loki and Kubernetes objects for any egress evidence
+   they can provide. Do not treat missing telemetry as proof of healthy egress.
+   The following are examples; verify metric and label availability and adapt
+   the queries to the target environment:
 
    - Traffic to the internet per workload:
      `sum by (source_namespace, source_workload, destination_port) (rate(hubble_flows_processed_total{destination="reserved:world", verdict="FORWARDED"}[1h]))`
@@ -87,18 +87,19 @@ the task and schedule — this checklist does not start runs by itself.
    - External DNS lookups per workload:
      `sum by (source_namespace, source_workload, query) (rate(hubble_dns_queries_total[1h]))`
    A workload/port/domain that is absent from the previous observation is a
-   deviation. Confirm it in the Hubble UI
-   (https://hubble.k8s-dev.bankingcircle.net) and in Loki before raising it
-   to Critical.
+   deviation. Corroborate it with independent evidence, such as Hubble flows
+   and Loki logs, before raising it to Critical.
 
 5. **Network exposure anomalies** — flag and then verify:
    - Services of type `LoadBalancer` or `NodePort` not present in the previous
      observation or in saved knowledge of expected exposure
-   - Envoy Gateway (Gateway API) objects: Gateways with listeners on new
-     hostnames/ports, listeners serving plain HTTP without TLS, and
-     HTTPRoutes/TCPRoutes/TLSRoutes attaching new backends or hostnames.
-     This cluster has NO Ingress resources — absence of Ingress objects is
-     expected, never a finding
+   - Gateway API objects: Gateways with listeners on new hostnames/ports,
+     listeners serving plain HTTP without TLS, and HTTPRoutes/TCPRoutes/TLSRoutes
+     attaching new backends or hostnames
+   - Ingress resources, when supported: new or changed hosts, paths or
+     backends, and internet-facing HTTP without TLS. Absence of Gateway API
+     or Ingress objects is not itself a finding; inability to inspect an
+     installed resource type is an unknown coverage gap
    - Suspicious listeners/ports: openvpn (1194), netcat-style listeners,
      unexpected high ports, anything internet-reachable without an obvious owner
    **Verify before raising severity:** corroborate with Loki (listener logs,
@@ -123,7 +124,7 @@ the task and schedule — this checklist does not start runs by itself.
 9. **Save durable lessons selectively** with `memory_save` when evidence
    establishes a reusable fact — e.g. "LoadBalancer svc X in ns Y is expected,
    owned by team Z", "workload W in ns V normally reaches api.example.com",
-   "mlflow/tracking runs as root — accepted exception". Search existing
+   "vendor/agent runs as root — accepted exception". Search existing
    knowledge first to avoid duplicates. One-off statuses, restart counts, and
    single sightings belong in the snapshot, not in knowledge. A run with no new
    durable lesson needs no new knowledge entry.
@@ -145,10 +146,11 @@ the task and schedule — this checklist does not start runs by itself.
    Markdown report (headings, tables, code) into it.
 
 12. **Report briefly**, emphasizing changes, new findings, ongoing actionable
-   issues, and failed checks, and include the full report link when you wrote
-   one. If nothing changed and no issue needs attention, say so concisely.
-   Confirm memory was saved, the report was written and the notification was
-   sent only after those tool calls succeed.
+   issues, and failed checks. If you wrote a report, include its link when a
+   valid publication URL is configured; if that URL is missing, report the link
+   as unavailable. If nothing changed and no issue needs attention, say so
+   concisely. Confirm memory was saved, the report was written and the
+   notification was sent only after those tool calls succeed.
 
 ## Severity guide
 
@@ -159,9 +161,9 @@ the task and schedule — this checklist does not start runs by itself.
 - **Warning** — namespace outside List A with no NetworkPolicy, no PSA labels,
   or a weak policy (no egress restriction, egress to the whole internet,
   ingress from all namespaces); pod violating its namespace's enforced PSA
-  level; new unverified internet egress; new NodePort/LoadBalancer or Gateway
-  listener/route not yet verified as expected; new hostNetwork pod outside
-  List B; deviation from the posture baseline in a List B namespace.
+  level; new unverified internet egress; new NodePort/LoadBalancer, Gateway
+  listener/route or Ingress not yet verified as expected; new hostNetwork pod
+  outside List B; deviation from the posture baseline in a List B namespace.
 - **Info** — baseline established; resolved findings; gaps against
   `audit`/`warn` PSA levels; the aggregated seccomp count; the System
   namespace posture summary; known exceptions; changes with no security
