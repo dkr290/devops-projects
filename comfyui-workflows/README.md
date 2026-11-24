@@ -2,7 +2,7 @@
 
 Setup notes for:
 - **Videos:** Linux PC, NVIDIA RTX 3090 (24 GB VRAM) + 64 GB system RAM
-- **Images:** ASUS ProArt P16 (NVIDIA N1X / RTX Spark, 128 GB unified memory, Windows on ARM)
+- **Images:** NVIDIA RTX Spark (N1X, 128 GB unified memory, Windows on ARM)
 
 ---
 
@@ -194,7 +194,7 @@ Wan on 3090: fp8 or GGUF Q8 14B, block swap ~20 at 720p (reduce until OOM), fp8 
 
 ---
 
-## 9. Images on the ASUS ProArt P16 (N1X, 128 GB unified)
+## 9. Images on RTX Spark (N1X, 128 GB unified)
 
 Memory **size** is no problem; memory **bandwidth** (~273 GB/s vs 936 GB/s on 3090) is the bottleneck → use it for images, 3090 for video.
 
@@ -202,7 +202,7 @@ Memory **size** is no problem; memory **bandwidth** (~273 GB/s vs 936 GB/s on 30
 - **Use fp8 / NVFP4** models – Blackwell has hardware support, they are *faster* here, not just smaller. `--fast` helps.
 - Use turbo / lightning / distilled image models & LoRAs (fewer steps = biggest speedup).
 - Leave ~16–20 GB for Windows + apps (shared memory).
-- Laptop: plug in, MyASUS/Creator Hub **Performance** mode; long jobs will thermal-throttle.
+- Laptop: plug in and use **Performance** power mode; long jobs will thermal-throttle.
 - Windows on ARM caveats:
   - Need native **ARM64 + CUDA** PyTorch (x86 emulation can't use CUDA).
   - Check whether ComfyUI Desktop has an ARM64 build; otherwise use manual install per NVIDIA/ComfyUI guidance.
