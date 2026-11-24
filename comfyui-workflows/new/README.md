@@ -1,10 +1,6 @@
 # Local video models and LTX workflows
 
-This is a practical comparison for a single **RTX 3090 with 24 GB of VRAM**, with an emphasis on multiple image references, timed keyframes, and dialogue. Model features and licenses below were checked on **November 24, 2026**; they can change.
 
-**Best fit for those features:** try **MiniMax H3 Ref2VA**, using the pruned INT8 ComfyUI weights and its matching 4-step Turbo LoRA for drafts. Use the normal 20-step setting when motion, references, or sound need more care. It is still a large model and can be slow on a 3090.
-
-> **Check the license first:** the MiniMax H3 Community License does not grant use in the **US, EU, UK, or South Korea**. A separate license is needed in those territories, even for local use. See [Licensing](#licensing) before downloading or using the weights.
 
 ## Comparison
 
@@ -93,14 +89,7 @@ These JSON files are separate from MiniMax and have been preserved:
 
 The two added workflows were checked structurally, but **no actual video render or lip-sync test was performed**. Inspect joins and audio timing, and read the notes inside each workflow.
 
-## Licensing
 
-- **MiniMax H3:** the [Community License](https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE) excludes the US, EU, UK, and South Korea, and also places restrictions on outputs. MiniMax provides an [application for a separate license](https://platform.minimax.io/h3-license). The license includes commercial conditions, including separate prior authorization above $20 million in yearly commercial-product/service revenue. [Comfy's license FAQ](https://comfy.org/minimax/license.md) describes the community license as generally allowing commercial use within its terms, while its [H3 overview](https://docs.comfy.org/tutorials/video/minimax/minimax-h3) says local commercial outputs require a separate license. Because the published guidance differs, confirm your specific use with the rights holders.
-- **HunyuanVideo 1.5:** its [community license](https://github.com/Tencent-Hunyuan/HunyuanVideo-1.5/blob/main/LICENSE) excludes the EU, UK, and South Korea.
-- **Kandinsky 6 Lite:** its [model card](https://huggingface.co/kandinskylab/Kandinsky-6.0-Lite-distill-5s-Diffusers) lists MIT for the model, but the linked ComfyUI workflow uses a separately supplied [HunyuanVideo VAE](https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged), with its own license. Check every component rather than assuming the entire pipeline is MIT.
-- **LTX and the other models:** check each model's weight license, dependencies, and any custom-node license separately. LTX-2.5 downloads are gated and require acceptance of its model terms.
-
-This is a technical summary, not legal advice. None of the MiniMax or N1X timings above were measured on your specific hardware.
 
 
 for LTX
