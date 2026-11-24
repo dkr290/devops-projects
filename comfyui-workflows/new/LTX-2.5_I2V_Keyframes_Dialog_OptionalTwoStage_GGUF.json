@@ -1,7 +1,7 @@
 {
   "id": "2cda2c90-33c0-4b88-91fc-140b0192815b",
   "revision": 0,
-  "last_node_id": 65,
+  "last_node_id": 66,
   "last_link_id": 112,
   "nodes": [
     {
@@ -809,11 +809,11 @@
         }
       },
       "widgets_values": [
-        "ComfyUI_temp_olhsp_00008_.png",
+        "mid_a.png",
         "image"
       ],
       "widgets_values_named": {
-        "image": "ComfyUI_temp_olhsp_00008_.png",
+        "image": "mid_a.png",
         "upload": "image"
       }
     },
@@ -3484,6 +3484,32 @@
       ],
       "color": "#432",
       "bgcolor": "#653"
+    },
+    {
+      "id": 66,
+      "type": "MarkdownNote",
+      "pos": [
+        -650,
+        1170
+      ],
+      "size": [
+        600,
+        1060
+      ],
+      "flags": {},
+      "order": 65,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "HOW TO: Length, Resolution & 3+ Images",
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## QUICK GUIDE: Length, Resolution & 3+ Images\n\n### 1. How to change LENGTH (duration)\n- Change **`Duration in seconds`** (Group 2). Keep **FPS = 24**.\n- Frame count auto-snaps to **`8n + 1`**:\n\n| Duration | Frames @24fps | 3 images (MID-A) | 4 images (MID-A / MID-B) |\n|---:|---:|---:|---:|\n| 4 s | 97 | 48 | 32 / 64 |\n| 5 s | 121 | 60 | 40 / 80 |\n| 6 s | 145 | 72 | 48 / 96 |\n| **8 s** | **193** | **96** | **64 / 128** |\n| 10 s | 241 | 120 | 80 / 160 |\n\n- Always keep enabled `frame_idx` **less than total frames** (END stays `-1`).\n\n### 2. How to change RESOLUTION (must be \u00f7 32)\n- Edit **`WIDTH`** and **`HEIGHT`** in Group 2.\n- **Stage 2 ON**: final video = **2\u00d7 WIDTH \u00d7 2\u00d7 HEIGHT**.\n- **Stage 2 OFF**: final video = **exact WIDTH \u00d7 HEIGHT**.\n\n| Aspect | 2-Stage (Stage 1 -> Final) | 1-Stage (Stage 2 OFF) |\n|---|---|---|\n| 1:1 Square | `512\u00d7512` -> `1024\u00d71024` | `768\u00d7768` (or `512\u00d7512` draft) |\n| 16:9 Wide | `768\u00d7448` -> `1536\u00d7896` | `768\u00d7448` or `960\u00d7544` |\n| 16:9 1080p | `960\u00d7544` -> `1920\u00d71088` | heavy on 3090 (use 2-stage) |\n| 9:16 Vertical | `448\u00d7768` -> `896\u00d71536` | `448\u00d7768` or `544\u00d7960` |\n\n### 3. How to use 3 or 4 guiding images\n- **START** (frame 0) + **END** (`-1`) are ON by default.\n- To enable **MID-A** (3rd image) or **MID-B** (4th image):\n  1. Load your image in Group 4.\n  2. Set its **frame index** node below the image (auto-syncs Stage 1 & 2).\n  3. Select **BOTH** its Stage 1 AND Stage 2 guide nodes -> press **Ctrl+B**.\n- To disable **END**: select **BOTH** END guide nodes -> **Ctrl+B**.\n\n### 4. Toggle 1-Stage vs 2-Stage\n- Flip **`RUN STAGE 2?`** (Group 2): **OFF** = fast 1-stage, **ON** = \u00d72 upscale + 3-step refine.\n- Keep `ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors` installed/selected even when OFF.\n\n### 5. If Out of Memory (3090 24 GB)\n1. Lower `VAEDecodeTiled` `tile_size`: `512` -> `384` -> `256`.\n2. Lower WIDTH/HEIGHT or Duration (e.g. 8s -> 5s).\n3. Use a smaller GGUF (`UD-Q5_K_XL` or `UD-Q4_K_XL`).\n"
+      ],
+      "color": "#233",
+      "bgcolor": "#355"
     }
   ],
   "links": [

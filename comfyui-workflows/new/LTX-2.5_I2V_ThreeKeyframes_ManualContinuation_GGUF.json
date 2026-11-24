@@ -1,7 +1,7 @@
 {
   "id": "6a74851b-b2f5-4125-948d-62cd13f3a76b",
   "revision": 0,
-  "last_node_id": 72,
+  "last_node_id": 73,
   "last_link_id": 123,
   "nodes": [
     {
@@ -808,11 +808,11 @@
         }
       },
       "widgets_values": [
-        "ComfyUI_temp_olhsp_00008_.png",
+        "mid_a.png",
         "image"
       ],
       "widgets_values_named": {
-        "image": "ComfyUI_temp_olhsp_00008_.png",
+        "image": "mid_a.png",
         "upload": "image"
       }
     },
@@ -1465,11 +1465,11 @@
         }
       },
       "widgets_values": [
-        96,
+        144,
         1
       ],
       "widgets_values_named": {
-        "frame_idx": 96,
+        "frame_idx": 144,
         "strength": 1
       }
     },
@@ -1555,8 +1555,7 @@
           "name": "latent",
           "type": "LATENT",
           "links": [
-            40,
-            117
+            40
           ]
         }
       ],
@@ -1679,7 +1678,8 @@
           "name": "latent",
           "type": "LATENT",
           "links": [
-            118
+            118,
+            117
           ]
         }
       ],
@@ -2338,10 +2338,10 @@
         }
       },
       "widgets_values": [
-        "## Manual longer scenes - LTX-2.5 GGUF\n\n**One queue run = one clip**, not three automatic shots and not an automatic loop. START + MIDDLE + END are three timed image guides inside this clip. MID-B is an extra guide, disabled by default. LTX can also make cuts *inside* a clip if the prompt describes each cut.\n\n**First clip**: select START, MIDDLE and END images, and write the action for this clip. The default is 8 seconds at 24 fps (193 frames); MIDDLE frame 96 is halfway. If duration/FPS changes, update the shared MIDDLE frame index to a valid position (e.g. 60 for 5 seconds at 24 fps). Use matching aspect ratios, scene, people and lighting.\n\n**Continue**: the output includes a `last_frame` PNG from the actual decoded frames, in `ComfyUI/output/LTX25_Manual_Continuation/`. Upload it as START for the next run. Replace the MIDDLE and END images with the next clip's references, or Ctrl+B BOTH corresponding stage 1 / stage 2 guide nodes to omit one. Update the prompt and run again. Do not leave old middle/end guides on if you do not want the next clip pulled back toward them.\n\n**Edit**: each run creates a separate video; this graph does not concatenate them. Keep FPS and resolution consistent and assemble clips manually. The last image carries appearance, not previous motion or audio. A VAE encode/decode may change the first frame; expect possible seams, repeated frames, or identity drift and inspect or trim joins. At 24fps an 8-second run has 193 frames (~8.04s), so check overlaps and audio timing when joining clips.\n\n**Custom voice for a long scene (optional)**: load the full recording and leave the DIALOG audio loader and `Trim voice` active. Enable `Encode dialog`, `mask 0`, `Lock dialog audio` and stage 1 `Use dialog audio` with Ctrl+B; then set `CUSTOM VOICE?` ON. For 8-second clips set AUDIO START to 0, then 8, then 16 seconds; clip duration also drives the audio trim. Start must lie inside the audio file. To return to generated audio, set the voice toggle OFF and bypass those four processing nodes. The saved audio is VAE-decoded, not identical to the original; use the original master track in an editor if exact quality matters. Audio/lip sync and joins may need manual alignment.\n\n**Quality toggle**: RUN STAGE 2 ON = base + 2x upscale/refine; OFF = base-resolution preview. The upscaler must be installed/selected even when OFF because ComfyUI validates connected models. Base dimensions must be multiples of 32. START strength is 1.0 and preprocessing compression is 0 for stronger hand-offs; lower strength if motion is too restricted. Neither pixel-perfect joins nor improved quality are guaranteed with this custom GGUF.\n\nSee https://docs.ltx.io/open-source-model/usage-guides/prompting-guide for native multi-shot prompting.\n"
+        "## Manual longer scenes - LTX-2.5 GGUF\n\n**One queue run = one clip**, not three automatic shots and not an automatic loop. START + MIDDLE + END are three timed image guides inside this clip. MID-B is an extra 4th guide (default frame 144 = 6s on an 8s clip), disabled by default. LTX can also make cuts *inside* a clip if the prompt describes each cut.\n\n**First clip**: select START, MIDDLE and END images, and write the action for this clip. The default is 8 seconds at 24 fps (193 frames); MIDDLE frame 96 is halfway. If duration/FPS changes, update the shared MIDDLE frame index to a valid position (e.g. 60 for 5 seconds at 24 fps). Use matching aspect ratios, scene, people and lighting.\n\n**Continue**: the output includes a `last_frame` PNG from the actual decoded frames, in `ComfyUI/output/LTX25_Manual_Continuation/`. Upload it as START for the next run. Replace the MIDDLE and END images with the next clip's references, or Ctrl+B BOTH corresponding stage 1 / stage 2 guide nodes to omit one. Update the prompt and run again. Do not leave old middle/end guides on if you do not want the next clip pulled back toward them.\n\n**Edit**: each run creates a separate video; this graph does not concatenate them. Keep FPS and resolution consistent and assemble clips manually. The last image carries appearance, not previous motion or audio. A VAE encode/decode may change the first frame; expect possible seams, repeated frames, or identity drift and inspect or trim joins. At 24fps an 8-second run has 193 frames (~8.04s), so check overlaps and audio timing when joining clips.\n\n**Custom voice for a long scene (optional)**: load the full recording and leave the DIALOG audio loader and `Trim voice` active. Enable `Encode dialog`, `mask 0`, `Lock dialog audio` and stage 1 `Use dialog audio` with Ctrl+B; then set `CUSTOM VOICE?` ON. For 8-second clips set AUDIO START to 0, then 8, then 16 seconds; clip duration also drives the audio trim. Start must lie inside the audio file. To return to generated audio, set the voice toggle OFF and bypass those four processing nodes. The saved audio is VAE-decoded, not identical to the original; use the original master track in an editor if exact quality matters. Audio/lip sync and joins may need manual alignment.\n\n**Quality toggle**: RUN STAGE 2 ON = base + 2x upscale/refine; OFF = base-resolution preview. The upscaler must be installed/selected even when OFF because ComfyUI validates connected models. Base dimensions must be multiples of 32. START strength is 1.0 and preprocessing compression is 0 for stronger hand-offs; lower strength if motion is too restricted. Neither pixel-perfect joins nor improved quality are guaranteed with this custom GGUF.\n\nSee https://docs.ltx.io/open-source-model/usage-guides/prompting-guide for native multi-shot prompting.\n"
       ],
       "widgets_values_named": {
-        "text": "## Manual longer scenes - LTX-2.5 GGUF\n\n**One queue run = one clip**, not three automatic shots and not an automatic loop. START + MIDDLE + END are three timed image guides inside this clip. MID-B is an extra guide, disabled by default. LTX can also make cuts *inside* a clip if the prompt describes each cut.\n\n**First clip**: select START, MIDDLE and END images, and write the action for this clip. The default is 8 seconds at 24 fps (193 frames); MIDDLE frame 96 is halfway. If duration/FPS changes, update the shared MIDDLE frame index to a valid position (e.g. 60 for 5 seconds at 24 fps). Use matching aspect ratios, scene, people and lighting.\n\n**Continue**: the output includes a `last_frame` PNG from the actual decoded frames, in `ComfyUI/output/LTX25_Manual_Continuation/`. Upload it as START for the next run. Replace the MIDDLE and END images with the next clip's references, or Ctrl+B BOTH corresponding stage 1 / stage 2 guide nodes to omit one. Update the prompt and run again. Do not leave old middle/end guides on if you do not want the next clip pulled back toward them.\n\n**Edit**: each run creates a separate video; this graph does not concatenate them. Keep FPS and resolution consistent and assemble clips manually. The last image carries appearance, not previous motion or audio. A VAE encode/decode may change the first frame; expect possible seams, repeated frames, or identity drift and inspect or trim joins. At 24fps an 8-second run has 193 frames (~8.04s), so check overlaps and audio timing when joining clips.\n\n**Custom voice for a long scene (optional)**: load the full recording and leave the DIALOG audio loader and `Trim voice` active. Enable `Encode dialog`, `mask 0`, `Lock dialog audio` and stage 1 `Use dialog audio` with Ctrl+B; then set `CUSTOM VOICE?` ON. For 8-second clips set AUDIO START to 0, then 8, then 16 seconds; clip duration also drives the audio trim. Start must lie inside the audio file. To return to generated audio, set the voice toggle OFF and bypass those four processing nodes. The saved audio is VAE-decoded, not identical to the original; use the original master track in an editor if exact quality matters. Audio/lip sync and joins may need manual alignment.\n\n**Quality toggle**: RUN STAGE 2 ON = base + 2x upscale/refine; OFF = base-resolution preview. The upscaler must be installed/selected even when OFF because ComfyUI validates connected models. Base dimensions must be multiples of 32. START strength is 1.0 and preprocessing compression is 0 for stronger hand-offs; lower strength if motion is too restricted. Neither pixel-perfect joins nor improved quality are guaranteed with this custom GGUF.\n\nSee https://docs.ltx.io/open-source-model/usage-guides/prompting-guide for native multi-shot prompting.\n"
+        "text": "## Manual longer scenes - LTX-2.5 GGUF\n\n**One queue run = one clip**, not three automatic shots and not an automatic loop. START + MIDDLE + END are three timed image guides inside this clip. MID-B is an extra 4th guide (default frame 144 = 6s on an 8s clip), disabled by default. LTX can also make cuts *inside* a clip if the prompt describes each cut.\n\n**First clip**: select START, MIDDLE and END images, and write the action for this clip. The default is 8 seconds at 24 fps (193 frames); MIDDLE frame 96 is halfway. If duration/FPS changes, update the shared MIDDLE frame index to a valid position (e.g. 60 for 5 seconds at 24 fps). Use matching aspect ratios, scene, people and lighting.\n\n**Continue**: the output includes a `last_frame` PNG from the actual decoded frames, in `ComfyUI/output/LTX25_Manual_Continuation/`. Upload it as START for the next run. Replace the MIDDLE and END images with the next clip's references, or Ctrl+B BOTH corresponding stage 1 / stage 2 guide nodes to omit one. Update the prompt and run again. Do not leave old middle/end guides on if you do not want the next clip pulled back toward them.\n\n**Edit**: each run creates a separate video; this graph does not concatenate them. Keep FPS and resolution consistent and assemble clips manually. The last image carries appearance, not previous motion or audio. A VAE encode/decode may change the first frame; expect possible seams, repeated frames, or identity drift and inspect or trim joins. At 24fps an 8-second run has 193 frames (~8.04s), so check overlaps and audio timing when joining clips.\n\n**Custom voice for a long scene (optional)**: load the full recording and leave the DIALOG audio loader and `Trim voice` active. Enable `Encode dialog`, `mask 0`, `Lock dialog audio` and stage 1 `Use dialog audio` with Ctrl+B; then set `CUSTOM VOICE?` ON. For 8-second clips set AUDIO START to 0, then 8, then 16 seconds; clip duration also drives the audio trim. Start must lie inside the audio file. To return to generated audio, set the voice toggle OFF and bypass those four processing nodes. The saved audio is VAE-decoded, not identical to the original; use the original master track in an editor if exact quality matters. Audio/lip sync and joins may need manual alignment.\n\n**Quality toggle**: RUN STAGE 2 ON = base + 2x upscale/refine; OFF = base-resolution preview. The upscaler must be installed/selected even when OFF because ComfyUI validates connected models. Base dimensions must be multiples of 32. START strength is 1.0 and preprocessing compression is 0 for stronger hand-offs; lower strength if motion is too restricted. Neither pixel-perfect joins nor improved quality are guaranteed with this custom GGUF.\n\nSee https://docs.ltx.io/open-source-model/usage-guides/prompting-guide for native multi-shot prompting.\n"
       },
       "color": "#432",
       "bgcolor": "#653",
@@ -2734,11 +2734,11 @@
         }
       },
       "widgets_values": [
-        96,
+        144,
         1
       ],
       "widgets_values_named": {
-        "frame_idx": 96,
+        "frame_idx": 144,
         "strength": 1
       }
     },
@@ -3404,18 +3404,18 @@
           ]
         }
       ],
-      "title": "MID-B frame index - both stages",
+      "title": "MID-B frame index - both stages (144 = 6s on 8s clip)",
       "properties": {
         "Node name for S&R": "PrimitiveInt",
         "cnr_id": "comfy-core",
         "ver": "0.25.0"
       },
       "widgets_values": [
-        96,
+        144,
         "fixed"
       ],
       "widgets_values_named": {
-        "value": 96,
+        "value": 144,
         "control_after_generate": "fixed"
       }
     },
@@ -3789,6 +3789,32 @@
       ],
       "color": "#432",
       "bgcolor": "#653"
+    },
+    {
+      "id": 73,
+      "type": "MarkdownNote",
+      "pos": [
+        -700,
+        1560
+      ],
+      "size": [
+        650,
+        1060
+      ],
+      "flags": {},
+      "order": 72,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "HOW TO: Length, Resolution & 3+ Images",
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## QUICK GUIDE: Length, Resolution & 3+ Images\n\n### 1. How to change LENGTH (duration)\n- Change **`Duration in seconds`** (Group 2). Keep **FPS = 24**.\n- Frame count auto-snaps to **`8n + 1`**:\n\n| Duration | Frames @24fps | 3 images (MID-A) | 4 images (MID-A / MID-B) |\n|---:|---:|---:|---:|\n| 4 s | 97 | 48 | 32 / 64 |\n| 5 s | 121 | 60 | 40 / 80 |\n| 6 s | 145 | 72 | 48 / 96 |\n| **8 s** | **193** | **96** | **64 / 128** |\n| 10 s | 241 | 120 | 80 / 160 |\n\n- Always keep enabled `frame_idx` **less than total frames** (END stays `-1`).\n\n### 2. How to change RESOLUTION (must be \u00f7 32)\n- Edit **`WIDTH`** and **`HEIGHT`** in Group 2.\n- **Stage 2 ON**: final video = **2\u00d7 WIDTH \u00d7 2\u00d7 HEIGHT**.\n- **Stage 2 OFF**: final video = **exact WIDTH \u00d7 HEIGHT**.\n\n| Aspect | 2-Stage (Stage 1 -> Final) | 1-Stage (Stage 2 OFF) |\n|---|---|---|\n| 1:1 Square | `512\u00d7512` -> `1024\u00d71024` | `768\u00d7768` (or `512\u00d7512` draft) |\n| 16:9 Wide | `768\u00d7448` -> `1536\u00d7896` | `768\u00d7448` or `960\u00d7544` |\n| 16:9 1080p | `960\u00d7544` -> `1920\u00d71088` | heavy on 3090 (use 2-stage) |\n| 9:16 Vertical | `448\u00d7768` -> `896\u00d71536` | `448\u00d7768` or `544\u00d7960` |\n\n### 3. How to use 3 or 4 guiding images\n- **START** (frame 0) + **MIDDLE** (`96`) + **END** (`-1`) are **ALL ON by default** (3 images).\n- To enable **MID-B** (4th image, default `144`):\n  1. Load your image in Group 4.\n  2. Set its **frame index** node below the image (auto-syncs Stage 1 & 2).\n  3. Select **BOTH** its Stage 1 AND Stage 2 guide nodes -> press **Ctrl+B**.\n- To disable **END**: select **BOTH** END guide nodes -> **Ctrl+B**.\n\n### 4. Toggle 1-Stage vs 2-Stage\n- Flip **`RUN STAGE 2?`** (Group 2): **OFF** = fast 1-stage, **ON** = \u00d72 upscale + 3-step refine.\n- Keep `ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors` installed/selected even when OFF.\n\n### 5. If Out of Memory (3090 24 GB)\n1. Lower `VAEDecodeTiled` `tile_size`: `512` -> `384` -> `256`.\n2. Lower WIDTH/HEIGHT or Duration (e.g. 8s -> 5s).\n3. Use a smaller GGUF (`UD-Q5_K_XL` or `UD-Q4_K_XL`).\n"
+      ],
+      "color": "#233",
+      "bgcolor": "#355"
     }
   ],
   "links": [
@@ -4682,8 +4708,8 @@
     ],
     [
       117,
-      29,
-      2,
+      31,
+      0,
       32,
       0,
       "LATENT"

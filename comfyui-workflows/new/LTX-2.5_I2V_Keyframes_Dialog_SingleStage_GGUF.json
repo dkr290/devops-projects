@@ -1,7 +1,7 @@
 {
   "id": "250bdf6c-14ca-451e-8453-d7673e4c4a25",
   "revision": 0,
-  "last_node_id": 44,
+  "last_node_id": 45,
   "last_link_id": 63,
   "nodes": [
     {
@@ -209,11 +209,11 @@
         }
       },
       "widgets_values": [
-        1024,
+        768,
         "fixed"
       ],
       "widgets_values_named": {
-        "value": 1024,
+        "value": 768,
         "control_after_generate": "fixed"
       }
     },
@@ -251,11 +251,11 @@
         }
       },
       "widgets_values": [
-        1024,
+        768,
         "fixed"
       ],
       "widgets_values_named": {
-        "value": 1024,
+        "value": 768,
         "control_after_generate": "fixed"
       }
     },
@@ -400,7 +400,7 @@
           "links": []
         }
       ],
-      "title": "frames = seconds*fps+1 (5s=121, 10s=241)",
+      "title": "Frame count: round down to 8n + 1",
       "properties": {
         "Node name for S&R": "ComfyMathExpression",
         "ue_properties": {
@@ -410,10 +410,10 @@
         }
       },
       "widgets_values": [
-        "a*b+1"
+        "1 + floor(a*b/8)*8"
       ],
       "widgets_values_named": {
-        "expression": "a*b+1"
+        "expression": "1 + floor(a*b/8)*8"
       }
     },
     {
@@ -775,7 +775,7 @@
       ],
       "flags": {},
       "order": 10,
-      "mode": 0,
+      "mode": 4,
       "inputs": [],
       "outputs": [
         {
@@ -801,11 +801,11 @@
         }
       },
       "widgets_values": [
-        "ComfyUI_temp_olhsp_00008_.png",
+        "mid_a.png",
         "image"
       ],
       "widgets_values_named": {
-        "image": "ComfyUI_temp_olhsp_00008_.png",
+        "image": "mid_a.png",
         "upload": "image"
       }
     },
@@ -1332,7 +1332,7 @@
           ]
         }
       ],
-      "title": "MID-A guide stage 1 (frame_idx = frame number, set SAME in both stages)",
+      "title": "MID-A guide (Ctrl+B to enable; set frame_idx < total frames)",
       "properties": {
         "Node name for S&R": "LTXVAddGuide",
         "ue_properties": {
@@ -1426,7 +1426,7 @@
           ]
         }
       ],
-      "title": "MID-B guide stage 1 (frame_idx = frame number, set SAME in both stages)",
+      "title": "MID-B guide (Ctrl+B to enable; set frame_idx < total frames)",
       "properties": {
         "Node name for S&R": "LTXVAddGuide",
         "ue_properties": {
@@ -1522,7 +1522,7 @@
           ]
         }
       ],
-      "title": "END guide stage 1 (frame_idx -1 = last)",
+      "title": "END guide (frame_idx -1 = last; Ctrl+B to disable)",
       "properties": {
         "Node name for S&R": "LTXVAddGuide",
         "ue_properties": {
@@ -2289,13 +2289,39 @@
         }
       },
       "widgets_values": [
-        "## LTX-2.5 SINGLE-STAGE keyframes + optional dialog - RTX 3090\n\n**Length**: group 2 `duration seconds` (5 -> 121 frames, 10 -> 241 frames @24fps). 10 s needs much more VRAM: use 768x448 or UD-Q5/Q4 if OOM.\n**Resolution**: width/height (/32) = final size (no upscale). Fast draft; add your own upscaler after decode if needed.\n\n**Keyframes (anti-drift)**\n- START: required. END: on by default (same characters, final positions). No END wanted -> Ctrl+B both `END guide` nodes.\n- MID-A / MID-B: bypassed. To use one: Ctrl+B its LoadImage + preprocess + **both** guide nodes.\n- Set `frame_idx` to the frame where the image must appear (e.g. 5 s: 60 = middle; 10 s: 80, 160). Use the SAME value in both stages (if 2 stages). Any position, not only the middle.\n- Keyframes must be the same scene/characters/lighting, only poses/positions change, else you get morphs/cuts.\n\n**Dialog audio (pre-generated voices)**\n- Bypassed by default -> LTX generates its own audio/speech from the prompt.\n- To use your track: Ctrl+B the 4 nodes in group 4c + `Use dialog audio` node. The audio is locked (mask 0), LTX lip-syncs the video to it. Longer audio is cut, shorter is padded and the rest is generated.\n- Make the audio the same length as the video (5 s / 10 s). Write in the prompt who says which line so the right mouth moves.\n"
+        "## LTX-2.5 SINGLE-STAGE keyframes + optional dialog - RTX 3090\n\n**Length**: group 2 `duration seconds` (auto-snapped to 8n+1: 5 s -> 121, 8 s -> 193, 10 s -> 241 @ 24 fps). Longer clips need more VRAM.\n**Resolution**: width/height (/32) = final size (no stage-2 upscale). Defaults to 768x768 for safe 3090 VRAM; raise only if you have headroom, or use the Optional Two-Stage workflow for 1024x1024 / 1080p.\n\n**Keyframes (3\u20134+ images, anti-drift)**\n- START: required. END: on by default (same characters, final positions). No END wanted -> Ctrl+B the `END guide` node.\n- MID-A / MID-B: bypassed by default. To use one: select your image, then Ctrl+B its LoadImage + preprocess + guide node.\n- Set `frame_idx` to the frame where the image should appear (e.g. 8 s / 193 f: 96 for 3 images, or 64 & 128 for 4 images; 5 s / 121 f: 60 for 3 images). Keep `frame_idx` below total frames.\n- Keyframes should share the same scene/characters/lighting with only poses/positions changing.\n\n**Dialog audio (pre-generated voices)**\n- Bypassed by default -> LTX generates its own audio/speech from the prompt.\n- To use your track: select your audio file, then Ctrl+B the 4 nodes in group 4c + the `Use dialog audio` node. The audio is locked (mask 0) and auto-fitted to clip length so LTX lip-syncs to it.\n- Describe in the prompt who speaks which line so the right mouth moves.\n"
       ],
       "widgets_values_named": {
-        "text": "## LTX-2.5 SINGLE-STAGE keyframes + optional dialog - RTX 3090\n\n**Length**: group 2 `duration seconds` (5 -> 121 frames, 10 -> 241 frames @24fps). 10 s needs much more VRAM: use 768x448 or UD-Q5/Q4 if OOM.\n**Resolution**: width/height (/32) = final size (no upscale). Fast draft; add your own upscaler after decode if needed.\n\n**Keyframes (anti-drift)**\n- START: required. END: on by default (same characters, final positions). No END wanted -> Ctrl+B both `END guide` nodes.\n- MID-A / MID-B: bypassed. To use one: Ctrl+B its LoadImage + preprocess + **both** guide nodes.\n- Set `frame_idx` to the frame where the image must appear (e.g. 5 s: 60 = middle; 10 s: 80, 160). Use the SAME value in both stages (if 2 stages). Any position, not only the middle.\n- Keyframes must be the same scene/characters/lighting, only poses/positions change, else you get morphs/cuts.\n\n**Dialog audio (pre-generated voices)**\n- Bypassed by default -> LTX generates its own audio/speech from the prompt.\n- To use your track: Ctrl+B the 4 nodes in group 4c + `Use dialog audio` node. The audio is locked (mask 0), LTX lip-syncs the video to it. Longer audio is cut, shorter is padded and the rest is generated.\n- Make the audio the same length as the video (5 s / 10 s). Write in the prompt who says which line so the right mouth moves.\n"
+        "text": "## LTX-2.5 SINGLE-STAGE keyframes + optional dialog - RTX 3090\n\n**Length**: group 2 `duration seconds` (auto-snapped to 8n+1: 5 s -> 121, 8 s -> 193, 10 s -> 241 @ 24 fps). Longer clips need more VRAM.\n**Resolution**: width/height (/32) = final size (no stage-2 upscale). Defaults to 768x768 for safe 3090 VRAM; raise only if you have headroom, or use the Optional Two-Stage workflow for 1024x1024 / 1080p.\n\n**Keyframes (3\u20134+ images, anti-drift)**\n- START: required. END: on by default (same characters, final positions). No END wanted -> Ctrl+B the `END guide` node.\n- MID-A / MID-B: bypassed by default. To use one: select your image, then Ctrl+B its LoadImage + preprocess + guide node.\n- Set `frame_idx` to the frame where the image should appear (e.g. 8 s / 193 f: 96 for 3 images, or 64 & 128 for 4 images; 5 s / 121 f: 60 for 3 images). Keep `frame_idx` below total frames.\n- Keyframes should share the same scene/characters/lighting with only poses/positions changing.\n\n**Dialog audio (pre-generated voices)**\n- Bypassed by default -> LTX generates its own audio/speech from the prompt.\n- To use your track: select your audio file, then Ctrl+B the 4 nodes in group 4c + the `Use dialog audio` node. The audio is locked (mask 0) and auto-fitted to clip length so LTX lip-syncs to it.\n- Describe in the prompt who speaks which line so the right mouth moves.\n"
       },
       "color": "#432",
       "bgcolor": "#653"
+    },
+    {
+      "id": 45,
+      "type": "MarkdownNote",
+      "pos": [
+        -460,
+        940
+      ],
+      "size": [
+        420,
+        1020
+      ],
+      "flags": {},
+      "order": 44,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "HOW TO: Length, Resolution & 3+ Images",
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## QUICK GUIDE: Length, Resolution & 3+ Images (1-Stage)\n\n### 1. How to change LENGTH (duration)\n- Change **`duration seconds`** in Group 2. Keep **fps = 24**.\n- Frame count auto-snaps to **`8n + 1`**:\n\n| Duration | Frames @24fps | 3 images (MID-A) | 4 images (MID-A / MID-B) |\n|---:|---:|---:|---:|\n| 4 s | 97 | 48 | 32 / 64 |\n| 5 s | 121 | 60 | 40 / 80 |\n| 6 s | 145 | 72 | 48 / 96 |\n| **8 s** | **193** | **96** | **64 / 128** |\n| 10 s | 241 | 120 | 80 / 160 |\n\n- Keep any enabled `frame_idx` **below total frames** (`-1` = last frame).\n\n### 2. How to change RESOLUTION (must be \u00f7 32)\n- Edit **`width`** and **`height`** in Group 2 \u2014 this IS your **final video size** (no upscale).\n\n| Aspect | Fast / Safe on 3090 (8s) | Higher Detail (5s\u20138s) |\n|---|---|---|\n| 1:1 Square | `512\u00d7512` or `768\u00d7768` | `832\u00d7832` (1024\u00d71024 may OOM @8s) |\n| 16:9 Wide | `768\u00d7448` or `832\u00d7480` | `960\u00d7544` |\n| 9:16 Vertical | `448\u00d7768` or `480\u00d7832` | `544\u00d7960` |\n\n### 3. How to use 3 or 4 guiding images\n- **START** + **END** are ON by default.\n- To enable **MID-A** (3rd) or **MID-B** (4th):\n  1. Select its LoadImage + preprocess + guide node -> press **Ctrl+B** (un-bypass).\n  2. Pick your image and set `frame_idx` on the guide node (see table above).\n- To disable **END**: select `END guide` -> **Ctrl+B**.\n\n### 4. Custom Dialog Audio (optional)\n- Select the 4 nodes in Group 4c + `Use dialog audio` -> **Ctrl+B**, then load your audio file.\n- Audio is locked (mask 0) and auto-fitted to clip length so LTX lip-syncs to it.\n\n### 5. If Out of Memory (3090 24 GB)\n1. Lower `VAEDecodeTiled` `tile_size`: `512` -> `384` -> `256`.\n2. Lower width/height or duration (e.g. 8s -> 5s).\n3. Switch to `OptionalTwoStage` for 1024\u00d71024 / 1080p (Stage 1 low res -> \u00d72 refine).\n"
+      ],
+      "color": "#233",
+      "bgcolor": "#355"
     }
   ],
   "links": [
@@ -2843,7 +2869,7 @@
     },
     {
       "id": 4,
-      "title": "4. Keyframes: START + END on, MID-A / MID-B bypassed (Ctrl+B to toggle image AND both its guide nodes)",
+      "title": "4. Keyframes: START + END on, MID-A / MID-B bypassed (Ctrl+B image + preprocess + guide to enable)",
       "bounding": [
         1220,
         -60,

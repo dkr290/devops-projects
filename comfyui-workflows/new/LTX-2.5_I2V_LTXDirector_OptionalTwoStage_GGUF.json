@@ -1,0 +1,2604 @@
+{
+  "id": "fd2b7439-d234-4c76-ad38-e5c3983b3c4e",
+  "revision": 0,
+  "last_node_id": 39,
+  "last_link_id": 70,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UnetLoaderGGUF",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        340,
+        90
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UnetLoaderGGUF",
+        "cnr_id": "ComfyUI-GGUF"
+      },
+      "widgets_values": [
+        "ltx25_uncensored_v1.1-Q6_K.gguf"
+      ],
+      "title": "LTX-2.5 Distilled GGUF"
+    },
+    {
+      "id": 2,
+      "type": "CLIPLoader",
+      "pos": [
+        0,
+        125
+      ],
+      "size": [
+        340,
+        115
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "gemma4_12b_ltx25_uncensored-int8.safetensors",
+        "ltxv",
+        "default"
+      ],
+      "title": "Text encoder (Gemma 4 12B int8)"
+    },
+    {
+      "id": 3,
+      "type": "VAELoader",
+      "pos": [
+        0,
+        275
+      ],
+      "size": [
+        340,
+        80
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            13,
+            35,
+            38,
+            62
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "ltx25_uncensored_video_vae.safetensors"
+      ],
+      "title": "Video VAE"
+    },
+    {
+      "id": 4,
+      "type": "VAELoader",
+      "pos": [
+        0,
+        390
+      ],
+      "size": [
+        340,
+        80
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            3,
+            64
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "ltx25_uncensored_audio_vae.safetensors"
+      ],
+      "title": "Audio VAE"
+    },
+    {
+      "id": 5,
+      "type": "LatentUpscaleModelLoader",
+      "pos": [
+        0,
+        505
+      ],
+      "size": [
+        340,
+        90
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT_UPSCALE_MODEL",
+          "type": "LATENT_UPSCALE_MODEL",
+          "links": [
+            34
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LatentUpscaleModelLoader",
+        "cnr_id": "comfy-core",
+        "models": [
+          {
+            "name": "ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors",
+            "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/latent_upscale_models/ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors",
+            "directory": "latent_upscale_models"
+          }
+        ]
+      },
+      "widgets_values": [
+        "ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors"
+      ],
+      "title": "LTX 2.5 spatial x2 upscaler (required for validation)"
+    },
+    {
+      "id": 6,
+      "type": "PrimitiveBoolean",
+      "pos": [
+        0,
+        670
+      ],
+      "size": [
+        340,
+        85
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "BOOLEAN",
+          "type": "BOOLEAN",
+          "links": [
+            4,
+            5,
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveBoolean",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        true
+      ],
+      "title": "RUN STAGE 2? ON = 2-stage (0.5x -> 2x); OFF = 1-stage (1.0x)",
+      "color": "#234",
+      "bgcolor": "#365"
+    },
+    {
+      "id": 7,
+      "type": "ComfyMathExpression",
+      "pos": [
+        0,
+        790
+      ],
+      "size": [
+        340,
+        130
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "values.a",
+          "type": "FLOAT,INT,BOOLEAN",
+          "link": 4,
+          "label": "a"
+        },
+        {
+          "name": "values.b",
+          "type": "FLOAT,INT,BOOLEAN",
+          "link": null,
+          "label": "b",
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "FLOAT",
+          "type": "FLOAT",
+          "links": [
+            18
+          ]
+        },
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "BOOL",
+          "type": "BOOLEAN",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfyMathExpression",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "1.0 - 0.5 * int(a)"
+      ],
+      "title": "Auto Stage 1 scale_by (0.5 if 2-stage, 1.0 if 1-stage)"
+    },
+    {
+      "id": 8,
+      "type": "RandomNoise",
+      "pos": [
+        0,
+        955
+      ],
+      "size": [
+        340,
+        95
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            24
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        44931205976443,
+        "randomize"
+      ],
+      "title": "Stage 1 seed"
+    },
+    {
+      "id": 9,
+      "type": "RandomNoise",
+      "pos": [
+        0,
+        1085
+      ],
+      "size": [
+        340,
+        95
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            48
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        42,
+        "fixed"
+      ],
+      "title": "Stage 2 seed (fixed)"
+    },
+    {
+      "id": 10,
+      "type": "LTXDirector",
+      "pos": [
+        420,
+        0
+      ],
+      "size": [
+        1380,
+        1020
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 2
+        },
+        {
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": 3,
+          "shape": 7
+        },
+        {
+          "name": "optional_latent",
+          "type": "LATENT",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "global_prompt",
+          "type": "STRING",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            17,
+            42
+          ]
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            7,
+            8
+          ]
+        },
+        {
+          "name": "video_latent",
+          "type": "LATENT",
+          "links": [
+            14
+          ]
+        },
+        {
+          "name": "audio_latent",
+          "type": "LATENT",
+          "links": [
+            20
+          ]
+        },
+        {
+          "name": "guide_data",
+          "type": "GUIDE_DATA",
+          "links": [
+            15,
+            40
+          ]
+        },
+        {
+          "name": "motion_guide_data",
+          "type": "MOTION_GUIDE_DATA",
+          "links": [
+            16,
+            41
+          ]
+        },
+        {
+          "name": "frame_rate",
+          "type": "FLOAT",
+          "links": [
+            10,
+            67
+          ]
+        },
+        {
+          "name": "combined_audio",
+          "type": "AUDIO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXDirector",
+        "cnr_id": "WhatDreamsCost-ComfyUI",
+        "aux_id": "WhatDreamsCost/WhatDreamsCost-ComfyUI",
+        "global_prompt": "",
+        "mainTrackEnabled": true,
+        "audioTrackEnabled": true,
+        "motionTrackEnabled": true,
+        "audioTrackWasEnabledBeforeOverride": false,
+        "inpaint_audio": true,
+        "override_audio": false,
+        "overrideAudio": false,
+        "showFilenames": true,
+        "use_custom_audio": false,
+        "use_custom_motion": true,
+        "frame_rate": 24,
+        "display_mode": "seconds",
+        "custom_width": 1024,
+        "custom_height": 1024,
+        "resize_method": "maintain aspect ratio",
+        "divisible_by": 64,
+        "img_compression": 18,
+        "guide_strength": "",
+        "local_prompts": "",
+        "segment_lengths": "",
+        "timeline_data": "{\"mainTrackEnabled\":true,\"audioTrackEnabled\":true,\"motionTrackEnabled\":true,\"propHeight\":90,\"globalPropHeight\":60,\"showFilenames\":true,\"overrideAudio\":false,\"inpaint_audio\":true,\"global_prompt\":\"\",\"retake_global_prompt\":\"\",\"retakeMode\":false,\"retakeStart\":24,\"retakeLength\":48,\"retakePrompt\":\"\",\"retakeStrength\":1,\"retakeVideo\":null,\"normalStartFrame\":0,\"normalDurationFrames\":192,\"segments\":[],\"motionSegments\":[],\"audioSegments\":[]}",
+        "epsilon": 0.001,
+        "start_second": 0,
+        "end_second": 8,
+        "duration_seconds": 8,
+        "start_frame": 0,
+        "end_frame": 192,
+        "duration_frames": 192,
+        "timeline_ui": "",
+        "has_serialized_properties": true,
+        "propHeight": 90,
+        "globalPropHeight": 60,
+        "retakeMode": false
+      },
+      "widgets_values": [
+        0,
+        8,
+        8,
+        0,
+        192,
+        192,
+        "{\"mainTrackEnabled\":true,\"audioTrackEnabled\":true,\"motionTrackEnabled\":true,\"propHeight\":90,\"globalPropHeight\":60,\"showFilenames\":true,\"overrideAudio\":false,\"inpaint_audio\":true,\"global_prompt\":\"\",\"retake_global_prompt\":\"\",\"retakeMode\":false,\"retakeStart\":24,\"retakeLength\":48,\"retakePrompt\":\"\",\"retakeStrength\":1,\"retakeVideo\":null,\"normalStartFrame\":0,\"normalDurationFrames\":192,\"segments\":[],\"motionSegments\":[],\"audioSegments\":[]}",
+        "",
+        "",
+        0.001,
+        "",
+        false,
+        true,
+        true,
+        24,
+        "seconds",
+        1024,
+        1024,
+        "maintain aspect ratio",
+        64,
+        18,
+        false,
+        ""
+      ],
+      "title": "LTX Director - drop 3+ images, prompts & optional audio on timeline"
+    },
+    {
+      "id": 11,
+      "type": "ConditioningZeroOut",
+      "pos": [
+        1850,
+        0
+      ],
+      "size": [
+        260,
+        45
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ConditioningZeroOut",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [],
+      "title": "Zero negative (CFG=1 distilled)"
+    },
+    {
+      "id": 12,
+      "type": "LTXVConditioning",
+      "pos": [
+        1850,
+        80
+      ],
+      "size": [
+        260,
+        95
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 8
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 9
+        },
+        {
+          "name": "frame_rate",
+          "type": "FLOAT",
+          "link": 10,
+          "widget": {
+            "name": "frame_rate"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            11
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXVConditioning",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        24
+      ],
+      "title": "LTXV Conditioning (fps from Director)"
+    },
+    {
+      "id": 13,
+      "type": "LTXDirectorGuide",
+      "pos": [
+        1850,
+        260
+      ],
+      "size": [
+        380,
+        430
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 11
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 12
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 13
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 14
+        },
+        {
+          "name": "guide_data",
+          "type": "GUIDE_DATA",
+          "link": 15
+        },
+        {
+          "name": "motion_guide_data",
+          "type": "MOTION_GUIDE_DATA",
+          "link": 16,
+          "shape": 7
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 17,
+          "shape": 7
+        },
+        {
+          "name": "scale_by",
+          "type": "FLOAT",
+          "link": 18,
+          "widget": {
+            "name": "scale_by"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            22,
+            30
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            23,
+            31
+          ]
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            19
+          ]
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            21
+          ]
+        },
+        {
+          "name": "latent_downscale_factor",
+          "type": "FLOAT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXDirectorGuide",
+        "cnr_id": "whatdreamscost-comfyui",
+        "aux_id": "WhatDreamsCost/WhatDreamsCost-ComfyUI"
+      },
+      "widgets_values": [
+        "None",
+        1,
+        0.5,
+        "bicubic",
+        1,
+        "center",
+        true,
+        false,
+        256,
+        64,
+        false
+      ],
+      "title": "Stage 1 - LTX Director Guide (auto scale_by)"
+    },
+    {
+      "id": 14,
+      "type": "LTXVConcatAVLatent",
+      "pos": [
+        2280,
+        260
+      ],
+      "size": [
+        270,
+        70
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video_latent",
+          "type": "LATENT",
+          "link": 19
+        },
+        {
+          "name": "audio_latent",
+          "type": "LATENT",
+          "link": 20
+        }
+      ],
+      "outputs": [
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            28
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXVConcatAVLatent",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [],
+      "title": "Stage 1: join video + Director audio"
+    },
+    {
+      "id": 15,
+      "type": "CFGGuider",
+      "pos": [
+        2280,
+        365
+      ],
+      "size": [
+        270,
+        100
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 21
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 22
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 23
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            25
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CFGGuider",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        1
+      ],
+      "title": "Stage 1 guider (CFG 1 distilled)"
+    },
+    {
+      "id": 16,
+      "type": "KSamplerSelect",
+      "pos": [
+        2280,
+        500
+      ],
+      "size": [
+        270,
+        70
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            26
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "euler_ancestral"
+      ],
+      "title": "Stage 1 sampler"
+    },
+    {
+      "id": 17,
+      "type": "ManualSigmas",
+      "pos": [
+        2280,
+        605
+      ],
+      "size": [
+        270,
+        85
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            27
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ManualSigmas",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
+      ],
+      "title": "Stage 1 sigmas (LTX-2.5 8 steps)"
+    },
+    {
+      "id": 18,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        2600,
+        260
+      ],
+      "size": [
+        280,
+        180
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 24
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 25
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 26
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 27
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 28
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            29
+          ]
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [],
+      "title": "STAGE 1 - sample"
+    },
+    {
+      "id": 19,
+      "type": "LTXVSeparateAVLatent",
+      "pos": [
+        2600,
+        475
+      ],
+      "size": [
+        280,
+        70
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "av_latent",
+          "type": "LATENT",
+          "link": 29
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video_latent",
+          "type": "LATENT",
+          "links": [
+            32
+          ]
+        },
+        {
+          "name": "audio_latent",
+          "type": "LATENT",
+          "links": [
+            44,
+            59
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXVSeparateAVLatent",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [],
+      "title": "Stage 1: separate video + audio"
+    },
+    {
+      "id": 20,
+      "type": "LTXDirectorCropGuides",
+      "pos": [
+        2600,
+        580
+      ],
+      "size": [
+        280,
+        95
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 30
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 31
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 32
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            36
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            37
+          ]
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            33,
+            57
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXDirectorCropGuides",
+        "cnr_id": "whatdreamscost-comfyui",
+        "aux_id": "WhatDreamsCost/WhatDreamsCost-ComfyUI"
+      },
+      "widgets_values": [],
+      "title": "Stage 1: crop Director guides"
+    },
+    {
+      "id": 21,
+      "type": "LTXVLatentUpsampler",
+      "pos": [
+        1850,
+        800
+      ],
+      "size": [
+        380,
+        95
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 33
+        },
+        {
+          "name": "upscale_model",
+          "type": "LATENT_UPSCALE_MODEL",
+          "link": 34
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 35
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            39
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXVLatentUpsampler",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [],
+      "title": "STAGE 2 - learned 2x latent upscale"
+    },
+    {
+      "id": 22,
+      "type": "LTXDirectorGuide",
+      "pos": [
+        1850,
+        930
+      ],
+      "size": [
+        380,
+        415
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 36
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 37
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 38
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 39
+        },
+        {
+          "name": "guide_data",
+          "type": "GUIDE_DATA",
+          "link": 40
+        },
+        {
+          "name": "motion_guide_data",
+          "type": "MOTION_GUIDE_DATA",
+          "link": 41,
+          "shape": 7
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 42,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            46,
+            54
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            47,
+            55
+          ]
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            43
+          ]
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            45
+          ]
+        },
+        {
+          "name": "latent_downscale_factor",
+          "type": "FLOAT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXDirectorGuide",
+        "cnr_id": "whatdreamscost-comfyui",
+        "aux_id": "WhatDreamsCost/WhatDreamsCost-ComfyUI"
+      },
+      "widgets_values": [
+        "None",
+        1,
+        1.0,
+        "bicubic",
+        1,
+        "center",
+        true,
+        false,
+        256,
+        64,
+        false
+      ],
+      "title": "Stage 2 - LTX Director Guide (full size, scale_by=1.0)"
+    },
+    {
+      "id": 23,
+      "type": "LTXVConcatAVLatent",
+      "pos": [
+        2280,
+        800
+      ],
+      "size": [
+        270,
+        70
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video_latent",
+          "type": "LATENT",
+          "link": 43
+        },
+        {
+          "name": "audio_latent",
+          "type": "LATENT",
+          "link": 44
+        }
+      ],
+      "outputs": [
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            52
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXVConcatAVLatent",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [],
+      "title": "Stage 2: join video + Stage 1 audio"
+    },
+    {
+      "id": 24,
+      "type": "CFGGuider",
+      "pos": [
+        2280,
+        905
+      ],
+      "size": [
+        270,
+        100
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 45
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 46
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 47
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            49
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CFGGuider",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        1
+      ],
+      "title": "Stage 2 guider (CFG 1 distilled)"
+    },
+    {
+      "id": 25,
+      "type": "KSamplerSelect",
+      "pos": [
+        2280,
+        1040
+      ],
+      "size": [
+        270,
+        70
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            50
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "euler"
+      ],
+      "title": "Stage 2 sampler"
+    },
+    {
+      "id": 26,
+      "type": "ManualSigmas",
+      "pos": [
+        2280,
+        1145
+      ],
+      "size": [
+        270,
+        85
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            51
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ManualSigmas",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "0.909375, 0.725, 0.421875, 0.0"
+      ],
+      "title": "Stage 2 sigmas (3 refine steps)"
+    },
+    {
+      "id": 27,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        2600,
+        800
+      ],
+      "size": [
+        280,
+        180
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 48
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 49
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 50
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 51
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 52
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            53
+          ]
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [],
+      "title": "STAGE 2 - refine at full size"
+    },
+    {
+      "id": 28,
+      "type": "LTXVSeparateAVLatent",
+      "pos": [
+        2600,
+        1015
+      ],
+      "size": [
+        280,
+        70
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "av_latent",
+          "type": "LATENT",
+          "link": 53
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video_latent",
+          "type": "LATENT",
+          "links": [
+            56
+          ]
+        },
+        {
+          "name": "audio_latent",
+          "type": "LATENT",
+          "links": [
+            60
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXVSeparateAVLatent",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [],
+      "title": "Stage 2: separate video + audio"
+    },
+    {
+      "id": 29,
+      "type": "LTXDirectorCropGuides",
+      "pos": [
+        2600,
+        1120
+      ],
+      "size": [
+        280,
+        95
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 54
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 55
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 56
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": []
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": []
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            58
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXDirectorCropGuides",
+        "cnr_id": "whatdreamscost-comfyui",
+        "aux_id": "WhatDreamsCost/WhatDreamsCost-ComfyUI"
+      },
+      "widgets_values": [],
+      "title": "Stage 2: crop Director guides"
+    },
+    {
+      "id": 30,
+      "type": "ComfySwitchNode",
+      "pos": [
+        2960,
+        260
+      ],
+      "size": [
+        310,
+        120
+      ],
+      "flags": {},
+      "order": 29,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_false",
+          "type": "LATENT",
+          "link": 57,
+          "shape": 7
+        },
+        {
+          "name": "on_true",
+          "type": "LATENT",
+          "link": 58,
+          "shape": 7
+        },
+        {
+          "name": "switch",
+          "type": "BOOLEAN",
+          "link": 5,
+          "widget": {
+            "name": "switch"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            61
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfySwitchNode",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        true
+      ],
+      "title": "If/Else: 1-stage video OR 2-stage video"
+    },
+    {
+      "id": 31,
+      "type": "ComfySwitchNode",
+      "pos": [
+        2960,
+        420
+      ],
+      "size": [
+        310,
+        120
+      ],
+      "flags": {},
+      "order": 30,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_false",
+          "type": "LATENT",
+          "link": 59,
+          "shape": 7
+        },
+        {
+          "name": "on_true",
+          "type": "LATENT",
+          "link": 60,
+          "shape": 7
+        },
+        {
+          "name": "switch",
+          "type": "BOOLEAN",
+          "link": 6,
+          "widget": {
+            "name": "switch"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            63
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfySwitchNode",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        true
+      ],
+      "title": "If/Else: 1-stage audio OR 2-stage audio"
+    },
+    {
+      "id": 32,
+      "type": "VAEDecodeTiled",
+      "pos": [
+        3320,
+        260
+      ],
+      "size": [
+        320,
+        150
+      ],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 61
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 62
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            65,
+            69
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeTiled",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        512,
+        64,
+        64,
+        8
+      ],
+      "title": "VAE Decode (Tiled) - lower tile_size if OOM"
+    },
+    {
+      "id": 33,
+      "type": "LTXVAudioVAEDecode",
+      "pos": [
+        3320,
+        450
+      ],
+      "size": [
+        320,
+        90
+      ],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 63
+        },
+        {
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": 64
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Audio",
+          "type": "AUDIO",
+          "links": [
+            66
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXVAudioVAEDecode",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [],
+      "title": "Decode Audio VAE"
+    },
+    {
+      "id": 34,
+      "type": "CreateVideo",
+      "pos": [
+        3690,
+        260
+      ],
+      "size": [
+        320,
+        165
+      ],
+      "flags": {},
+      "order": 33,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 65
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 66,
+          "shape": 7
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "link": 67,
+          "widget": {
+            "name": "fps"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            68
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreateVideo",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        24,
+        8,
+        "sRGB",
+        "auto",
+        "none"
+      ],
+      "title": "Create Video (fps from Director)"
+    },
+    {
+      "id": 35,
+      "type": "SaveVideo",
+      "pos": [
+        4060,
+        260
+      ],
+      "size": [
+        380,
+        420
+      ],
+      "flags": {},
+      "order": 34,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 68
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveVideo",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "video/LTX25_Director",
+        "auto",
+        "auto",
+        "auto"
+      ],
+      "title": "Save Video (MP4 with audio)"
+    },
+    {
+      "id": 36,
+      "type": "ImageFromBatch",
+      "pos": [
+        3690,
+        470
+      ],
+      "size": [
+        320,
+        110
+      ],
+      "flags": {},
+      "order": 35,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 69
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            70
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageFromBatch",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        -1,
+        1
+      ],
+      "title": "Extract LAST frame (-1) for continuation"
+    },
+    {
+      "id": 37,
+      "type": "SaveImage",
+      "pos": [
+        4060,
+        720
+      ],
+      "size": [
+        380,
+        360
+      ],
+      "flags": {},
+      "order": 36,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 70
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "video/LTX25_Director_last_frame"
+      ],
+      "title": "Save last frame PNG (drop into next Director shot)"
+    },
+    {
+      "id": 38,
+      "type": "MarkdownNote",
+      "pos": [
+        -620,
+        0
+      ],
+      "size": [
+        560,
+        1180
+      ],
+      "flags": {},
+      "order": 37,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## LTX-2.5 + LTX Director (GGUF, 1-Stage or 2-Stage) - RTX 3090\n\n### Required custom nodes\n- `ComfyUI-GGUF` (`city96/ComfyUI-GGUF`)\n- `WhatDreamsCost-ComfyUI` (`WhatDreamsCost/WhatDreamsCost-ComfyUI`, latest v2.0+ with LTX Director)\n- Up-to-date ComfyUI + `ComfyUI-LTXVideo`\n\n### How to use 3+ guiding images in LTX Director\n1. Drag & drop **3 or more images** directly onto the **LTX Director** timeline track.\n2. Position each image where you want it to appear (e.g. Start at 0s, Middle at 4s, End at 8s).\n   Right-click the final image block -> **Pin as End Frame** so it lands on the exact last frame.\n3. Write a **global prompt** (scene/characters/lighting) and a **per-segment prompt** for each block (Prompt Relay automatically scopes each prompt to its time range).\n4. **Audio**: leave `use_custom_audio` OFF to let LTX-2.5 generate synchronized audio/dialogue, OR drag a voice/music clip onto the audio track and turn `use_custom_audio` ON (`inpaint_audio` fills empty gaps).\n\n### 1-Stage vs 2-Stage (`RUN STAGE 2?` toggle)\n- **ON (default, 2-stage):** Stage 1 automatically runs at **0.5x** (`512x512` for a `1024x1024` target), then Stage 2 runs the learned 2x latent upscaler + 3 refinement steps back to full target size.\n- **OFF (1-stage):** Stage 1 automatically switches to **1.0x** and skips Stage 2 completely. Lower `custom_width`/`custom_height` inside Director (e.g. `768x768` or `768x448`) for fast 1-stage runs on 24 GB VRAM.\n- Keep `divisible_by = 64` in Director so both 1x and 0.5x sizes are divisible by 32.\n- Keep `ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors` installed & selected even when Stage 2 is OFF (ComfyUI validates connected loaders).\n\n### Continuing into a longer scene\n- Every run also saves the **last decoded frame PNG** (`video/LTX25_Director_last_frame_*`). Drop it at 0s of a new Director timeline to continue the next clip.\n"
+      ],
+      "title": "READ ME - LTX-2.5 Director Workflow",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 39,
+      "type": "MarkdownNote",
+      "pos": [
+        -1220,
+        0
+      ],
+      "size": [
+        560,
+        1180
+      ],
+      "flags": {},
+      "order": 38,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "HOW TO: Length, Resolution & 3+ Images",
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## QUICK GUIDE: Length, Resolution & 3+ Images (LTX Director)\n\n### 1. How to change LENGTH (duration)\n- Inside the **LTX Director** node (Group 3):\n  - Set **`duration_seconds`** (e.g. `5`, `8`, `10`) or drag the timeline end handle.\n  - Keep **`frame_rate = 24`**. Director auto-snaps frames to **`8n + 1`** (`5s=121`, `8s=193`, `10s=241`).\n\n### 2. How to change RESOLUTION\n- Inside the **LTX Director** node:\n  - Set **`custom_width`** and **`custom_height`** to your **FINAL target size** (or `0` and `0` to match your first image).\n  - Keep **`divisible_by = 64`** (so both 1\u00d7 and 0.5\u00d7 stay divisible by 32).\n  - **`RUN STAGE 2? = ON`** -> Stage 1 auto-scales to **0.5\u00d7**, Stage 2 refines \u00d72 back to full target size!\n  - **`RUN STAGE 2? = OFF`** -> Stage 1 auto-scales to **1.0\u00d7** (1-stage) and skips Stage 2!\n\n| Aspect | 2-Stage ON (set in Director) | 1-Stage OFF (set in Director) |\n|---|---|---|\n| 1:1 Square | `1024\u00d71024` (S1 runs `512\u00d7512`) | `768\u00d7768` or `512\u00d7512` |\n| 16:9 Wide | `1536\u00d7896` (S1 runs `768\u00d7448`) | `768\u00d7448` or `896\u00d7512` |\n| 16:9 1080p | `1920\u00d71088` (S1 runs `960\u00d7544`) | use 2-Stage ON on 3090 |\n| 9:16 Vertical | `896\u00d71536` (S1 runs `448\u00d7768`) | `448\u00d7768` or `512\u00d7896` |\n\n### 3. How to use 3, 4, or more guiding images\n1. **Drag & drop** your images directly onto the Director timeline track.\n2. Slide each image to its timestamp (e.g. Start `0s`, Mid `4s`, End `8s`).\n3. Right-click the final image block -> **Pin as End Frame** (locks to exact last frame).\n4. Write a **Global Prompt** (characters/style/lighting) + a **Segment Prompt** per block (Prompt Relay scopes each prompt to its time slice).\n\n### 4. Audio & Multi-Clip Continuation\n- **Model-generated audio (default):** leave `use_custom_audio = false`.\n- **Custom voice/music:** drag audio onto the audio track, turn `use_custom_audio = true` (`inpaint_audio = true` fills empty gaps).\n- **Next clip:** every run saves `video/LTX25_Director_last_frame_*.png` \u2014 drag it to `0s` of a new run to continue.\n\n### 5. If Out of Memory (3090 24 GB)\n1. Lower `VAEDecodeTiled` `tile_size`: `512` -> `384` -> `256`.\n2. In both `LTXDirectorGuide` nodes, toggle `use_tiled_encode = true`.\n3. Reduce `custom_width`/`custom_height` or `duration_seconds`.\n"
+      ],
+      "color": "#233",
+      "bgcolor": "#355"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      10,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      2,
+      0,
+      10,
+      1,
+      "CLIP"
+    ],
+    [
+      3,
+      4,
+      0,
+      10,
+      2,
+      "VAE"
+    ],
+    [
+      4,
+      6,
+      0,
+      7,
+      0,
+      "BOOLEAN"
+    ],
+    [
+      5,
+      6,
+      0,
+      30,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      6,
+      6,
+      0,
+      31,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      7,
+      10,
+      1,
+      11,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      8,
+      10,
+      1,
+      12,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      9,
+      11,
+      0,
+      12,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      10,
+      10,
+      6,
+      12,
+      2,
+      "FLOAT"
+    ],
+    [
+      11,
+      12,
+      0,
+      13,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      12,
+      12,
+      1,
+      13,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      13,
+      3,
+      0,
+      13,
+      2,
+      "VAE"
+    ],
+    [
+      14,
+      10,
+      2,
+      13,
+      3,
+      "LATENT"
+    ],
+    [
+      15,
+      10,
+      4,
+      13,
+      4,
+      "GUIDE_DATA"
+    ],
+    [
+      16,
+      10,
+      5,
+      13,
+      5,
+      "MOTION_GUIDE_DATA"
+    ],
+    [
+      17,
+      10,
+      0,
+      13,
+      6,
+      "MODEL"
+    ],
+    [
+      18,
+      7,
+      0,
+      13,
+      7,
+      "FLOAT"
+    ],
+    [
+      19,
+      13,
+      2,
+      14,
+      0,
+      "LATENT"
+    ],
+    [
+      20,
+      10,
+      3,
+      14,
+      1,
+      "LATENT"
+    ],
+    [
+      21,
+      13,
+      3,
+      15,
+      0,
+      "MODEL"
+    ],
+    [
+      22,
+      13,
+      0,
+      15,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      23,
+      13,
+      1,
+      15,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      24,
+      8,
+      0,
+      18,
+      0,
+      "NOISE"
+    ],
+    [
+      25,
+      15,
+      0,
+      18,
+      1,
+      "GUIDER"
+    ],
+    [
+      26,
+      16,
+      0,
+      18,
+      2,
+      "SAMPLER"
+    ],
+    [
+      27,
+      17,
+      0,
+      18,
+      3,
+      "SIGMAS"
+    ],
+    [
+      28,
+      14,
+      0,
+      18,
+      4,
+      "LATENT"
+    ],
+    [
+      29,
+      18,
+      0,
+      19,
+      0,
+      "LATENT"
+    ],
+    [
+      30,
+      13,
+      0,
+      20,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      31,
+      13,
+      1,
+      20,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      32,
+      19,
+      0,
+      20,
+      2,
+      "LATENT"
+    ],
+    [
+      33,
+      20,
+      2,
+      21,
+      0,
+      "LATENT"
+    ],
+    [
+      34,
+      5,
+      0,
+      21,
+      1,
+      "LATENT_UPSCALE_MODEL"
+    ],
+    [
+      35,
+      3,
+      0,
+      21,
+      2,
+      "VAE"
+    ],
+    [
+      36,
+      20,
+      0,
+      22,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      37,
+      20,
+      1,
+      22,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      38,
+      3,
+      0,
+      22,
+      2,
+      "VAE"
+    ],
+    [
+      39,
+      21,
+      0,
+      22,
+      3,
+      "LATENT"
+    ],
+    [
+      40,
+      10,
+      4,
+      22,
+      4,
+      "GUIDE_DATA"
+    ],
+    [
+      41,
+      10,
+      5,
+      22,
+      5,
+      "MOTION_GUIDE_DATA"
+    ],
+    [
+      42,
+      10,
+      0,
+      22,
+      6,
+      "MODEL"
+    ],
+    [
+      43,
+      22,
+      2,
+      23,
+      0,
+      "LATENT"
+    ],
+    [
+      44,
+      19,
+      1,
+      23,
+      1,
+      "LATENT"
+    ],
+    [
+      45,
+      22,
+      3,
+      24,
+      0,
+      "MODEL"
+    ],
+    [
+      46,
+      22,
+      0,
+      24,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      47,
+      22,
+      1,
+      24,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      48,
+      9,
+      0,
+      27,
+      0,
+      "NOISE"
+    ],
+    [
+      49,
+      24,
+      0,
+      27,
+      1,
+      "GUIDER"
+    ],
+    [
+      50,
+      25,
+      0,
+      27,
+      2,
+      "SAMPLER"
+    ],
+    [
+      51,
+      26,
+      0,
+      27,
+      3,
+      "SIGMAS"
+    ],
+    [
+      52,
+      23,
+      0,
+      27,
+      4,
+      "LATENT"
+    ],
+    [
+      53,
+      27,
+      0,
+      28,
+      0,
+      "LATENT"
+    ],
+    [
+      54,
+      22,
+      0,
+      29,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      55,
+      22,
+      1,
+      29,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      56,
+      28,
+      0,
+      29,
+      2,
+      "LATENT"
+    ],
+    [
+      57,
+      20,
+      2,
+      30,
+      0,
+      "LATENT"
+    ],
+    [
+      58,
+      29,
+      2,
+      30,
+      1,
+      "LATENT"
+    ],
+    [
+      59,
+      19,
+      1,
+      31,
+      0,
+      "LATENT"
+    ],
+    [
+      60,
+      28,
+      1,
+      31,
+      1,
+      "LATENT"
+    ],
+    [
+      61,
+      30,
+      0,
+      32,
+      0,
+      "LATENT"
+    ],
+    [
+      62,
+      3,
+      0,
+      32,
+      1,
+      "VAE"
+    ],
+    [
+      63,
+      31,
+      0,
+      33,
+      0,
+      "LATENT"
+    ],
+    [
+      64,
+      4,
+      0,
+      33,
+      1,
+      "VAE"
+    ],
+    [
+      65,
+      32,
+      0,
+      34,
+      0,
+      "IMAGE"
+    ],
+    [
+      66,
+      33,
+      0,
+      34,
+      1,
+      "AUDIO"
+    ],
+    [
+      67,
+      10,
+      6,
+      34,
+      2,
+      "FLOAT"
+    ],
+    [
+      68,
+      34,
+      0,
+      35,
+      0,
+      "VIDEO"
+    ],
+    [
+      69,
+      32,
+      0,
+      36,
+      0,
+      "IMAGE"
+    ],
+    [
+      70,
+      36,
+      0,
+      37,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "1. Models (LTX-2.5 GGUF on 3090)",
+      "bounding": [
+        -20,
+        -60,
+        380,
+        680
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "2. Mode (1-Stage / 2-Stage) & Seeds",
+      "bounding": [
+        -20,
+        620,
+        380,
+        585
+      ],
+      "color": "#3b6e5c",
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "3. LTX Director Timeline (3+ images, per-segment prompts, optional audio)",
+      "bounding": [
+        400,
+        -60,
+        1420,
+        1110
+      ],
+      "color": "#8a5a3b",
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "4. Stage 1 (8 steps distilled, CFG 1)",
+      "bounding": [
+        1830,
+        -60,
+        1075,
+        780
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "5. Stage 2 (Optional x2 latent upscale + 3 refine steps)",
+      "bounding": [
+        1830,
+        740,
+        1075,
+        635
+      ],
+      "color": "#5a4a8a",
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "6. Switch, Decode & Save (Video + Last Frame PNG)",
+      "bounding": [
+        2940,
+        200,
+        1525,
+        910
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.55,
+      "offset": [
+        100,
+        120
+      ]
+    },
+    "frontendVersion": "1.59.11"
+  },
+  "version": 0.4
+}
