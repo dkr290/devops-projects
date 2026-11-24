@@ -1,0 +1,2322 @@
+{
+  "id": "b9a48a3d-91ce-4376-9da9-03f1e4f9dcb7",
+  "revision": 0,
+  "last_node_id": 37,
+  "last_link_id": 47,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        420,
+        95
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1,
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0",
+        "models": [
+          {
+            "name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+            "directory": "diffusion_models"
+          }
+        ]
+      },
+      "widgets_values": [
+        "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+        "default"
+      ],
+      "widgets_values_named": {
+        "unet_name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      },
+      "title": "MiniMax H3 Ref2VA (pruned INT8 ConvRot)"
+    },
+    {
+      "id": 2,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        0,
+        130
+      ],
+      "size": [
+        420,
+        95
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0",
+        "models": [
+          {
+            "name": "minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/loras/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors",
+            "directory": "loras"
+          }
+        ]
+      },
+      "widgets_values": [
+        "minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors",
+        1.0
+      ],
+      "widgets_values_named": {
+        "lora_name": "minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors",
+        "strength_model": 1.0
+      },
+      "title": "Ref2V 4-Step Turbo LoRA (544p, shift 12/3)"
+    },
+    {
+      "id": 3,
+      "type": "CLIPLoader",
+      "pos": [
+        0,
+        260
+      ],
+      "size": [
+        420,
+        120
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0",
+        "models": [
+          {
+            "name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+            "directory": "text_encoders"
+          }
+        ]
+      },
+      "widgets_values": [
+        "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "minimax",
+        "default"
+      ],
+      "widgets_values_named": {
+        "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "type": "minimax",
+        "device": "default"
+      },
+      "title": "Text Encoder (Qwen3-VL 32B NVFP4)"
+    },
+    {
+      "id": 4,
+      "type": "VAELoader",
+      "pos": [
+        0,
+        415
+      ],
+      "size": [
+        420,
+        80
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            10,
+            21,
+            26,
+            40
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0",
+        "models": [
+          {
+            "name": "minimax_h3_video_vae_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_int8_convrot.safetensors",
+            "directory": "vae"
+          }
+        ]
+      },
+      "widgets_values": [
+        "minimax_h3_video_vae_int8_convrot.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"
+      },
+      "title": "MiniMax H3 Video VAE (INT8 ConvRot)"
+    },
+    {
+      "id": 5,
+      "type": "VAELoader",
+      "pos": [
+        0,
+        530
+      ],
+      "size": [
+        420,
+        80
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            11,
+            22,
+            27,
+            42
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0",
+        "models": [
+          {
+            "name": "minimax_h3_audio_vae_fp32.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_audio_vae_fp32.safetensors",
+            "directory": "vae"
+          }
+        ]
+      },
+      "widgets_values": [
+        "minimax_h3_audio_vae_fp32.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+      },
+      "title": "MiniMax H3 Audio VAE (FP32)"
+    },
+    {
+      "id": 6,
+      "type": "ResolutionSelector",
+      "pos": [
+        480,
+        0
+      ],
+      "size": [
+        320,
+        170
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "preview",
+          "type": "RESOLUTION_PREVIEW",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "links": [
+            16
+          ]
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": [
+            17
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ResolutionSelector",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "16:9 (Widescreen)",
+        0.4,
+        32
+      ],
+      "widgets_values_named": {
+        "aspect_ratio": "16:9 (Widescreen)",
+        "megapixels": 0.4,
+        "multiple": 32
+      },
+      "title": "Resolution (0.4 MP = 864x480, best for 4-step LoRA)",
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 7,
+      "type": "PrimitiveFloat",
+      "pos": [
+        480,
+        205
+      ],
+      "size": [
+        320,
+        80
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "FLOAT",
+          "type": "FLOAT",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveFloat",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        5.0
+      ],
+      "widgets_values_named": {
+        "value": 5.0
+      },
+      "title": "Duration in seconds (5s = 124f; up to 15s)",
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 8,
+      "type": "ComfyMathExpression",
+      "pos": [
+        480,
+        315
+      ],
+      "size": [
+        320,
+        120
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "values.a",
+          "type": "FLOAT,INT,BOOLEAN",
+          "link": 8,
+          "label": "a"
+        },
+        {
+          "name": "values.b",
+          "type": "FLOAT,INT,BOOLEAN",
+          "link": null,
+          "label": "b",
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "FLOAT",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            18
+          ]
+        },
+        {
+          "name": "BOOL",
+          "type": "BOOLEAN",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfyMathExpression",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "max(5, round(a * 24)) + (5 - (max(5, round(a * 24)) % 17)) % 17"
+      ],
+      "widgets_values_named": {
+        "expression": "max(5, round(a * 24)) + (5 - (max(5, round(a * 24)) % 17)) % 17"
+      },
+      "title": "Snap frames to H3 cadence (17n + 5: 5s -> 124)"
+    },
+    {
+      "id": 9,
+      "type": "PrimitiveBoolean",
+      "pos": [
+        480,
+        470
+      ],
+      "size": [
+        320,
+        85
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "BOOLEAN",
+          "type": "BOOLEAN",
+          "links": [
+            4,
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveBoolean",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        true
+      ],
+      "widgets_values_named": {
+        "value": true
+      },
+      "title": "4-STEP TURBO? ON = 4 steps fast; OFF = 20 steps base",
+      "color": "#234",
+      "bgcolor": "#365"
+    },
+    {
+      "id": 10,
+      "type": "PrimitiveInt",
+      "pos": [
+        480,
+        585
+      ],
+      "size": [
+        150,
+        85
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveInt",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        20,
+        "fixed"
+      ],
+      "widgets_values_named": {
+        "value": 20,
+        "control_after_generate": "fixed"
+      },
+      "title": "Base steps"
+    },
+    {
+      "id": 11,
+      "type": "PrimitiveInt",
+      "pos": [
+        650,
+        585
+      ],
+      "size": [
+        150,
+        85
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveInt",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        4,
+        "fixed"
+      ],
+      "widgets_values_named": {
+        "value": 4,
+        "control_after_generate": "fixed"
+      },
+      "title": "Turbo steps"
+    },
+    {
+      "id": 12,
+      "type": "ComfySwitchNode",
+      "pos": [
+        480,
+        700
+      ],
+      "size": [
+        320,
+        110
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_false",
+          "type": "MODEL",
+          "link": 2,
+          "shape": 7
+        },
+        {
+          "name": "on_true",
+          "type": "MODEL",
+          "link": 3,
+          "shape": 7
+        },
+        {
+          "name": "switch",
+          "type": "BOOLEAN",
+          "link": 4,
+          "widget": {
+            "name": "switch"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "MODEL",
+          "links": [
+            29,
+            31
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfySwitchNode",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        true
+      ],
+      "widgets_values_named": {
+        "switch": true
+      },
+      "title": "Switch: Base Model OR 4-Step Turbo Model"
+    },
+    {
+      "id": 13,
+      "type": "ComfySwitchNode",
+      "pos": [
+        480,
+        840
+      ],
+      "size": [
+        320,
+        110
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_false",
+          "type": "INT",
+          "link": 5,
+          "shape": 7
+        },
+        {
+          "name": "on_true",
+          "type": "INT",
+          "link": 6,
+          "shape": 7
+        },
+        {
+          "name": "switch",
+          "type": "BOOLEAN",
+          "link": 7,
+          "widget": {
+            "name": "switch"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "INT",
+          "links": [
+            32
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfySwitchNode",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        true
+      ],
+      "widgets_values_named": {
+        "switch": true
+      },
+      "title": "Switch: 20 Steps OR 4 Steps"
+    },
+    {
+      "id": 14,
+      "type": "LoadImage",
+      "pos": [
+        860,
+        0
+      ],
+      "size": [
+        280,
+        320
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            12
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "char1.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "char1.png",
+        "upload": "image"
+      },
+      "title": "1. Character / Subject 1 (<Picture 1>)"
+    },
+    {
+      "id": 15,
+      "type": "LoadImage",
+      "pos": [
+        1170,
+        0
+      ],
+      "size": [
+        280,
+        320
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            13
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "char2.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "char2.png",
+        "upload": "image"
+      },
+      "title": "2. Character / Subject 2 (<Picture 2>)"
+    },
+    {
+      "id": 16,
+      "type": "LoadImage",
+      "pos": [
+        1480,
+        0
+      ],
+      "size": [
+        280,
+        320
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            14
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "char3_or_scene.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "char3_or_scene.png",
+        "upload": "image"
+      },
+      "title": "3. Character 3 or Scene (<Picture 3> - unlink if unused)"
+    },
+    {
+      "id": 17,
+      "type": "LoadAudio",
+      "pos": [
+        1790,
+        0
+      ],
+      "size": [
+        330,
+        140
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "voice_ref.wav",
+        null
+      ],
+      "widgets_values_named": {
+        "audio": "voice_ref.wav",
+        "upload": null
+      },
+      "title": "Optional Voice Ref (<Audio 1>) - Ctrl+B & link to ref_audio_0"
+    },
+    {
+      "id": 18,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        860,
+        360
+      ],
+      "size": [
+        590,
+        330
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            15
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "A cinematic medium shot inside the location from <Picture 3>. The person from <Picture 1> stands on the left and turns toward the person from <Picture 2> on the right. Warm natural lighting, steady handheld camera, realistic skin texture and clothing preserved from the references.\n\n(S1) The person from <Picture 1> smiles warmly and says: <d>[English] Are you ready to head out?</d>\n(S2) The person from <Picture 2> nods and replies: <d>[English] Right behind you, let's go.</d>\n\nAmbient room tone and soft footsteps."
+      ],
+      "widgets_values_named": {
+        "value": "A cinematic medium shot inside the location from <Picture 3>. The person from <Picture 1> stands on the left and turns toward the person from <Picture 2> on the right. Warm natural lighting, steady handheld camera, realistic skin texture and clothing preserved from the references.\n\n(S1) The person from <Picture 1> smiles warmly and says: <d>[English] Are you ready to head out?</d>\n(S2) The person from <Picture 2> nods and replies: <d>[English] Right behind you, let's go.</d>\n\nAmbient room tone and soft footsteps."
+      },
+      "title": "Prompt (tag <Picture 1>, <Picture 2>, <Picture 3> + dialogue)",
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 19,
+      "type": "MiniMaxH3ReferenceToVideo",
+      "pos": [
+        1480,
+        360
+      ],
+      "size": [
+        420,
+        390
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 9
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 10,
+          "shape": 7
+        },
+        {
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": 11,
+          "shape": 7
+        },
+        {
+          "name": "ref_images.ref_image_0",
+          "type": "IMAGE",
+          "link": 12,
+          "label": "ref_image_0",
+          "shape": 7
+        },
+        {
+          "name": "ref_images.ref_image_1",
+          "type": "IMAGE",
+          "link": 13,
+          "label": "ref_image_1",
+          "shape": 7
+        },
+        {
+          "name": "ref_images.ref_image_2",
+          "type": "IMAGE",
+          "link": 14,
+          "label": "ref_image_2",
+          "shape": 7
+        },
+        {
+          "name": "ref_images.ref_image_3",
+          "type": "IMAGE",
+          "link": null,
+          "label": "ref_image_3",
+          "shape": 7
+        },
+        {
+          "name": "ref_videos.ref_video_0",
+          "type": "IMAGE",
+          "link": null,
+          "label": "ref_video_0",
+          "shape": 7
+        },
+        {
+          "name": "ref_video_audios.ref_video_audio_0",
+          "type": "AUDIO",
+          "link": null,
+          "label": "ref_video_audio_0",
+          "shape": 7
+        },
+        {
+          "name": "ref_audios.ref_audio_0",
+          "type": "AUDIO",
+          "link": null,
+          "label": "ref_audio_0",
+          "shape": 7
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 15,
+          "widget": {
+            "name": "prompt"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 16,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 17,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "length",
+          "type": "INT",
+          "link": 18,
+          "widget": {
+            "name": "length"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            19
+          ]
+        },
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            20,
+            25,
+            37
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3ReferenceToVideo",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "",
+        864,
+        480,
+        124,
+        "match"
+      ],
+      "widgets_values_named": {
+        "prompt": "",
+        "width": 864,
+        "height": 480,
+        "length": 124,
+        "ref_image_size": "match"
+      },
+      "title": "MiniMax H3 Ref2VA (ref_image_size = match for 3090/Spark)",
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 20,
+      "type": "LoadImage",
+      "pos": [
+        860,
+        820
+      ],
+      "size": [
+        270,
+        290
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            23
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "start_keyframe.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "start_keyframe.png",
+        "upload": "image"
+      },
+      "title": "Optional START keyframe (bypassed; Ctrl+B with guide)"
+    },
+    {
+      "id": 21,
+      "type": "MiniMaxH3AddGuide",
+      "pos": [
+        1160,
+        820
+      ],
+      "size": [
+        310,
+        185
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 19
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 20
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 21,
+          "shape": 7
+        },
+        {
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": 22,
+          "shape": 7
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 23,
+          "shape": 7
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            24
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3AddGuide",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        0
+      ],
+      "widgets_values_named": {
+        "frame_idx": 0
+      },
+      "title": "Optional START guide @ frame 0 (Ctrl+B to enable)"
+    },
+    {
+      "id": 22,
+      "type": "LoadImage",
+      "pos": [
+        1500,
+        820
+      ],
+      "size": [
+        270,
+        290
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            28
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "end_keyframe.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "end_keyframe.png",
+        "upload": "image"
+      },
+      "title": "Optional END keyframe (bypassed; Ctrl+B with guide)"
+    },
+    {
+      "id": 23,
+      "type": "MiniMaxH3AddGuide",
+      "pos": [
+        1800,
+        820
+      ],
+      "size": [
+        310,
+        185
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 24
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 25
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 26,
+          "shape": 7
+        },
+        {
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": 27,
+          "shape": 7
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 28,
+          "shape": 7
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            30
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3AddGuide",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        -1
+      ],
+      "widgets_values_named": {
+        "frame_idx": -1
+      },
+      "title": "Optional END guide @ frame -1 (Ctrl+B to enable)"
+    },
+    {
+      "id": 24,
+      "type": "RandomNoise",
+      "pos": [
+        2180,
+        0
+      ],
+      "size": [
+        320,
+        95
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            33
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        148096032077131,
+        "randomize"
+      ],
+      "widgets_values_named": {
+        "noise_seed": 148096032077131,
+        "control_after_generate": "randomize"
+      },
+      "title": "Seed"
+    },
+    {
+      "id": 25,
+      "type": "BasicGuider",
+      "pos": [
+        2180,
+        130
+      ],
+      "size": [
+        320,
+        75
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 29
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 30
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            34
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicGuider",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [],
+      "title": "Basic Guider (H3 is CFG-distilled, no negative prompt)"
+    },
+    {
+      "id": 26,
+      "type": "KSamplerSelect",
+      "pos": [
+        2180,
+        240
+      ],
+      "size": [
+        320,
+        75
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            35
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "res_multistep"
+      ],
+      "widgets_values_named": {
+        "sampler_name": "res_multistep"
+      },
+      "title": "Sampler (res_multistep official default; euler also works)"
+    },
+    {
+      "id": 27,
+      "type": "BasicScheduler",
+      "pos": [
+        2180,
+        350
+      ],
+      "size": [
+        320,
+        125
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 31
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "link": 32,
+          "widget": {
+            "name": "steps"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            36
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicScheduler",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "simple",
+        4,
+        1.0
+      ],
+      "widgets_values_named": {
+        "scheduler": "simple",
+        "steps": 4,
+        "denoise": 1.0
+      },
+      "title": "Scheduler (simple; 4 steps Turbo / 20 steps Base)"
+    },
+    {
+      "id": 28,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        2550,
+        0
+      ],
+      "size": [
+        290,
+        180
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 33
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 34
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 35
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 36
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 37
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            38
+          ]
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [],
+      "title": "MiniMax H3 Sampler"
+    },
+    {
+      "id": 29,
+      "type": "LTXVSeparateAVLatent",
+      "pos": [
+        2550,
+        220
+      ],
+      "size": [
+        290,
+        75
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "av_latent",
+          "type": "LATENT",
+          "link": 38
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video_latent",
+          "type": "LATENT",
+          "links": [
+            39
+          ]
+        },
+        {
+          "name": "audio_latent",
+          "type": "LATENT",
+          "links": [
+            41
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXVSeparateAVLatent",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [],
+      "title": "Separate H3 AV Latent (required for VAEDecodeTiled)"
+    },
+    {
+      "id": 30,
+      "type": "VAEDecodeTiled",
+      "pos": [
+        2550,
+        330
+      ],
+      "size": [
+        290,
+        150
+      ],
+      "flags": {},
+      "order": 29,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 39
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 40
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            43,
+            46
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeTiled",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        512,
+        64,
+        64,
+        8
+      ],
+      "widgets_values_named": {
+        "tile_size": 512,
+        "overlap": 64,
+        "temporal_size": 64,
+        "temporal_overlap": 8
+      },
+      "title": "Video VAE Decode (Tiled) - lower tile_size to 256 if OOM"
+    },
+    {
+      "id": 31,
+      "type": "VAEDecodeAudio",
+      "pos": [
+        2550,
+        515
+      ],
+      "size": [
+        290,
+        75
+      ],
+      "flags": {},
+      "order": 30,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 41
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 42
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            44
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeAudio",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [],
+      "title": "Audio VAE Decode (native stereo audio)"
+    },
+    {
+      "id": 32,
+      "type": "CreateVideo",
+      "pos": [
+        2890,
+        0
+      ],
+      "size": [
+        310,
+        160
+      ],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 43
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 44,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            45
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreateVideo",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        24,
+        "auto",
+        "sRGB"
+      ],
+      "widgets_values_named": {
+        "fps": 24,
+        "bit_depth": "auto",
+        "color_space": "sRGB"
+      },
+      "title": "Create Video (24 fps)"
+    },
+    {
+      "id": 33,
+      "type": "SaveVideo",
+      "pos": [
+        3250,
+        0
+      ],
+      "size": [
+        400,
+        440
+      ],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 45
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveVideo",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "video/MiniMax_H3_Ref2VA_4step",
+        "auto",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "video/MiniMax_H3_Ref2VA_4step",
+        "format": "auto",
+        "format.codec": "auto",
+        "codec": "auto"
+      },
+      "title": "Save Video (MP4 with native audio)"
+    },
+    {
+      "id": 34,
+      "type": "ImageFromBatch",
+      "pos": [
+        2890,
+        200
+      ],
+      "size": [
+        310,
+        110
+      ],
+      "flags": {},
+      "order": 33,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 46
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            47
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageFromBatch",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        -1,
+        1
+      ],
+      "widgets_values_named": {
+        "batch_index": -1,
+        "length": 1
+      },
+      "title": "Extract LAST frame (-1) for continuation"
+    },
+    {
+      "id": 35,
+      "type": "SaveImage",
+      "pos": [
+        3250,
+        480
+      ],
+      "size": [
+        400,
+        360
+      ],
+      "flags": {},
+      "order": 34,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 47
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "video/MiniMax_H3_last_frame"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "video/MiniMax_H3_last_frame"
+      },
+      "title": "Save last frame PNG (for next clip / Resolve)"
+    },
+    {
+      "id": 36,
+      "type": "MarkdownNote",
+      "pos": [
+        -600,
+        0
+      ],
+      "size": [
+        550,
+        1130
+      ],
+      "flags": {},
+      "order": 35,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "## HOW TO: MiniMax H3 Ref2VA Multi-Character (4-Step Turbo)\n\n### 1. Why this workflow is 3090 / RTX Spark safe\n- **4-STEP TURBO? = ON (default):** Uses `minimax_h3_ref2v_turbo_4step_v0.1` + **4 steps** (~1.5\u20132 min per 5 s clip on a 3090 once warmed up).\n- Flip **`4-STEP TURBO?` = OFF** to run the **20-step base model** when you find a seed you love and want stronger face lock, motion, and audio fidelity.\n- **`ref_image_size = match`** keeps reference tokens lightweight on VRAM.\n- **`VAEDecodeTiled`** prevents decode OOM spikes (lower `tile_size` to `256` if needed).\n\n### 2. Multi-Character References (`<Picture 1>`, `<Picture 2>`, `<Picture 3>`)\n- Plug your characters/scene into **1, 2, 3** in Group 3 (if you only have 2 characters, disconnect `ref_image_2` from `MiniMaxH3ReferenceToVideo`).\n- In the prompt, refer to them in exact connection order: **`<Picture 1>`**, **`<Picture 2>`**, **`<Picture 3>`**.\n- For dialogue, write: `(S1) ... <d>[English] Hello there.</d>` and `(S2) ... <d>[English] Right behind you.</d>`.\n- **Optional Start/End Timeline Guides (Group 4):** Bypassed by default. To force a specific first or last frame, load an image and press **Ctrl+B** on its LoadImage + `MiniMaxH3AddGuide` node.\n\n### 3. Safe Resolution & Length (CRITICAL for 4-Step LoRA!)\n- The 4-step Ref2V Turbo LoRA was trained at **~544p**. Keep `ResolutionSelector` at **`0.4 MP` (`864\u00d7480`)** or **`0.5 MP` (`960\u00d7544`)** while Turbo is ON \u2014 don't push the 4-step LoRA to 768p (`0.98 MP`), use 20-step base for 768p!\n- **Duration:** Default is **`5.0` s** (`124` frames \u2248 5.17 s @ 24 fps). H3 snaps frames to `17n + 5` (`5s -> 124`, `6.5s -> 158`, `8s -> 192`). Start at 5 s to avoid long wait times.\n\n| Megapixels | 16:9 Size | Best Mode |\n|---:|---|---|\n| `0.3` | `736\u00d7416` | Fastest draft |\n| **`0.4`** | **`864\u00d7480`** | **Default for 4-Step Turbo** |\n| `0.5` | `960\u00d7544` | Max recommended for 4-Step Turbo |\n| `0.98` | `1344\u00d7768` | 20-Step Base only (heavy on 3090) |\n\n### 4. Requirements & OOM Tips\n- Needs **ComfyUI 0.34.0+** (no custom nodes required).\n- **Important:** Do NOT use the FL2V 8-step LoRA here \u2014 Ref2VA requires `minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors`.\n- Keep **64 GB system RAM** free (weights offload dynamically on a 24 GB 3090). If OOM: lower megapixels to `0.3`, keep duration at `5.0`, or lower `VAEDecodeTiled` `tile_size` to `256`.\n"
+      ],
+      "widgets_values_named": {
+        "text": "## HOW TO: MiniMax H3 Ref2VA Multi-Character (4-Step Turbo)\n\n### 1. Why this workflow is 3090 / RTX Spark safe\n- **4-STEP TURBO? = ON (default):** Uses `minimax_h3_ref2v_turbo_4step_v0.1` + **4 steps** (~1.5\u20132 min per 5 s clip on a 3090 once warmed up).\n- Flip **`4-STEP TURBO?` = OFF** to run the **20-step base model** when you find a seed you love and want stronger face lock, motion, and audio fidelity.\n- **`ref_image_size = match`** keeps reference tokens lightweight on VRAM.\n- **`VAEDecodeTiled`** prevents decode OOM spikes (lower `tile_size` to `256` if needed).\n\n### 2. Multi-Character References (`<Picture 1>`, `<Picture 2>`, `<Picture 3>`)\n- Plug your characters/scene into **1, 2, 3** in Group 3 (if you only have 2 characters, disconnect `ref_image_2` from `MiniMaxH3ReferenceToVideo`).\n- In the prompt, refer to them in exact connection order: **`<Picture 1>`**, **`<Picture 2>`**, **`<Picture 3>`**.\n- For dialogue, write: `(S1) ... <d>[English] Hello there.</d>` and `(S2) ... <d>[English] Right behind you.</d>`.\n- **Optional Start/End Timeline Guides (Group 4):** Bypassed by default. To force a specific first or last frame, load an image and press **Ctrl+B** on its LoadImage + `MiniMaxH3AddGuide` node.\n\n### 3. Safe Resolution & Length (CRITICAL for 4-Step LoRA!)\n- The 4-step Ref2V Turbo LoRA was trained at **~544p**. Keep `ResolutionSelector` at **`0.4 MP` (`864\u00d7480`)** or **`0.5 MP` (`960\u00d7544`)** while Turbo is ON \u2014 don't push the 4-step LoRA to 768p (`0.98 MP`), use 20-step base for 768p!\n- **Duration:** Default is **`5.0` s** (`124` frames \u2248 5.17 s @ 24 fps). H3 snaps frames to `17n + 5` (`5s -> 124`, `6.5s -> 158`, `8s -> 192`). Start at 5 s to avoid long wait times.\n\n| Megapixels | 16:9 Size | Best Mode |\n|---:|---|---|\n| `0.3` | `736\u00d7416` | Fastest draft |\n| **`0.4`** | **`864\u00d7480`** | **Default for 4-Step Turbo** |\n| `0.5` | `960\u00d7544` | Max recommended for 4-Step Turbo |\n| `0.98` | `1344\u00d7768` | 20-Step Base only (heavy on 3090) |\n\n### 4. Requirements & OOM Tips\n- Needs **ComfyUI 0.34.0+** (no custom nodes required).\n- **Important:** Do NOT use the FL2V 8-step LoRA here \u2014 Ref2VA requires `minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors`.\n- Keep **64 GB system RAM** free (weights offload dynamically on a 24 GB 3090). If OOM: lower megapixels to `0.3`, keep duration at `5.0`, or lower `VAEDecodeTiled` `tile_size` to `256`.\n"
+      },
+      "title": "HOW TO: Length, Resolution & Multi-Character Ref2VA",
+      "color": "#233",
+      "bgcolor": "#355"
+    },
+    {
+      "id": 37,
+      "type": "MarkdownNote",
+      "pos": [
+        -1180,
+        0
+      ],
+      "size": [
+        540,
+        520
+      ],
+      "flags": {},
+      "order": 36,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "## Model Downloads (~42 GB disk total)\n\nAll files come from [`Comfy-Org/MiniMax-H3`](https://huggingface.co/Comfy-Org/MiniMax-H3):\n\n| Folder | File | Size |\n|---|---|---:|\n| `models/diffusion_models/` | `minimax_h3_ref2va_pruned_int8_convrot.safetensors` | ~20 GB |\n| `models/text_encoders/` | `qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors` | ~15 GB |\n| `models/vae/` | `minimax_h3_video_vae_int8_convrot.safetensors` | ~2.6 GB |\n| `models/vae/` | `minimax_h3_audio_vae_fp32.safetensors` | ~0.6 GB |\n| `models/loras/` | `minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors` | ~1.8 GB |\n\n*Note: ComfyUI may validate the LoRA selection even when `4-STEP TURBO?` is OFF, so keep it installed.*\n"
+      ],
+      "widgets_values_named": {
+        "text": "## Model Downloads (~42 GB disk total)\n\nAll files come from [`Comfy-Org/MiniMax-H3`](https://huggingface.co/Comfy-Org/MiniMax-H3):\n\n| Folder | File | Size |\n|---|---|---:|\n| `models/diffusion_models/` | `minimax_h3_ref2va_pruned_int8_convrot.safetensors` | ~20 GB |\n| `models/text_encoders/` | `qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors` | ~15 GB |\n| `models/vae/` | `minimax_h3_video_vae_int8_convrot.safetensors` | ~2.6 GB |\n| `models/vae/` | `minimax_h3_audio_vae_fp32.safetensors` | ~0.6 GB |\n| `models/loras/` | `minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors` | ~1.8 GB |\n\n*Note: ComfyUI may validate the LoRA selection even when `4-STEP TURBO?` is OFF, so keep it installed.*\n"
+      },
+      "title": "Model Downloads (Comfy-Org/MiniMax-H3)",
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      1,
+      0,
+      12,
+      0,
+      "MODEL"
+    ],
+    [
+      3,
+      2,
+      0,
+      12,
+      1,
+      "MODEL"
+    ],
+    [
+      4,
+      9,
+      0,
+      12,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      5,
+      10,
+      0,
+      13,
+      0,
+      "INT"
+    ],
+    [
+      6,
+      11,
+      0,
+      13,
+      1,
+      "INT"
+    ],
+    [
+      7,
+      9,
+      0,
+      13,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      8,
+      7,
+      0,
+      8,
+      0,
+      "FLOAT"
+    ],
+    [
+      9,
+      3,
+      0,
+      19,
+      0,
+      "CLIP"
+    ],
+    [
+      10,
+      4,
+      0,
+      19,
+      1,
+      "VAE"
+    ],
+    [
+      11,
+      5,
+      0,
+      19,
+      2,
+      "VAE"
+    ],
+    [
+      12,
+      14,
+      0,
+      19,
+      3,
+      "IMAGE"
+    ],
+    [
+      13,
+      15,
+      0,
+      19,
+      4,
+      "IMAGE"
+    ],
+    [
+      14,
+      16,
+      0,
+      19,
+      5,
+      "IMAGE"
+    ],
+    [
+      15,
+      18,
+      0,
+      19,
+      10,
+      "STRING"
+    ],
+    [
+      16,
+      6,
+      0,
+      19,
+      11,
+      "INT"
+    ],
+    [
+      17,
+      6,
+      1,
+      19,
+      12,
+      "INT"
+    ],
+    [
+      18,
+      8,
+      1,
+      19,
+      13,
+      "INT"
+    ],
+    [
+      19,
+      19,
+      0,
+      21,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      20,
+      19,
+      1,
+      21,
+      1,
+      "LATENT"
+    ],
+    [
+      21,
+      4,
+      0,
+      21,
+      2,
+      "VAE"
+    ],
+    [
+      22,
+      5,
+      0,
+      21,
+      3,
+      "VAE"
+    ],
+    [
+      23,
+      20,
+      0,
+      21,
+      4,
+      "IMAGE"
+    ],
+    [
+      24,
+      21,
+      0,
+      23,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      25,
+      19,
+      1,
+      23,
+      1,
+      "LATENT"
+    ],
+    [
+      26,
+      4,
+      0,
+      23,
+      2,
+      "VAE"
+    ],
+    [
+      27,
+      5,
+      0,
+      23,
+      3,
+      "VAE"
+    ],
+    [
+      28,
+      22,
+      0,
+      23,
+      4,
+      "IMAGE"
+    ],
+    [
+      29,
+      12,
+      0,
+      25,
+      0,
+      "MODEL"
+    ],
+    [
+      30,
+      23,
+      0,
+      25,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      31,
+      12,
+      0,
+      27,
+      0,
+      "MODEL"
+    ],
+    [
+      32,
+      13,
+      0,
+      27,
+      1,
+      "INT"
+    ],
+    [
+      33,
+      24,
+      0,
+      28,
+      0,
+      "NOISE"
+    ],
+    [
+      34,
+      25,
+      0,
+      28,
+      1,
+      "GUIDER"
+    ],
+    [
+      35,
+      26,
+      0,
+      28,
+      2,
+      "SAMPLER"
+    ],
+    [
+      36,
+      27,
+      0,
+      28,
+      3,
+      "SIGMAS"
+    ],
+    [
+      37,
+      19,
+      1,
+      28,
+      4,
+      "LATENT"
+    ],
+    [
+      38,
+      28,
+      0,
+      29,
+      0,
+      "LATENT"
+    ],
+    [
+      39,
+      29,
+      0,
+      30,
+      0,
+      "LATENT"
+    ],
+    [
+      40,
+      4,
+      0,
+      30,
+      1,
+      "VAE"
+    ],
+    [
+      41,
+      29,
+      1,
+      31,
+      0,
+      "LATENT"
+    ],
+    [
+      42,
+      5,
+      0,
+      31,
+      1,
+      "VAE"
+    ],
+    [
+      43,
+      30,
+      0,
+      32,
+      0,
+      "IMAGE"
+    ],
+    [
+      44,
+      31,
+      0,
+      32,
+      1,
+      "AUDIO"
+    ],
+    [
+      45,
+      32,
+      0,
+      33,
+      0,
+      "VIDEO"
+    ],
+    [
+      46,
+      30,
+      0,
+      34,
+      0,
+      "IMAGE"
+    ],
+    [
+      47,
+      34,
+      0,
+      35,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "1. Models (Comfy-Org/MiniMax-H3)",
+      "bounding": [
+        -20,
+        -60,
+        460,
+        700
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "2. Size, Duration & 4-Step Turbo Switch",
+      "bounding": [
+        460,
+        -60,
+        360,
+        1030
+      ],
+      "color": "#3b6e5c",
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "3. Multi-Character References (<Picture 1..3>) & Prompt",
+      "bounding": [
+        840,
+        -60,
+        1300,
+        830
+      ],
+      "color": "#8a5a3b",
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "4. Optional Timeline Guides (bypassed; Ctrl+B image + guide to pin frames)",
+      "bounding": [
+        840,
+        770,
+        1300,
+        365
+      ],
+      "color": "#6b4c7a",
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "5. Sampler (4-Step Turbo / 20-Step Base)",
+      "bounding": [
+        2160,
+        -60,
+        700,
+        560
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "6. Separate AV, Tiled Decode & Save (+ Last Frame)",
+      "bounding": [
+        2530,
+        -60,
+        1140,
+        930
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.55,
+      "offset": [
+        120,
+        120
+      ]
+    },
+    "frontendVersion": "1.59.11"
+  },
+  "version": 0.4
+}

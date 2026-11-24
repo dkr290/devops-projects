@@ -1,17 +1,23 @@
 # LTX-2.5 Image-to-Video Workflows Guide (ComfyUI – RTX 3090)
 
-Complete guide for the **4 workflows in `new/`** plus the **MSR multi-reference workflows** in the parent `comfyui-workflows/` folder. Every workflow also includes a built-in **`HOW TO: Length, Resolution & 3+ Images`** note panel directly inside ComfyUI.
+Complete guide for the **10 workflows in `new/`** (4 LTX-2.5 + 1 MiniMax H3 Ref2VA + 2 Wan 2.2 14B FLF + 1 HunyuanVideo 1.5 I2V + 2 Audio workflows) plus the **MSR multi-reference workflows** in the parent `comfyui-workflows/` folder. Every workflow also includes built-in **`HOW TO`** note panels directly inside ComfyUI.
 
 ---
 
 ## 1. Which Workflow Should You Use?
 
-| Workflow (in `new/`) | Best For | Stages | Default Images Enabled | Custom Audio |
+| Workflow (in `new/`) | Best For | Stages / Steps | Default Images / Inputs | Audio |
 |---|---|---|---|---|
 | `LTX-2.5_I2V_LTXDirector_OptionalTwoStage_GGUF.json` | **Visual timeline** with **3, 4, or more images**, different prompts per time segment (Prompt Relay), drag-and-drop audio, and automatic last-frame PNG save | **1-stage or 2-stage** (`RUN STAGE 2?` toggle) | Drag & drop as many as you want | Built into Director (`use_custom_audio`) |
 | `LTX-2.5_I2V_ThreeKeyframes_ManualContinuation_GGUF.json` | **Ready-to-run 3-image** workflow (`START` + `MIDDLE` + `END`, optional 4th `MID-B`), saves last decoded frame PNG for manual multi-clip continuation | **1-stage or 2-stage** (`RUN STAGE 2?` toggle) | **3 ON** (`START`, `MIDDLE @ 96`, `END @ -1`); `MID-B @ 144` bypassed | Optional full-track audio + `TrimAudioDuration` (`AUDIO START`) |
 | `LTX-2.5_I2V_Keyframes_Dialog_OptionalTwoStage_GGUF.json` | Clean general-purpose **2–4 image** keyframe workflow with fast 1-stage draft or 2-stage final toggle | **1-stage or 2-stage** (`RUN STAGE 2?` toggle) | **2 ON** (`START`, `END`); `MID-A` & `MID-B` bypassed | Optional dialog audio (auto-fitted & locked) |
 | `LTX-2.5_I2V_Keyframes_Dialog_SingleStage_GGUF.json` | Pure **1-stage only** (no spatial upscaler model needed at all), up to 4 images | **1-stage only** | **2 ON** (`START`, `END`); `MID-A` & `MID-B` bypassed | Optional dialog audio (auto-fitted & locked) |
+| `MiniMax-H3_Ref2VA_MultiChar_4StepTurbo.json` | **Multi-character Ref2VA test** (`<Picture 1>`, `<Picture 2>`, `<Picture 3>`) with native stereo dialogue + optional bypassed Start/End timeline guides | **4-step Turbo ON** (`4-STEP TURBO?` toggle → 20-step base) | **3 semantic refs ON** (`<Picture 1..3>`); Start/End timeline guides bypassed | Native stereo speech/SFX + optional `<Audio 1>` voice timbre ref |
+| `Wan2.2_14B_I2V_FLF_4StepLightX2V.json` | **Fast Wan 2.2 First-Last Frame** (action shots, strong physics, huge LoRA ecosystem) — 100% native ComfyUI | **4 steps** (2 High + 2 Low LightX2V) | **2 ON** (`START` + `END`; unlink `end_image` for 1-image I2V) | Video only + optional bypassed `LoadAudio` mux |
+| `Wan2.2_14B_I2V_FLF_8StepOrBase20Step.json` | **Higher-quality Wan 2.2 FLF** with 1-click toggle between **8-step LightX2V LoRA** and **20-step Base** (auto High/Low split + CFG + shift) | **8-step LoRA ON** (`USE 8-STEP LORA?` → 20-step base) | **2 ON** (`START` + `END`; unlink `end_image` for 1-image I2V) | Video only + optional bypassed `LoadAudio` mux |
+| `HunyuanVideo-1.5_I2V_FastDistilled.json` | **Lightweight 8.3B cinematic I2V** (~9 GB in FP8) with strong physics & lighting — 100% native ComfyUI | **12 steps** step-distilled (8–12 rec.; swap to 720p base @ 20–50 steps) | **1 ON** (`START` image) | Video only + optional bypassed `LoadAudio` mux |
+| `Audio_Qwen3TTS_VoiceClone_TTSSuite.json` | **Voice cloning & dialogue TTS** from a 3–15 s sample (or preset speakers / voice design / `[Alice]` multi-character scripts) | Fast (~4–6 GB VRAM) | 3–15 s reference voice + transcript + script | Generates clean FLAC/WAV voice for LTX-2.5 lip-sync & Resolve |
+| `Audio_ACEStep15_TextToMusic.json` | **Text-to-Music & background scores** (instrumental or vocal songs with lyrics, up to 10 min) — 100% native ComfyUI | **8 steps** Turbo (<10 s on 3090, <4 GB VRAM) | Style tags + lyrics (`[Instrumental]` default) + duration | Generates studio FLAC/MP3 music for Resolve or Wan/Hunyuan mux |
 
 > **Is 2-stage mandatory?** **No.** 1-stage works great for fast renders and moderate resolutions (up to ~`768×768` or `960×544`). Use **2-stage** when you want `1024×1024` or `1080p` (`1920×1088`) on a 24 GB RTX 3090 — generating motion at low resolution and refining at ×2 is sharper, more stable, and safer on VRAM.
 
@@ -205,7 +211,84 @@ The 3 MSR workflows live one folder up (`comfyui-workflows/`):
 
 ---
 
-## 10. RTX 3090 (24 GB) Troubleshooting Checklist
+## 10. Wan 2.2 14B FLF & HunyuanVideo 1.5 I2V (Video-Only Models + How to Add Audio)
+
+Both **Wan 2.2 14B** and **HunyuanVideo 1.5** use **100% native ComfyUI core nodes** (no custom nodes required) and save a `last_frame` PNG alongside each MP4.
+
+### Wan 2.2 14B First-Last Frame (`Wan2.2_14B_I2V_FLF_*.json`)
+* **`Wan2.2_14B_I2V_FLF_4StepLightX2V.json`** — fast **4-step** preset (2 High-Noise + 2 Low-Noise, CFG `1.0`, shift `5.0`, `832×480`, `5 s` = `81` frames @ 16 fps).
+* **`Wan2.2_14B_I2V_FLF_8StepOrBase20Step.json`** — higher-quality preset with a 1-click **`USE 8-STEP LORA?`** toggle:
+  * **ON (default):** **8 steps** (4 High + 4 Low, CFG `1.0`, shift `5.0`) — cleaner hands/motion than 4 steps while still fast. You can change `LoRA steps` to `6` or `8` and the High/Low split auto-updates (`floor(steps/2)`).
+  * **OFF:** **20-step Base** (10 High + 10 Low, CFG `3.5`, shift `8.0`, no LoRA) for maximum motion dynamics.
+* **1-Image I2V only:** Disconnect `end_image` on `WanFirstLastFrameToVideo`.
+
+**Wan 2.2 14B Model Files** (from [`Comfy-Org/Wan_2.2_ComfyUI_Repackaged`](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged) & [`Wan_2.1_ComfyUI_repackaged`](https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged)):
+| Folder | File |
+|---|---|
+| `models/diffusion_models/` | `wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors` |
+| `models/diffusion_models/` | `wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors` |
+| `models/loras/` | `wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors` |
+| `models/loras/` | `wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors` |
+| `models/text_encoders/` | `umt5_xxl_fp8_e4m3fn_scaled.safetensors` |
+| `models/vae/` | `wan_2.1_vae.safetensors` |
+
+### HunyuanVideo 1.5 I2V (`HunyuanVideo-1.5_I2V_FastDistilled.json`)
+* Pre-configured for **`hunyuanvideo1.5_480p_i2v_step_distilled_fp16.safetensors`** loaded with `weight_dtype = fp8_e4m3fn` (~9 GB VRAM!), **12 steps** (8–12 recommended), CFG `1.0`, shift `7.0`, `848×480`, `5 s` (`121` frames @ 24 fps).
+* **720p Base option:** Swap Node 1 to `hunyuanvideo1.5_720p_i2v_fp16.safetensors`, set `1280×720`, CFG `6.0`, `20–50` steps, shift `7.0`.
+
+**HunyuanVideo 1.5 Model Files** (from [`Comfy-Org/HunyuanVideo_1.5_repackaged`](https://huggingface.co/Comfy-Org/HunyuanVideo_1.5_repackaged) & [`Comfy-Org/sigclip_vision_384`](https://huggingface.co/Comfy-Org/sigclip_vision_384)):
+| Folder | File |
+|---|---|
+| `models/diffusion_models/` | `hunyuanvideo1.5_480p_i2v_step_distilled_fp16.safetensors` *(or optional `hunyuanvideo1.5_720p_i2v_fp16.safetensors`)* |
+| `models/text_encoders/` | `qwen_2.5_vl_7b_fp8_scaled.safetensors` |
+| `models/text_encoders/` | `byt5_small_glyphxl_fp16.safetensors` |
+| `models/clip_vision/` | `sigclip_vision_patch14_384.safetensors` |
+| `models/vae/` | `hunyuanvideo15_vae_fp16.safetensors` |
+
+### How to Add Audio to Wan 2.2 / HunyuanVideo 1.5
+Neither model generates native audio, so you have three clean ways to add sound:
+1. **Mux music/SFX/voiceover directly inside the workflow:** Both Wan 2.2 and HunyuanVideo 1.5 workflows include a bypassed `LoadAudio` + `TrimAudioDuration` wired into `CreateVideo`. Press **Ctrl+B** on both nodes and select your WAV/MP3 to trim and mux it straight into the saved MP4.
+2. **AI-generated synchronized SFX/Foley (`ComfyUI-MMAudio`):** Install `kijai/ComfyUI-MMAudio` (~4–6 GB VRAM, runs in seconds on a 3090) to generate matching footsteps, ambience, and Foley directly from the rendered video frames + an audio prompt.
+3. **DaVinci Resolve / Talking shots:** Score and mix music/SFX in **DaVinci Resolve**. For shots where a character needs to **speak with lip-sync**, render that shot in **LTX-2.5** (which locks your voice WAV and lip-syncs natively) or **MiniMax H3**.
+
+---
+
+## 11. Audio Generation Workflows (Voice Cloning, Dialogue TTS & Text-to-Music)
+
+### A. Voice Cloning & Dialogue TTS (`Audio_Qwen3TTS_VoiceClone_TTSSuite.json`)
+* **Custom node required:** [`diodiogod/TTS-Audio-Suite`](https://github.com/diodiogod/TTS-Audio-Suite)
+  ```bash
+  cd ComfyUI/custom_nodes
+  git clone https://github.com/diodiogod/TTS-Audio-Suite
+  pip install -r TTS-Audio-Suite/requirements.txt
+  ```
+* **Auto-downloads model:** Uses **Qwen3-TTS Base 1.7B** (Apache 2.0, ~4–6 GB VRAM, 10 languages) — automatically downloads on first run.
+* **How to clone a voice:**
+  1. Load a **3–15 s** clean speech clip in `LoadAudio`.
+  2. Paste the **exact words spoken** in that clip into `CharacterVoicesNode` (for highest-quality ICL cloning).
+  3. Type your dialogue script in `PrimitiveStringMultiline` (supports `[pause:0.8s]` and `[Character]` tags) and click **Queue**.
+* **How to invent a brand-new character voice from text (no audio sample needed), then lock it:**
+  1. **Invent once:** On `Qwen3-TTS Engine`, switch the dropdown to **`TTS - VoiceDesign 1.7B`** (or `TTS - CustomVoice 1.7B` for 9 preset speakers), disconnect `opt_narrator` on `UnifiedTTSTextNode`, describe the voice in the instruction box (*"A warm, calm 30-year-old woman's voice, clear natural delivery"*), generate a clean 5–10 s test sentence, and save that clip.
+  2. **Reuse forever:** Switch back to **`TTS - Base 1.7B (Voice Clone)`**, reconnect `opt_narrator`, load that saved 5–10 s clip into `LoadAudio`, and paste its exact sentence into `CharacterVoicesNode` — now every new dialogue line stays locked to that exact invented character voice.
+* **Extra modes inside the same workflow:**
+  * Or un-bypass the included **`ChatterBoxEngineNode`** (`Ctrl+B`) and wire it into `UnifiedTTSTextNode` for 23-language cloning without needing a transcript.
+  * `TTS-Audio-Suite` also includes **RVC voice conversion** (record your own voice acting and convert it to a character's voice).
+* **Lip-sync tip:** Feed the saved `audio/TTS_VoiceClone_*.flac` into **LTX-2.5** (`LTXDirector` or `DIALOG` group) so your character lip-syncs to it, then drop that **same clean file** into **DaVinci Resolve** and mute LTX's VAE-decoded voice.
+
+### B. Text-to-Music & Background Scores (`Audio_ACEStep15_TextToMusic.json`)
+* **100% native ComfyUI** (no custom nodes needed!) — runs in **under 10 seconds on an RTX 3090** (<4 GB VRAM).
+* **Single model file:** Download [`ace_step_1.5_turbo_aio.safetensors`](https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/checkpoints/ace_step_1.5_turbo_aio.safetensors) (~9.3 GB, MIT license) into `ComfyUI/models/checkpoints/`.
+* **How to use:**
+  * Set **`Duration in seconds`** (default `30 s`, up to `600 s`).
+  * For **instrumental film scores**, describe genre, mood, and instruments in `tags` and leave `lyrics` as `[Instrumental]`.
+  * For **vocal songs**, write `[Verse 1]`, `[Chorus]`, etc. in `lyrics` and set `language` (`en`, `es`, `fr`, `de`, `ja`, …).
+
+### C. Video-to-Audio SFX / Foley (Optional)
+* For automatic sound effects synced to silent **Wan 2.2** or **HunyuanVideo 1.5** clips, install [`kijai/ComfyUI-MMAudio`](https://github.com/kijai/ComfyUI-MMAudio) (~4–6 GB VRAM).
+
+---
+
+## 12. RTX 3090 (24 GB) Troubleshooting Checklist
 
 If you hit Out-Of-Memory (OOM) or very slow steps ("loaded partially" in console):
 1. Lower **`VAEDecodeTiled` `tile_size`**: `512` → `384` → `256`.
@@ -235,6 +318,14 @@ The table describes local model workflows, not paid API or partner nodes. “Aud
 **For a specific recorded performance**, the existing LTX custom-audio branch or LongCat Avatar is a better starting point than assuming MiniMax will copy the recording. Keep the original audio and, if exact sound quality is important, put that original track back in an editor and check its alignment. The community LongCat workflow linked above is a single-speaker implementation; the original LongCat project has other variants.
 
 ## MiniMax H3 setup for a 3090
+
+### Ready-to-use local workflow in this folder
+
+* **[`MiniMax-H3_Ref2VA_MultiChar_4StepTurbo.json`](MiniMax-H3_Ref2VA_MultiChar_4StepTurbo.json)** — 100% native ComfyUI (`0.34.0+`, no custom nodes) multi-character Ref2VA workflow pre-configured for a 3090 / RTX Spark:
+  * **4-step Ref2V Turbo LoRA ON by default** (`4-STEP TURBO?` toggle switches cleanly between 4-step fast test and 20-step base).
+  * **3 semantic character/scene slots** (`<Picture 1>`, `<Picture 2>`, `<Picture 3>`) wired with `ref_image_size = match`, plus optional bypassed Start/End `MiniMaxH3AddGuide` timeline pins and an optional `<Audio 1>` voice timbre slot.
+  * Safe defaults: **`864×480` (`0.4 MP`)**, **`5.0 s` (`124` frames)**, **`LTXVSeparateAVLatent` → `VAEDecodeTiled`** (prevents decode OOM spikes), and automatic last-frame PNG save.
+  * Keep resolution at `0.4–0.5 MP` (`864×480`–`960×544`) while 4-step Turbo is ON (the Ref2V Turbo LoRA is trained at 544p); switch `4-STEP TURBO?` OFF for 20-step base if testing higher resolutions.
 
 ### Recommended files: multi-reference and keyframes
 

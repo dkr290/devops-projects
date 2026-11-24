@@ -1,0 +1,569 @@
+{
+  "id": "64580a0c-e167-45ac-8b36-3d8b0d2a6cf5",
+  "revision": 0,
+  "last_node_id": 10,
+  "last_link_id": 7,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "Qwen3TTSEngineNode",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        420,
+        575
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "TTS_engine",
+          "type": "TTS_ENGINE",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Qwen3TTSEngineNode",
+        "cnr_id": "tts_audio_suite",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "TTS - Base 1.7B (Voice Clone)",
+        "auto",
+        "None (Zero-shot / Custom)",
+        "Auto",
+        "",
+        50,
+        1,
+        0.9,
+        1.05,
+        2048,
+        "auto",
+        "auto",
+        false,
+        true,
+        false,
+        "default",
+        true,
+        "English",
+        "Translate the speech from {source_language} into {target_language} text. Return only the translated text.",
+        "\u26a0\ufe0f Shared Runtime"
+      ],
+      "title": "Qwen3-TTS Engine (auto-downloads Base 1.7B Voice Clone)",
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 2,
+      "type": "ChatterBoxEngineNode",
+      "pos": [
+        0,
+        620
+      ],
+      "size": [
+        420,
+        210
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "TTS_engine",
+          "type": "TTS_ENGINE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ChatterBoxEngineNode",
+        "cnr_id": "tts_audio_suite",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "English",
+        "auto",
+        0.5,
+        0.8,
+        0.5,
+        "hmm ,, {seg} hmm ,,"
+      ],
+      "title": "Optional Alt Engine: ChatterBox (bypassed; Ctrl+B & wire to swap)",
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 3,
+      "type": "LoadAudio",
+      "pos": [
+        480,
+        0
+      ],
+      "size": [
+        340,
+        145
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "reference_voice.wav",
+        null
+      ],
+      "widgets_values_named": {
+        "audio": "reference_voice.wav",
+        "upload": null
+      },
+      "title": "1. Load Reference Voice (3-15s clean WAV/MP3)",
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 4,
+      "type": "CharacterVoicesNode",
+      "pos": [
+        480,
+        180
+      ],
+      "size": [
+        340,
+        230
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "opt_audio_input",
+          "type": "AUDIO",
+          "link": 2,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "opt_narrator",
+          "type": "NARRATOR_VOICE",
+          "links": [
+            3
+          ]
+        },
+        {
+          "name": "character_name",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "reference_audio_only",
+          "type": "AUDIO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CharacterVoicesNode",
+        "cnr_id": "tts_audio_suite",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "none",
+        "Type the exact words spoken in your reference voice clip here for best cloning quality.",
+        "",
+        0,
+        true,
+        ""
+      ],
+      "title": "2. Voice Clone Reference (paste exact transcript below)",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 5,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        480,
+        450
+      ],
+      "size": [
+        340,
+        320
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "Welcome back. Let's keep moving before the rain starts. [pause:0.8s] Everything we need is already packed and ready to go."
+      ],
+      "widgets_values_named": {
+        "value": "Welcome back. Let's keep moving before the rain starts. [pause:0.8s] Everything we need is already packed and ready to go."
+      },
+      "title": "3. Dialogue Script (supports [pause:1s] and [Character] tags)",
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 6,
+      "type": "UnifiedTTSTextNode",
+      "pos": [
+        880,
+        0
+      ],
+      "size": [
+        420,
+        390
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "TTS_engine",
+          "type": "TTS_ENGINE",
+          "link": 1
+        },
+        {
+          "name": "opt_narrator",
+          "type": "*",
+          "link": 3,
+          "shape": 7
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 4,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": [
+            5,
+            6
+          ]
+        },
+        {
+          "name": "generation_info",
+          "type": "STRING",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UnifiedTTSTextNode",
+        "cnr_id": "tts_audio_suite",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "Welcome back. Let's keep moving before the rain starts. [pause:0.8s] Everything we need is already packed and ready to go.",
+        "none",
+        1552347960,
+        "randomize",
+        true,
+        400,
+        "crossfade",
+        100,
+        true,
+        0
+      ],
+      "title": "4. Generate Cloned Speech (Unified TTS Text)",
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 7,
+      "type": "PreviewAudio",
+      "pos": [
+        1360,
+        0
+      ],
+      "size": [
+        380,
+        100
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 5
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewAudio",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [],
+      "title": "Listen Here",
+      "color": "#2a363b",
+      "bgcolor": "#3f5159"
+    },
+    {
+      "id": 8,
+      "type": "SaveAudioAdvanced",
+      "pos": [
+        1360,
+        135
+      ],
+      "size": [
+        380,
+        155
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveAudioAdvanced",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "audio/TTS_VoiceClone",
+        "flac"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "audio/TTS_VoiceClone",
+        "format": "flac"
+      },
+      "title": "Save Clean Voice File (drop into LTX-2.5 & Resolve)"
+    },
+    {
+      "id": 9,
+      "type": "PreviewAny",
+      "pos": [
+        1360,
+        325
+      ],
+      "size": [
+        380,
+        175
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 7
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewAny",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [],
+      "title": "Generation Info"
+    },
+    {
+      "id": 10,
+      "type": "MarkdownNote",
+      "pos": [
+        -580,
+        0
+      ],
+      "size": [
+        540,
+        960
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "## HOW TO: Local Voice Cloning & Dialogue TTS (Qwen3-TTS / TTS-Audio-Suite)\n\n### 1. One-time install\n```bash\ncd ComfyUI/custom_nodes\ngit clone https://github.com/diodiogod/TTS-Audio-Suite\npip install -r TTS-Audio-Suite/requirements.txt\n```\nRestart ComfyUI. **Qwen3-TTS automatically downloads** the selected model (`Base 1.7B`, Apache 2.0, ~4\u20136 GB VRAM) on first run \u2014 no manual model placement needed!\n\n### 2. How to clone a voice (3 steps)\n1. **Load Audio (Node 3):** Upload a **3\u201315 second** clean speech clip (no background music/echo).\n2. **Character Voices (Node 4):** Paste the **exact words spoken** in that reference clip into the transcript field (enables Qwen3-TTS's highest-quality ICL cloning).\n3. **Dialogue Script (Node 5):** Type what you want the cloned voice to say (supports `[pause:0.5s]` / `[pause:1s]` tags), and click **Queue**.\n\n### 3. Other built-in modes (same node!)\n- **Invent a brand-new voice from text (no audio sample needed), then lock it:**\n  1. On `Qwen3-TTS Engine` (Node 1), switch to **`TTS - VoiceDesign 1.7B`** (or `CustomVoice 1.7B` for 9 presets), disconnect `opt_narrator` on Node 6, describe the voice in the instruction box (*\"warm, calm 30-year-old woman's voice\"*), and generate a 5\u201310 s test sentence.\n  2. Switch Node 1 back to **`TTS - Base 1.7B (Voice Clone)`**, reconnect `opt_narrator`, load that saved 5\u201310 s clip into Node 3 + its exact words into Node 4 \u2014 now every new line stays locked to that voice!\n- **Multi-character dialogue:** Save character voice clips into `TTS-Audio-Suite/voices_examples/` (with matching `.txt` transcripts) and write `[Alice] Hi! [Bob] Ready?` in Node 5.\n- **Alternative engine (no transcript needed):** Un-bypass `ChatterBox` (Node 2) with **Ctrl+B** and wire its `TTS_engine` into Node 6.\n\n### 4. Using this voice in LTX-2.5 + DaVinci Resolve\n1. Feed the saved `audio/TTS_VoiceClone_*.flac` into your **LTX-2.5** workflow (`LTXDirector` audio track or `DIALOG` group) so your character **lip-syncs** to it.\n2. In **DaVinci Resolve**, line up the **same clean saved audio file** and mute LTX's VAE-decoded voice track for crisp studio voice quality!\n"
+      ],
+      "widgets_values_named": {
+        "text": "## HOW TO: Local Voice Cloning & Dialogue TTS (Qwen3-TTS / TTS-Audio-Suite)\n\n### 1. One-time install\n```bash\ncd ComfyUI/custom_nodes\ngit clone https://github.com/diodiogod/TTS-Audio-Suite\npip install -r TTS-Audio-Suite/requirements.txt\n```\nRestart ComfyUI. **Qwen3-TTS automatically downloads** the selected model (`Base 1.7B`, Apache 2.0, ~4\u20136 GB VRAM) on first run \u2014 no manual model placement needed!\n\n### 2. How to clone a voice (3 steps)\n1. **Load Audio (Node 3):** Upload a **3\u201315 second** clean speech clip (no background music/echo).\n2. **Character Voices (Node 4):** Paste the **exact words spoken** in that reference clip into the transcript field (enables Qwen3-TTS's highest-quality ICL cloning).\n3. **Dialogue Script (Node 5):** Type what you want the cloned voice to say (supports `[pause:0.5s]` / `[pause:1s]` tags), and click **Queue**.\n\n### 3. Other built-in modes (same node!)\n- **Invent a brand-new voice from text (no audio sample needed), then lock it:**\n  1. On `Qwen3-TTS Engine` (Node 1), switch to **`TTS - VoiceDesign 1.7B`** (or `CustomVoice 1.7B` for 9 presets), disconnect `opt_narrator` on Node 6, describe the voice in the instruction box (*\"warm, calm 30-year-old woman's voice\"*), and generate a 5\u201310 s test sentence.\n  2. Switch Node 1 back to **`TTS - Base 1.7B (Voice Clone)`**, reconnect `opt_narrator`, load that saved 5\u201310 s clip into Node 3 + its exact words into Node 4 \u2014 now every new line stays locked to that voice!\n- **Multi-character dialogue:** Save character voice clips into `TTS-Audio-Suite/voices_examples/` (with matching `.txt` transcripts) and write `[Alice] Hi! [Bob] Ready?` in Node 5.\n- **Alternative engine (no transcript needed):** Un-bypass `ChatterBox` (Node 2) with **Ctrl+B** and wire its `TTS_engine` into Node 6.\n\n### 4. Using this voice in LTX-2.5 + DaVinci Resolve\n1. Feed the saved `audio/TTS_VoiceClone_*.flac` into your **LTX-2.5** workflow (`LTXDirector` audio track or `DIALOG` group) so your character **lip-syncs** to it.\n2. In **DaVinci Resolve**, line up the **same clean saved audio file** and mute LTX's VAE-decoded voice track for crisp studio voice quality!\n"
+      },
+      "title": "HOW TO: Voice Cloning & Dialogue TTS",
+      "color": "#233",
+      "bgcolor": "#355"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      6,
+      0,
+      "TTS_ENGINE"
+    ],
+    [
+      2,
+      3,
+      0,
+      4,
+      0,
+      "AUDIO"
+    ],
+    [
+      3,
+      4,
+      0,
+      6,
+      1,
+      "NARRATOR_VOICE"
+    ],
+    [
+      4,
+      5,
+      0,
+      6,
+      2,
+      "STRING"
+    ],
+    [
+      5,
+      6,
+      0,
+      7,
+      0,
+      "AUDIO"
+    ],
+    [
+      6,
+      6,
+      0,
+      8,
+      0,
+      "AUDIO"
+    ],
+    [
+      7,
+      6,
+      1,
+      9,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "1. TTS Engine (Qwen3-TTS Base 1.7B / Optional ChatterBox)",
+      "bounding": [
+        -20,
+        -60,
+        460,
+        910
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "2. Voice Reference (3-15s clip + transcript) & Script",
+      "bounding": [
+        460,
+        -60,
+        380,
+        860
+      ],
+      "color": "#8a5a3b",
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "3. Generate Speech",
+      "bounding": [
+        860,
+        -60,
+        460,
+        480
+      ],
+      "color": "#3b6e5c",
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "4. Preview & Save Audio",
+      "bounding": [
+        1340,
+        -60,
+        420,
+        590
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.6,
+      "offset": [
+        120,
+        120
+      ]
+    },
+    "frontendVersion": "1.59.11"
+  },
+  "version": 0.4
+}

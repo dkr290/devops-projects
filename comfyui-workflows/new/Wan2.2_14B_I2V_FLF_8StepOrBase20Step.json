@@ -1,0 +1,2512 @@
+{
+  "id": "4f5cdaae-831b-4758-98ad-c72b35a35bab",
+  "revision": 0,
+  "last_node_id": 40,
+  "last_link_id": 53,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        420,
+        90
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1,
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0",
+        "models": [
+          {
+            "name": "wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
+            "directory": "diffusion_models"
+          }
+        ]
+      },
+      "widgets_values": [
+        "wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
+        "default"
+      ],
+      "widgets_values_named": {
+        "unet_name": "wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
+        "weight_dtype": "default"
+      },
+      "title": "Wan 2.2 High-Noise 14B (FP8)"
+    },
+    {
+      "id": 2,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        0,
+        120
+      ],
+      "size": [
+        420,
+        90
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0",
+        "models": [
+          {
+            "name": "wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors",
+            "directory": "loras"
+          }
+        ]
+      },
+      "widgets_values": [
+        "wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors",
+        1.0
+      ],
+      "widgets_values_named": {
+        "lora_name": "wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors",
+        "strength_model": 1.0
+      },
+      "title": "LightX2V LoRA (High-Noise, for 6-8 steps)"
+    },
+    {
+      "id": 3,
+      "type": "ModelSamplingSD3",
+      "pos": [
+        0,
+        240
+      ],
+      "size": [
+        200,
+        70
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ModelSamplingSD3",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        8.0
+      ],
+      "widgets_values_named": {
+        "shift": 8.0
+      },
+      "title": "High Base shift=8"
+    },
+    {
+      "id": 4,
+      "type": "ModelSamplingSD3",
+      "pos": [
+        220,
+        240
+      ],
+      "size": [
+        200,
+        70
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ModelSamplingSD3",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        5.0
+      ],
+      "widgets_values_named": {
+        "shift": 5.0
+      },
+      "title": "High LoRA shift=5"
+    },
+    {
+      "id": 5,
+      "type": "UNETLoader",
+      "pos": [
+        0,
+        350
+      ],
+      "size": [
+        420,
+        90
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            7,
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0",
+        "models": [
+          {
+            "name": "wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
+            "directory": "diffusion_models"
+          }
+        ]
+      },
+      "widgets_values": [
+        "wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
+        "default"
+      ],
+      "widgets_values_named": {
+        "unet_name": "wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
+        "weight_dtype": "default"
+      },
+      "title": "Wan 2.2 Low-Noise 14B (FP8)"
+    },
+    {
+      "id": 6,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        0,
+        470
+      ],
+      "size": [
+        420,
+        90
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0",
+        "models": [
+          {
+            "name": "wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors",
+            "directory": "loras"
+          }
+        ]
+      },
+      "widgets_values": [
+        "wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors",
+        1.0
+      ],
+      "widgets_values_named": {
+        "lora_name": "wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors",
+        "strength_model": 1.0
+      },
+      "title": "LightX2V LoRA (Low-Noise, for 6-8 steps)"
+    },
+    {
+      "id": 7,
+      "type": "ModelSamplingSD3",
+      "pos": [
+        0,
+        590
+      ],
+      "size": [
+        200,
+        70
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ModelSamplingSD3",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        8.0
+      ],
+      "widgets_values_named": {
+        "shift": 8.0
+      },
+      "title": "Low Base shift=8"
+    },
+    {
+      "id": 8,
+      "type": "ModelSamplingSD3",
+      "pos": [
+        220,
+        590
+      ],
+      "size": [
+        200,
+        70
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ModelSamplingSD3",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        5.0
+      ],
+      "widgets_values_named": {
+        "shift": 5.0
+      },
+      "title": "Low LoRA shift=5"
+    },
+    {
+      "id": 9,
+      "type": "CLIPLoader",
+      "pos": [
+        0,
+        700
+      ],
+      "size": [
+        420,
+        115
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            20,
+            21
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0",
+        "models": [
+          {
+            "name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+            "directory": "text_encoders"
+          }
+        ]
+      },
+      "widgets_values": [
+        "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+        "wan",
+        "default"
+      ],
+      "widgets_values_named": {
+        "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+        "type": "wan",
+        "device": "default"
+      },
+      "title": "Text Encoder (umt5_xxl FP8)"
+    },
+    {
+      "id": 10,
+      "type": "VAELoader",
+      "pos": [
+        0,
+        850
+      ],
+      "size": [
+        420,
+        75
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            25,
+            46
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0",
+        "models": [
+          {
+            "name": "wan_2.1_vae.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors",
+            "directory": "vae"
+          }
+        ]
+      },
+      "widgets_values": [
+        "wan_2.1_vae.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "wan_2.1_vae.safetensors"
+      },
+      "title": "Wan 2.1 Video VAE"
+    },
+    {
+      "id": 11,
+      "type": "PrimitiveInt",
+      "pos": [
+        480,
+        0
+      ],
+      "size": [
+        320,
+        85
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            28
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveInt",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        832,
+        "fixed"
+      ],
+      "widgets_values_named": {
+        "value": 832,
+        "control_after_generate": "fixed"
+      },
+      "title": "WIDTH (multiple of 16; 832 = 480p 16:9)",
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 12,
+      "type": "PrimitiveInt",
+      "pos": [
+        480,
+        110
+      ],
+      "size": [
+        320,
+        85
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            29
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveInt",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        480,
+        "fixed"
+      ],
+      "widgets_values_named": {
+        "value": 480,
+        "control_after_generate": "fixed"
+      },
+      "title": "HEIGHT (multiple of 16; 480 = 480p 16:9)",
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 13,
+      "type": "PrimitiveFloat",
+      "pos": [
+        480,
+        220
+      ],
+      "size": [
+        320,
+        75
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "FLOAT",
+          "type": "FLOAT",
+          "links": [
+            22,
+            48
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveFloat",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        5.0
+      ],
+      "widgets_values_named": {
+        "value": 5.0
+      },
+      "title": "Duration in seconds (5s = 81f @ 16fps)",
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 14,
+      "type": "ComfyMathExpression",
+      "pos": [
+        480,
+        320
+      ],
+      "size": [
+        320,
+        115
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "values.a",
+          "type": "FLOAT,INT,BOOLEAN",
+          "link": 22,
+          "label": "a"
+        },
+        {
+          "name": "values.b",
+          "type": "FLOAT,INT,BOOLEAN",
+          "link": null,
+          "label": "b",
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "FLOAT",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            30
+          ]
+        },
+        {
+          "name": "BOOL",
+          "type": "BOOLEAN",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfyMathExpression",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "1 + floor(a * 16 / 4) * 4"
+      ],
+      "widgets_values_named": {
+        "expression": "1 + floor(a * 16 / 4) * 4"
+      },
+      "title": "Snap frames to 4n + 1 @ 16fps"
+    },
+    {
+      "id": 15,
+      "type": "PrimitiveBoolean",
+      "pos": [
+        480,
+        465
+      ],
+      "size": [
+        320,
+        85
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "BOOLEAN",
+          "type": "BOOLEAN",
+          "links": [
+            6,
+            12,
+            15,
+            19
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveBoolean",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        true
+      ],
+      "widgets_values_named": {
+        "value": true
+      },
+      "title": "USE 8-STEP LORA? ON = 8-step LoRA; OFF = 20-step Base",
+      "color": "#234",
+      "bgcolor": "#365"
+    },
+    {
+      "id": 16,
+      "type": "PrimitiveInt",
+      "pos": [
+        480,
+        575
+      ],
+      "size": [
+        150,
+        80
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveInt",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        20,
+        "fixed"
+      ],
+      "widgets_values_named": {
+        "value": 20,
+        "control_after_generate": "fixed"
+      },
+      "title": "Base steps"
+    },
+    {
+      "id": 17,
+      "type": "PrimitiveInt",
+      "pos": [
+        650,
+        575
+      ],
+      "size": [
+        150,
+        80
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            14
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveInt",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        8,
+        "fixed"
+      ],
+      "widgets_values_named": {
+        "value": 8,
+        "control_after_generate": "fixed"
+      },
+      "title": "LoRA steps (6-8)"
+    },
+    {
+      "id": 18,
+      "type": "PrimitiveFloat",
+      "pos": [
+        480,
+        680
+      ],
+      "size": [
+        150,
+        75
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "FLOAT",
+          "type": "FLOAT",
+          "links": [
+            17
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveFloat",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        3.5
+      ],
+      "widgets_values_named": {
+        "value": 3.5
+      },
+      "title": "Base CFG"
+    },
+    {
+      "id": 19,
+      "type": "PrimitiveFloat",
+      "pos": [
+        650,
+        680
+      ],
+      "size": [
+        150,
+        75
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "FLOAT",
+          "type": "FLOAT",
+          "links": [
+            18
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveFloat",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        1.0
+      ],
+      "widgets_values_named": {
+        "value": 1.0
+      },
+      "title": "LoRA CFG"
+    },
+    {
+      "id": 20,
+      "type": "ComfySwitchNode",
+      "pos": [
+        480,
+        780
+      ],
+      "size": [
+        320,
+        105
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_false",
+          "type": "MODEL",
+          "link": 4,
+          "shape": 7
+        },
+        {
+          "name": "on_true",
+          "type": "MODEL",
+          "link": 5,
+          "shape": 7
+        },
+        {
+          "name": "switch",
+          "type": "BOOLEAN",
+          "link": 6,
+          "widget": {
+            "name": "switch"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "MODEL",
+          "links": [
+            31
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfySwitchNode",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        true
+      ],
+      "widgets_values_named": {
+        "switch": true
+      },
+      "title": "Switch: High-Noise Model (Base vs LoRA)"
+    },
+    {
+      "id": 21,
+      "type": "ComfySwitchNode",
+      "pos": [
+        480,
+        910
+      ],
+      "size": [
+        320,
+        105
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_false",
+          "type": "MODEL",
+          "link": 10,
+          "shape": 7
+        },
+        {
+          "name": "on_true",
+          "type": "MODEL",
+          "link": 11,
+          "shape": 7
+        },
+        {
+          "name": "switch",
+          "type": "BOOLEAN",
+          "link": 12,
+          "widget": {
+            "name": "switch"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "MODEL",
+          "links": [
+            38
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfySwitchNode",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        true
+      ],
+      "widgets_values_named": {
+        "switch": true
+      },
+      "title": "Switch: Low-Noise Model (Base vs LoRA)"
+    },
+    {
+      "id": 22,
+      "type": "ComfySwitchNode",
+      "pos": [
+        480,
+        1040
+      ],
+      "size": [
+        320,
+        105
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_false",
+          "type": "INT",
+          "link": 13,
+          "shape": 7
+        },
+        {
+          "name": "on_true",
+          "type": "INT",
+          "link": 14,
+          "shape": 7
+        },
+        {
+          "name": "switch",
+          "type": "BOOLEAN",
+          "link": 15,
+          "widget": {
+            "name": "switch"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "INT",
+          "links": [
+            16,
+            35,
+            42
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfySwitchNode",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        true
+      ],
+      "widgets_values_named": {
+        "switch": true
+      },
+      "title": "Switch: Steps (20 Base vs 8 LoRA)"
+    },
+    {
+      "id": 23,
+      "type": "ComfyMathExpression",
+      "pos": [
+        480,
+        1170
+      ],
+      "size": [
+        320,
+        115
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "values.a",
+          "type": "FLOAT,INT,BOOLEAN",
+          "link": 16,
+          "label": "a"
+        },
+        {
+          "name": "values.b",
+          "type": "FLOAT,INT,BOOLEAN",
+          "link": null,
+          "label": "b",
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "FLOAT",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            37,
+            44
+          ]
+        },
+        {
+          "name": "BOOL",
+          "type": "BOOLEAN",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfyMathExpression",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "floor(a / 2)"
+      ],
+      "widgets_values_named": {
+        "expression": "floor(a / 2)"
+      },
+      "title": "Auto Split Step = floor(steps / 2)"
+    },
+    {
+      "id": 24,
+      "type": "ComfySwitchNode",
+      "pos": [
+        480,
+        1310
+      ],
+      "size": [
+        320,
+        105
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_false",
+          "type": "FLOAT",
+          "link": 17,
+          "shape": 7
+        },
+        {
+          "name": "on_true",
+          "type": "FLOAT",
+          "link": 18,
+          "shape": 7
+        },
+        {
+          "name": "switch",
+          "type": "BOOLEAN",
+          "link": 19,
+          "widget": {
+            "name": "switch"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "FLOAT",
+          "links": [
+            36,
+            43
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfySwitchNode",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        true
+      ],
+      "widgets_values_named": {
+        "switch": true
+      },
+      "title": "Switch: CFG (3.5 Base vs 1.0 LoRA)"
+    },
+    {
+      "id": 25,
+      "type": "LoadImage",
+      "pos": [
+        860,
+        0
+      ],
+      "size": [
+        280,
+        320
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            26
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "start.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "start.png",
+        "upload": "image"
+      },
+      "title": "START image (required)"
+    },
+    {
+      "id": 26,
+      "type": "LoadImage",
+      "pos": [
+        1170,
+        0
+      ],
+      "size": [
+        280,
+        320
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            27
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "end.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "end.png",
+        "upload": "image"
+      },
+      "title": "END image (optional - unlink for 1-image I2V)"
+    },
+    {
+      "id": 27,
+      "type": "CLIPTextEncode",
+      "pos": [
+        860,
+        360
+      ],
+      "size": [
+        590,
+        190
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 20
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            23
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "Smooth cinematic motion transitioning naturally from the start image to the end image. Consistent subject appearance, clothing, lighting, and environment throughout, steady camera movement, realistic physics and textures."
+      ],
+      "widgets_values_named": {
+        "text": "Smooth cinematic motion transitioning naturally from the start image to the end image. Consistent subject appearance, clothing, lighting, and environment throughout, steady camera movement, realistic physics and textures."
+      },
+      "title": "Positive Prompt",
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 28,
+      "type": "CLIPTextEncode",
+      "pos": [
+        860,
+        585
+      ],
+      "size": [
+        590,
+        150
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 21
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            24
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "overexposed, static, blurry details, subtitles, watermark, worst quality, low quality, JPEG artifacts, ugly, extra fingers, poorly drawn hands, poorly drawn face, deformed, morphing limbs, fused fingers, messy background, three legs, backwards walking"
+      ],
+      "widgets_values_named": {
+        "text": "overexposed, static, blurry details, subtitles, watermark, worst quality, low quality, JPEG artifacts, ugly, extra fingers, poorly drawn hands, poorly drawn face, deformed, morphing limbs, fused fingers, messy background, three legs, backwards walking"
+      },
+      "title": "Negative Prompt",
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 29,
+      "type": "WanFirstLastFrameToVideo",
+      "pos": [
+        860,
+        770
+      ],
+      "size": [
+        420,
+        270
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 23
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 24
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 25
+        },
+        {
+          "name": "clip_vision_start_image",
+          "type": "CLIP_VISION_OUTPUT",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "clip_vision_end_image",
+          "type": "CLIP_VISION_OUTPUT",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "start_image",
+          "type": "IMAGE",
+          "link": 26,
+          "shape": 7
+        },
+        {
+          "name": "end_image",
+          "type": "IMAGE",
+          "link": 27,
+          "shape": 7
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 28,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 29,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "length",
+          "type": "INT",
+          "link": 30,
+          "widget": {
+            "name": "length"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            32,
+            39
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            33,
+            40
+          ]
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            34
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "WanFirstLastFrameToVideo",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        832,
+        480,
+        81,
+        1
+      ],
+      "widgets_values_named": {
+        "width": 832,
+        "height": 480,
+        "length": 81,
+        "batch_size": 1
+      },
+      "title": "Wan 2.2 First-Last Frame Conditioning"
+    },
+    {
+      "id": 30,
+      "type": "LoadAudio",
+      "pos": [
+        1500,
+        820
+      ],
+      "size": [
+        340,
+        140
+      ],
+      "flags": {},
+      "order": 29,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            47
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "audio.wav",
+        null
+      ],
+      "widgets_values_named": {
+        "audio": "audio.wav",
+        "upload": null
+      },
+      "title": "Optional Audio Track (music/SFX - Ctrl+B with Trim to mux)"
+    },
+    {
+      "id": 31,
+      "type": "TrimAudioDuration",
+      "pos": [
+        1500,
+        995
+      ],
+      "size": [
+        340,
+        110
+      ],
+      "flags": {},
+      "order": 30,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 47
+        },
+        {
+          "name": "duration",
+          "type": "FLOAT",
+          "link": 48,
+          "widget": {
+            "name": "duration"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            50
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TrimAudioDuration",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        0.0,
+        5.0
+      ],
+      "widgets_values_named": {
+        "start_index": 0.0,
+        "duration": 5.0
+      },
+      "title": "Trim Audio to clip duration (Ctrl+B with LoadAudio)"
+    },
+    {
+      "id": 32,
+      "type": "KSamplerAdvanced",
+      "pos": [
+        1500,
+        0
+      ],
+      "size": [
+        340,
+        370
+      ],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 31
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 32
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 33
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 34
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "link": 35,
+          "widget": {
+            "name": "steps"
+          }
+        },
+        {
+          "name": "cfg",
+          "type": "FLOAT",
+          "link": 36,
+          "widget": {
+            "name": "cfg"
+          }
+        },
+        {
+          "name": "end_at_step",
+          "type": "INT",
+          "link": 37,
+          "widget": {
+            "name": "end_at_step"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            41
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerAdvanced",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "enable",
+        984937593540091,
+        "randomize",
+        8,
+        1.0,
+        "euler",
+        "simple",
+        0,
+        4,
+        "enable"
+      ],
+      "title": "Pass 1: High-Noise (0 -> split)"
+    },
+    {
+      "id": 33,
+      "type": "KSamplerAdvanced",
+      "pos": [
+        1500,
+        410
+      ],
+      "size": [
+        340,
+        370
+      ],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 38
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 39
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 40
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 41
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "link": 42,
+          "widget": {
+            "name": "steps"
+          }
+        },
+        {
+          "name": "cfg",
+          "type": "FLOAT",
+          "link": 43,
+          "widget": {
+            "name": "cfg"
+          }
+        },
+        {
+          "name": "start_at_step",
+          "type": "INT",
+          "link": 44,
+          "widget": {
+            "name": "start_at_step"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            45
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerAdvanced",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "disable",
+        0,
+        "fixed",
+        8,
+        1.0,
+        "euler",
+        "simple",
+        4,
+        10000,
+        "disable"
+      ],
+      "title": "Pass 2: Low-Noise (split -> end)"
+    },
+    {
+      "id": 34,
+      "type": "VAEDecodeTiled",
+      "pos": [
+        1900,
+        0
+      ],
+      "size": [
+        310,
+        150
+      ],
+      "flags": {},
+      "order": 33,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 45
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 46
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            49,
+            52
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeTiled",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        512,
+        64,
+        64,
+        8
+      ],
+      "widgets_values_named": {
+        "tile_size": 512,
+        "overlap": 64,
+        "temporal_size": 64,
+        "temporal_overlap": 8
+      },
+      "title": "VAE Decode (Tiled) - lower tile_size to 256 if OOM"
+    },
+    {
+      "id": 35,
+      "type": "CreateVideo",
+      "pos": [
+        1900,
+        190
+      ],
+      "size": [
+        310,
+        150
+      ],
+      "flags": {},
+      "order": 34,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 49
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 50,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            51
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreateVideo",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        16,
+        "auto",
+        "sRGB"
+      ],
+      "widgets_values_named": {
+        "fps": 16,
+        "bit_depth": "auto",
+        "color_space": "sRGB"
+      },
+      "title": "Create Video (16 fps native Wan 2.2)"
+    },
+    {
+      "id": 36,
+      "type": "SaveVideo",
+      "pos": [
+        2260,
+        0
+      ],
+      "size": [
+        420,
+        440
+      ],
+      "flags": {},
+      "order": 35,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 51
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveVideo",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "video/Wan22_14B_FLF_Quality",
+        "auto",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "video/Wan22_14B_FLF_Quality",
+        "format": "auto",
+        "format.codec": "auto",
+        "codec": "auto"
+      },
+      "title": "Save Video (MP4)"
+    },
+    {
+      "id": 37,
+      "type": "ImageFromBatch",
+      "pos": [
+        1900,
+        380
+      ],
+      "size": [
+        310,
+        110
+      ],
+      "flags": {},
+      "order": 36,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 52
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            53
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageFromBatch",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        -1,
+        1
+      ],
+      "widgets_values_named": {
+        "batch_index": -1,
+        "length": 1
+      },
+      "title": "Extract LAST frame (-1) for next clip"
+    },
+    {
+      "id": 38,
+      "type": "SaveImage",
+      "pos": [
+        2260,
+        480
+      ],
+      "size": [
+        420,
+        360
+      ],
+      "flags": {},
+      "order": 37,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 53
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "video/Wan22_14B_FLF_last_frame"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "video/Wan22_14B_FLF_last_frame"
+      },
+      "title": "Save last frame PNG"
+    },
+    {
+      "id": 39,
+      "type": "MarkdownNote",
+      "pos": [
+        -580,
+        0
+      ],
+      "size": [
+        540,
+        1020
+      ],
+      "flags": {},
+      "order": 38,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "## HOW TO: Wan 2.2 14B FLF (8-Step LoRA OR 20-Step Base)\n\n### 1. One-Click Quality Switch (`USE 8-STEP LORA?`, Group 2)\n- **ON (default \u2014 8-Step LightX2V):** Runs **8 steps** (4 High + 4 Low, CFG `1.0`, Shift `5.0`). Cleaner motion, hands, and textures than 4 steps while still ~2.5\u00d7 faster than base. You can also set `LoRA steps` to `6` or `8` \u2014 the High/Low split auto-updates (`floor(steps/2)`).\n- **OFF (Full 20-Step Base):** Bypasses the LightX2V LoRAs and automatically switches to **20 steps** (10 High + 10 Low, CFG `3.5`, Shift `8.0`) for maximum Wan 2.2 motion dynamics!\n\n### 2. How to change LENGTH & RESOLUTION\n- **Duration:** Edit `Duration in seconds` (Group 2). Wan 2.2 runs at **16 fps** and snaps to `4n + 1` frames (`3s=49`, `4s=65`, **`5s=81`**, `6s=97`).\n- **Resolution (must be \u00f7 16):**\n  - 16:9: **`832\u00d7480`** (fast) | `960\u00d7544` (sharp) | `1280\u00d7720` (heavy on 24 GB)\n  - 9:16: `480\u00d7832` | 1:1: `640\u00d7640` or `768\u00d7768`\n- **1-Image I2V only:** Disconnect `end_image` on `WanFirstLastFrameToVideo`.\n\n### 3. How to Add Audio to Wan 2.2\nWan 2.2 outputs **video only**. Three easy options:\n1. **Mux music/SFX/voiceover right here:** Ctrl+B `LoadAudio` + `TrimAudioDuration` -> pick your WAV/MP3 -> auto-trimmed & muxed into the MP4!\n2. **AI Foley/SFX:** Run **`ComfyUI-MMAudio`** on the output video to generate matching ambient SFX from the video frames.\n3. **DaVinci Resolve / Dialogue:** Mix in DaVinci Resolve \u2014 or use **LTX-2.5** / **MiniMax H3** for talking-character lip-sync shots.\n"
+      ],
+      "widgets_values_named": {
+        "text": "## HOW TO: Wan 2.2 14B FLF (8-Step LoRA OR 20-Step Base)\n\n### 1. One-Click Quality Switch (`USE 8-STEP LORA?`, Group 2)\n- **ON (default \u2014 8-Step LightX2V):** Runs **8 steps** (4 High + 4 Low, CFG `1.0`, Shift `5.0`). Cleaner motion, hands, and textures than 4 steps while still ~2.5\u00d7 faster than base. You can also set `LoRA steps` to `6` or `8` \u2014 the High/Low split auto-updates (`floor(steps/2)`).\n- **OFF (Full 20-Step Base):** Bypasses the LightX2V LoRAs and automatically switches to **20 steps** (10 High + 10 Low, CFG `3.5`, Shift `8.0`) for maximum Wan 2.2 motion dynamics!\n\n### 2. How to change LENGTH & RESOLUTION\n- **Duration:** Edit `Duration in seconds` (Group 2). Wan 2.2 runs at **16 fps** and snaps to `4n + 1` frames (`3s=49`, `4s=65`, **`5s=81`**, `6s=97`).\n- **Resolution (must be \u00f7 16):**\n  - 16:9: **`832\u00d7480`** (fast) | `960\u00d7544` (sharp) | `1280\u00d7720` (heavy on 24 GB)\n  - 9:16: `480\u00d7832` | 1:1: `640\u00d7640` or `768\u00d7768`\n- **1-Image I2V only:** Disconnect `end_image` on `WanFirstLastFrameToVideo`.\n\n### 3. How to Add Audio to Wan 2.2\nWan 2.2 outputs **video only**. Three easy options:\n1. **Mux music/SFX/voiceover right here:** Ctrl+B `LoadAudio` + `TrimAudioDuration` -> pick your WAV/MP3 -> auto-trimmed & muxed into the MP4!\n2. **AI Foley/SFX:** Run **`ComfyUI-MMAudio`** on the output video to generate matching ambient SFX from the video frames.\n3. **DaVinci Resolve / Dialogue:** Mix in DaVinci Resolve \u2014 or use **LTX-2.5** / **MiniMax H3** for talking-character lip-sync shots.\n"
+      },
+      "title": "HOW TO: 8-Step LoRA vs 20-Step Base, Size & Audio",
+      "color": "#233",
+      "bgcolor": "#355"
+    },
+    {
+      "id": 40,
+      "type": "MarkdownNote",
+      "pos": [
+        -1150,
+        0
+      ],
+      "size": [
+        530,
+        500
+      ],
+      "flags": {},
+      "order": 39,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote",
+        "cnr_id": "comfy-core",
+        "ver": "0.34.0"
+      },
+      "widgets_values": [
+        "## Model Downloads (Wan 2.2 14B FP8 + LightX2V)\n\nAll files from [`Comfy-Org/Wan_2.2_ComfyUI_Repackaged`](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged):\n\n| Folder | File |\n|---|---|\n| `models/diffusion_models/` | `wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors` |\n| `models/diffusion_models/` | `wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors` |\n| `models/loras/` | `wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors` |\n| `models/loras/` | `wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors` |\n| `models/text_encoders/` | `umt5_xxl_fp8_e4m3fn_scaled.safetensors` |\n| `models/vae/` | `wan_2.1_vae.safetensors` |\n\n*100% native ComfyUI core nodes \u2014 no custom nodes required.*\n"
+      ],
+      "widgets_values_named": {
+        "text": "## Model Downloads (Wan 2.2 14B FP8 + LightX2V)\n\nAll files from [`Comfy-Org/Wan_2.2_ComfyUI_Repackaged`](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged):\n\n| Folder | File |\n|---|---|\n| `models/diffusion_models/` | `wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors` |\n| `models/diffusion_models/` | `wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors` |\n| `models/loras/` | `wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors` |\n| `models/loras/` | `wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors` |\n| `models/text_encoders/` | `umt5_xxl_fp8_e4m3fn_scaled.safetensors` |\n| `models/vae/` | `wan_2.1_vae.safetensors` |\n\n*100% native ComfyUI core nodes \u2014 no custom nodes required.*\n"
+      },
+      "title": "Model Downloads (Wan 2.2 14B)",
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      3,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      1,
+      0,
+      2,
+      0,
+      "MODEL"
+    ],
+    [
+      3,
+      2,
+      0,
+      4,
+      0,
+      "MODEL"
+    ],
+    [
+      4,
+      3,
+      0,
+      20,
+      0,
+      "MODEL"
+    ],
+    [
+      5,
+      4,
+      0,
+      20,
+      1,
+      "MODEL"
+    ],
+    [
+      6,
+      15,
+      0,
+      20,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      7,
+      5,
+      0,
+      7,
+      0,
+      "MODEL"
+    ],
+    [
+      8,
+      5,
+      0,
+      6,
+      0,
+      "MODEL"
+    ],
+    [
+      9,
+      6,
+      0,
+      8,
+      0,
+      "MODEL"
+    ],
+    [
+      10,
+      7,
+      0,
+      21,
+      0,
+      "MODEL"
+    ],
+    [
+      11,
+      8,
+      0,
+      21,
+      1,
+      "MODEL"
+    ],
+    [
+      12,
+      15,
+      0,
+      21,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      13,
+      16,
+      0,
+      22,
+      0,
+      "INT"
+    ],
+    [
+      14,
+      17,
+      0,
+      22,
+      1,
+      "INT"
+    ],
+    [
+      15,
+      15,
+      0,
+      22,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      16,
+      22,
+      0,
+      23,
+      0,
+      "INT"
+    ],
+    [
+      17,
+      18,
+      0,
+      24,
+      0,
+      "FLOAT"
+    ],
+    [
+      18,
+      19,
+      0,
+      24,
+      1,
+      "FLOAT"
+    ],
+    [
+      19,
+      15,
+      0,
+      24,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      20,
+      9,
+      0,
+      27,
+      0,
+      "CLIP"
+    ],
+    [
+      21,
+      9,
+      0,
+      28,
+      0,
+      "CLIP"
+    ],
+    [
+      22,
+      13,
+      0,
+      14,
+      0,
+      "FLOAT"
+    ],
+    [
+      23,
+      27,
+      0,
+      29,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      24,
+      28,
+      0,
+      29,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      25,
+      10,
+      0,
+      29,
+      2,
+      "VAE"
+    ],
+    [
+      26,
+      25,
+      0,
+      29,
+      5,
+      "IMAGE"
+    ],
+    [
+      27,
+      26,
+      0,
+      29,
+      6,
+      "IMAGE"
+    ],
+    [
+      28,
+      11,
+      0,
+      29,
+      7,
+      "INT"
+    ],
+    [
+      29,
+      12,
+      0,
+      29,
+      8,
+      "INT"
+    ],
+    [
+      30,
+      14,
+      1,
+      29,
+      9,
+      "INT"
+    ],
+    [
+      31,
+      20,
+      0,
+      32,
+      0,
+      "MODEL"
+    ],
+    [
+      32,
+      29,
+      0,
+      32,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      33,
+      29,
+      1,
+      32,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      34,
+      29,
+      2,
+      32,
+      3,
+      "LATENT"
+    ],
+    [
+      35,
+      22,
+      0,
+      32,
+      4,
+      "INT"
+    ],
+    [
+      36,
+      24,
+      0,
+      32,
+      5,
+      "FLOAT"
+    ],
+    [
+      37,
+      23,
+      1,
+      32,
+      6,
+      "INT"
+    ],
+    [
+      38,
+      21,
+      0,
+      33,
+      0,
+      "MODEL"
+    ],
+    [
+      39,
+      29,
+      0,
+      33,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      40,
+      29,
+      1,
+      33,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      41,
+      32,
+      0,
+      33,
+      3,
+      "LATENT"
+    ],
+    [
+      42,
+      22,
+      0,
+      33,
+      4,
+      "INT"
+    ],
+    [
+      43,
+      24,
+      0,
+      33,
+      5,
+      "FLOAT"
+    ],
+    [
+      44,
+      23,
+      1,
+      33,
+      6,
+      "INT"
+    ],
+    [
+      45,
+      33,
+      0,
+      34,
+      0,
+      "LATENT"
+    ],
+    [
+      46,
+      10,
+      0,
+      34,
+      1,
+      "VAE"
+    ],
+    [
+      47,
+      30,
+      0,
+      31,
+      0,
+      "AUDIO"
+    ],
+    [
+      48,
+      13,
+      0,
+      31,
+      1,
+      "FLOAT"
+    ],
+    [
+      49,
+      34,
+      0,
+      35,
+      0,
+      "IMAGE"
+    ],
+    [
+      50,
+      31,
+      0,
+      35,
+      1,
+      "AUDIO"
+    ],
+    [
+      51,
+      35,
+      0,
+      36,
+      0,
+      "VIDEO"
+    ],
+    [
+      52,
+      34,
+      0,
+      37,
+      0,
+      "IMAGE"
+    ],
+    [
+      53,
+      37,
+      0,
+      38,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "1. Wan 2.2 14B Models + LightX2V LoRAs (Shift 8 Base / Shift 5 LoRA)",
+      "bounding": [
+        -20,
+        -60,
+        460,
+        1005
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "2. Size, Duration & 8-Step LoRA / 20-Step Base Switch",
+      "bounding": [
+        460,
+        -60,
+        360,
+        1500
+      ],
+      "color": "#3b6e5c",
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "3. Start/End Images, Prompts & FLF Conditioning",
+      "bounding": [
+        840,
+        -60,
+        630,
+        1120
+      ],
+      "color": "#8a5a3b",
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "4. MoE Samplers (Auto Split) & Optional Audio Mux",
+      "bounding": [
+        1480,
+        -60,
+        380,
+        1190
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "5. Tiled Decode & Save (+ Last Frame)",
+      "bounding": [
+        1880,
+        -60,
+        820,
+        930
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.55,
+      "offset": [
+        120,
+        120
+      ]
+    },
+    "frontendVersion": "1.59.11"
+  },
+  "version": 0.4
+}
