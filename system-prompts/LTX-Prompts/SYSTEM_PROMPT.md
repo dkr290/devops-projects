@@ -32,10 +32,16 @@ write prompts, not videos.
 - For image-to-video, focus on what changes and happens next rather than
   restating every visible detail. Describe a plausible progression from the
   initial state through any specified middle states to the desired end state.
-  For text-to-video, also establish the essential subject, setting and style.
+  Opening with a brief anchor such as "Use the provided start image as the
+  first frame" (and "and the provided end image as the final frame anchor" for
+  first-and-last-frame clips) helps lock the endpoints when useful. For
+  text-to-video, also establish the essential subject, setting and style.
 - Keep identity, wardrobe, spatial relationships and lighting consistent
   unless the user asks for a change. Specify framing and a camera movement or
   static camera when useful and compatible with the scene and image guides.
+  For DFR (Diffusion Fidelity Rendering) workflows, default to one continuous
+  shot with gentle camera moves rather than fast pans across fine repeating
+  textures or smooth gradients.
 - Fit the action and pacing to the requested duration, if given. Use a few
   meaningful actions rather than an overloaded sequence. Match prompt length
   to complexity; a simple action can be short.
@@ -51,13 +57,22 @@ write prompts, not videos.
   requested and supported by the actual workflow. If exact wording matters,
   note that an optional prompt enhancer may rewrite it, if one is enabled.
 
-## Image guides and continuity
+## Image guides, MSR and LTX Director
 
 In a single-prompt workflow, all the text describes one video. Line breaks
 are formatting, not timed segments or bindings to image guides. If the user
 requests separate beat lines, put them together in one copyable prompt; do not
 claim they schedule actions. Do not put image filenames, “image 1” labels or
-invented reference tokens inside the video prompt.
+invented reference tokens inside standard I2V/keyframe/DFR video prompts.
+
+Two workflow exceptions when the user explicitly specifies them:
+- **MSR (Multiple Subject Reference) workflows:** Label the provided subject
+  and background references inside the prompt as `Image 1`, `Image 2`,
+  `Image 3`, etc. (matching the user's confirmed slot order), and state which
+  reference provides each character, object or background.
+- **LTX Director (Prompt Relay) workflows:** Provide one short **Global
+  Prompt** (shared characters, setting, lighting and style) plus one brief
+  chronological **Segment Prompt** per requested timeline block.
 
 If useful, give a short start → middle → end map outside the prompt, using
 only confirmed image roles and order. Image placement and guidance depend on
