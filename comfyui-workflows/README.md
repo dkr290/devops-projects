@@ -1,214 +1,351 @@
-# LTX-2.5 in ComfyUI – Workflows & Guidelines
+# ComfyUI Video & Audio Workflows Guide (RTX 3090 & RTX Spark)
 
-Setup notes for:
+Complete guide for all **16 workflows** organized by model family (`LTX/`, `Minimax/`, `WAN/`, `HunyuanVideo1.5/`, `Audio/`). Every workflow also includes built-in **`HOW TO`** note panels directly inside ComfyUI.
+
+Setup notes cover:
 - **Videos:** Linux PC, NVIDIA RTX 3090 (24 GB VRAM) + 64 GB system RAM
-- **Images:** NVIDIA RTX Spark (N1X, 128 GB unified memory, Windows on ARM)
+- **Images / Portable tests:** NVIDIA RTX Spark (N1X, 128 GB unified memory, Windows on ARM)
+- **Helper files in this folder:** [`start-comfy.sh`](start-comfy.sh) (launch command) and [`Compile-sage-linux.md`](Compile-sage-linux.md) (compiling SageAttention on Linux for RTX 3090 / CUDA 13)
 
 ---
 
-## 1. Workflows in this folder
+## 1. Which Workflow Should You Use?
 
-| File | Purpose |
+### LTX-2.5 (`LTX/` — 8 workflows)
+
+| Workflow | Best For | Stages / Steps | Default Images / Inputs | Audio |
+|---|---|---|---|---|
+| [`LTX/LTX-2.5_I2V_DFR_SingleImage_Audio_GGUF.json`](LTX/LTX-2.5_I2V_DFR_SingleImage_Audio_GGUF.json) | **Official LTX-2.5 DFR** (Diffusion Fidelity Rendering) — highest detail/sharpness single-image I2V (or T2V) using detailing keyframes + Pixel-Spatial IC-LoRA | **2-stage DFR ON** (8 + 3 steps) + **optional Stage 3 Temporal ×2** (48 fps, OFF by default) | **1 ON** (`Start image`; or `Switch to T2V` inside subgraph) | Native synchronized audio generated in Stage 1 |
+| [`LTX/LTX-2.5_I2V_LTXDirector_OptionalTwoStage_GGUF.json`](LTX/LTX-2.5_I2V_LTXDirector_OptionalTwoStage_GGUF.json) | **Visual timeline** with **3, 4, or more images**, different prompts per time segment (Prompt Relay), drag-and-drop audio, and automatic last-frame PNG save | **1-stage or 2-stage** (`RUN STAGE 2?` toggle) | Drag & drop as many as you want | Built into Director (`use_custom_audio`) |
+| [`LTX/LTX-2.5_I2V_ThreeKeyframes_ManualContinuation_GGUF.json`](LTX/LTX-2.5_I2V_ThreeKeyframes_ManualContinuation_GGUF.json) | **Ready-to-run 3-image** workflow (`START` + `MIDDLE` + `END`, optional 4th `MID-B`), saves last decoded frame PNG for manual multi-clip continuation | **1-stage or 2-stage** (`RUN STAGE 2?` toggle) | **3 ON** (`START`, `MIDDLE @ 96`, `END @ -1`); `MID-B @ 144` bypassed | Optional full-track audio + `TrimAudioDuration` (`AUDIO START`) |
+| [`LTX/LTX-2.5_I2V_Keyframes_Dialog_OptionalTwoStage_GGUF.json`](LTX/LTX-2.5_I2V_Keyframes_Dialog_OptionalTwoStage_GGUF.json) | Clean general-purpose **1–4 image** keyframe workflow with fast 1-stage draft or 2-stage final toggle | **1-stage or 2-stage** (`RUN STAGE 2?` toggle) | **2 ON** (`START`, `END`); `MID-A` & `MID-B` bypassed | Optional dialog audio (auto-fitted & locked) |
+| [`LTX/LTX-2.5_I2V_Keyframes_Dialog_SingleStage_GGUF.json`](LTX/LTX-2.5_I2V_Keyframes_Dialog_SingleStage_GGUF.json) | Pure **1-stage only** (no spatial upscaler model needed at all), up to 4 images | **1-stage only** | **2 ON** (`START`, `END`); `MID-A` & `MID-B` bypassed | Optional dialog audio (auto-fitted & locked) |
+| [`LTX/LTX-2.5_MSR_MultiRef_TwoStage_GGUF.json`](LTX/LTX-2.5_MSR_MultiRef_TwoStage_GGUF.json) | **MSR multi-subject reference** (up to `pic1–4` + `background`) with LiconStudio MSR V2 LoRA to lock character/object identities | **2-stage** (8 + 3 steps) | Up to **5 semantic refs** (`pic1–4` + `background`) | Native audio + optional `audio_ref1/2` voice refs |
+| [`LTX/LTX-2.5_MSR_Keyframes_Dialog_TwoStage_GGUF.json`](LTX/LTX-2.5_MSR_Keyframes_Dialog_TwoStage_GGUF.json) | **MSR identity refs + keyframes + dialog** (`pic1–3` + START/MID-A/MID-B/END) | **2-stage** (8 + 3 steps) | `pic1–3` + START/END ON (`MID-A/B` bypassed) | Optional dialog audio (auto-fitted & locked) |
+| [`LTX/LTX-2.5_MSR_Keyframes_Dialog_SingleStage_GGUF.json`](LTX/LTX-2.5_MSR_Keyframes_Dialog_SingleStage_GGUF.json) | Same MSR + keyframes + dialog workflow, **1-stage only** | **1-stage only** | `pic1–3` + START/END ON (`MID-A/B` bypassed) | Optional dialog audio (auto-fitted & locked) |
+
+### MiniMax H3 & Pika H3 Flex (`Minimax/` — 3 workflows)
+
+| Workflow | Best For | Stages / Steps | Default Images / Inputs | Audio |
+|---|---|---|---|---|
+| [`Minimax/Pika-H3-Flex_Ref2VA_MultiRef_6Step.json`](Minimax/Pika-H3-Flex_Ref2VA_MultiRef_6Step.json) | **Pika H3 Flex multi-reference** (`<Picture 1..3>`, up to 9 images + audio) distilled to 6 steps (`lcm` + `ManualSigmas`), works up to `1344×768`, optional bypassed Start/End pins — 100% native ComfyUI `0.44.0+` | **6 steps** (`pika_h3_flex_ref2va_v1_bf16`) | **3 semantic refs ON** (`<Picture 1..3>`); Start/End pins bypassed | Native stereo speech/SFX/music + optional `<Audio 1>` ref |
+| [`Minimax/Pika-H3-Flex_FL2VA_FirstLast_6Step.json`](Minimax/Pika-H3-Flex_FL2VA_FirstLast_6Step.json) | **Pika H3 Flex First & Last Frame** (or 1-image Start-Only I2V by unlinking `last_frame`) distilled to 6 steps — 100% native ComfyUI `0.44.0+` | **6 steps** (`pika_h3_flex_fl2va_v1_bf16`) | **2 ON** (`First frame` + `Last frame`; unlink `last_frame` for 1-image I2V) | Native stereo speech/SFX/music |
+| [`Minimax/MiniMax-H3_Ref2VA_MultiChar_4StepTurbo.json`](Minimax/MiniMax-H3_Ref2VA_MultiChar_4StepTurbo.json) | **Fastest 4-step Ref2VA draft** (`<Picture 1..3>`) + 1-click toggle to **20-step base** + optional bypassed Start/End timeline guides | **4-step Turbo ON** (`4-STEP TURBO?` toggle → 20-step base) | **3 semantic refs ON** (`<Picture 1..3>`); Start/End timeline guides bypassed | Native stereo speech/SFX + optional `<Audio 1>` voice timbre ref |
+
+### Wan 2.2 14B (`WAN/` — 2 workflows) & HunyuanVideo 1.5 (`HunyuanVideo1.5/` — 1 workflow)
+
+| Workflow | Best For | Stages / Steps | Default Images / Inputs | Audio |
+|---|---|---|---|---|
+| [`WAN/Wan2.2_14B_I2V_FLF_4StepLightX2V.json`](WAN/Wan2.2_14B_I2V_FLF_4StepLightX2V.json) | **Fast Wan 2.2 First-Last Frame** (action shots, strong physics, huge LoRA ecosystem) — 100% native ComfyUI | **4 steps** (2 High + 2 Low LightX2V) | **2 ON** (`START` + `END`; unlink `end_image` for 1-image I2V) | Video only + optional bypassed `LoadAudio` mux |
+| [`WAN/Wan2.2_14B_I2V_FLF_8StepOrBase20Step.json`](WAN/Wan2.2_14B_I2V_FLF_8StepOrBase20Step.json) | **Higher-quality Wan 2.2 FLF** with 1-click toggle between **8-step LightX2V LoRA** and **20-step Base** (auto High/Low split + CFG + shift) | **8-step LoRA ON** (`USE 8-STEP LORA?` → 20-step base) | **2 ON** (`START` + `END`; unlink `end_image` for 1-image I2V) | Video only + optional bypassed `LoadAudio` mux |
+| [`HunyuanVideo1.5/HunyuanVideo-1.5_I2V_FastDistilled.json`](HunyuanVideo1.5/HunyuanVideo-1.5_I2V_FastDistilled.json) | **Lightweight 8.3B cinematic I2V** (~9 GB in FP8) with strong physics & lighting — 100% native ComfyUI | **12 steps** step-distilled (8–12 rec.; swap to 720p base @ 20–50 steps) | **1 ON** (`START` image) | Video only + optional bypassed `LoadAudio` mux |
+
+### Audio (`Audio/` — 2 workflows)
+
+| Workflow | Best For | Speed / VRAM | Inputs | Output |
+|---|---|---|---|---|
+| [`Audio/Audio_Qwen3TTS_VoiceClone_TTSSuite.json`](Audio/Audio_Qwen3TTS_VoiceClone_TTSSuite.json) | **Voice cloning & dialogue TTS** from a 3–15 s sample (or preset speakers / voice design / `[Alice]` multi-character scripts) | Fast (~4–6 GB VRAM) | 3–15 s reference voice + transcript + script | Clean FLAC/WAV voice for LTX-2.5 lip-sync & DaVinci Resolve |
+| [`Audio/Audio_ACEStep15_TextToMusic.json`](Audio/Audio_ACEStep15_TextToMusic.json) | **Text-to-Music & background scores** (instrumental or vocal songs with lyrics, up to 10 min) — 100% native ComfyUI | **8 steps** Turbo (<10 s on 3090, <4 GB VRAM) | Style tags + lyrics (`[Instrumental]` default) + duration | Studio FLAC/MP3 music for Resolve or Wan/Hunyuan mux |
+
+> **Is 2-stage mandatory in LTX-2.5?** **No.** 1-stage works great for fast renders and moderate resolutions (up to ~`768×768` or `960×544`). Use **2-stage** (or **DFR**) when you want `1024×1024` or `1080p` (`1920×1088`) on a 24 GB RTX 3090 — generating motion at low resolution and refining at ×2 is sharper, more stable, and safer on VRAM.
+
+---
+
+## 2. LTX-2.5 Setup & Usage (`LTX/`)
+
+### Custom Nodes (`ComfyUI/custom_nodes/`)
+* **All 8 LTX-2.5 workflows:** [`ComfyUI-GGUF`](https://github.com/city96/ComfyUI-GGUF) (`UnetLoaderGGUF`)
+* **DFR workflow (`LTX-2.5_I2V_DFR_SingleImage_Audio_GGUF.json`):** Requires recent ComfyUI (`0.44.0+` recommended) with native DFR nodes (`LTXVAddGeneratedKeyframes`, `LTXVAddLatentGuide`, `LTXVFreezeLatent`).
+* **LTX Director workflow only:** [`WhatDreamsCost-ComfyUI`](https://github.com/WhatDreamsCost/WhatDreamsCost-ComfyUI) (latest v2.0+ with `LTXDirector`, `LTXDirectorGuide`, `LTXDirectorCropGuides`) + up-to-date ComfyUI & [`ComfyUI-LTXVideo`](https://github.com/Lightricks/ComfyUI-LTXVideo)
+* **MSR workflows (`LTX-2.5_MSR_*`) only:** [`ComfyUI-LTX2.5-MSR`](https://github.com/liconstudio/ComfyUI-LTX2.5-MSR)
+
+### Model Files
+Lightricks/LTX-2.5 is gated on Hugging Face: accept the license, then run `hf auth login`.
+
+| ComfyUI Folder | File | Size | Used By |
+|---|---|---:|---|
+| `models/unet/` | `ltx25_uncensored_v1.1-Q6_K.gguf` *(or official `ltx-2.5-22b-distilled-Q6_K.gguf` from `unsloth/LTX-2.5-GGUF`)* | 17.8 GB | All LTX-2.5 workflows *(for DFR, A/B test official distilled if fine-tune drifts with IC-LoRA; MSR JSONs default to official filenames)* |
+| `models/text_encoders/` | `gemma4_12b_ltx25_uncensored-int8.safetensors` *(or official `gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors`)* | 15.4 GB | All LTX-2.5 workflows (`CLIPLoader`, type `ltxv`) — **do not** use the 26 GB bf16 encoder on a 24 GB 3090 |
+| `models/vae/` | `ltx25_uncensored_video_vae.safetensors` *(or official `ltx-2.5-video-vae-bf16.safetensors`)* | 1.5 GB | All LTX-2.5 workflows |
+| `models/vae/` | `ltx25_uncensored_audio_vae.safetensors` *(or official `ltx-2.5-audio-vae-bf16.safetensors`)* | 0.4 GB | All LTX-2.5 workflows |
+| `models/latent_upscale_models/` | `ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors` | 1.0 GB | DFR, OptionalTwoStage, ManualContinuation, LTXDirector, MSR TwoStage *(must be installed & selected even when Stage 2 is OFF because ComfyUI validates connected loaders)* |
+| `models/loras/` | `ltx-2.5-22b-ic-lora-pixel-spatial-upscaler-x2-1.0.safetensors` | ~1–2 GB | **DFR workflow only** (from [`Lightricks/LTX-2.5-22b-IC-LoRA-Pixel-Spatial-Upscaler`](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Pixel-Spatial-Upscaler)) |
+| `models/latent_upscale_models/` | `ltx-2.5-latent-temporal-upscaler-x2-bf16-1.0.safetensors` *(optional)* | ~1.0 GB | **DFR Stage 3 (48 fps) only** — OFF by default; placeholder selected so DFR runs without downloading this file until you want 48 fps |
+| `models/loras/` | `LTX-2.5-Licon-MSR-V2.safetensors` | 2.2 GB | **MSR workflows only** (`LiconStudio/LTX-2.5-Multiple-Subject-Reference`) |
+
+#### GGUF Quant Choice (distilled, RTX 3090 24 GB)
+| File | Size | Notes |
+|---|---:|---|
+| `Q8_0` | 22.8 GB | Closest to bf16, heavy for 24 GB |
+| `Q6_K` | 17.8 GB | **Default** – very good quality |
+| `UD-Q5_K_XL` | 16.0 GB | Good compromise |
+| `UD-Q4_K_XL` | 14.0 GB | Unsloth's recommendation for tight VRAM |
+| `UD-Q3_K_XL` / `UD-Q2_K_XL` | 12 / 9.5 GB | Emergency only |
+
+* Prefer `UD-` variants over plain `Q4_K_M` / `Q3_K_M` at the same size.
+* **Skip `nvfp4`** LTX files on the 3090 — Blackwell only (good for the RTX Spark N1X laptop).
+
+### Length (Duration) & Keyframe Positions
+LTX-2.5 requires frame counts of **`8n + 1`** (`97`, `121`, `145`, `193`, `241`...). Keep **FPS = 24**.
+
+* **SingleStage / OptionalTwoStage / ManualContinuation / MSR:** Edit **`Duration in seconds`** in Group 2 (`1 + floor(a*b/8)*8`).
+* **LTX Director:** Edit **`duration_seconds`** (or drag the timeline end handle) inside **LTX Director**.
+* **DFR:** Edit **`duration`** directly on the top-level subgraph node (default `5` s = `121` frames @ 24 fps).
+
+| Duration | Total Frames (`8n+1`) | 3 Images (`MID-A` halfway) | 4 Images (`MID-A` / `MID-B`) | 3090 VRAM Note |
+|---:|---:|---:|---:|---|
+| **4 s** | 97 | `48` | `32` / `64` | Very fast tests |
+| **5 s** | 121 | `60` | `40` / `80` | Fast & safe |
+| **6 s** | 145 | `72` | `48` / `96` | Good balance |
+| **8 s** | 193 | `96` | `64` / `128` *(or `96` / `144`)* | Default in keyframes workflows |
+| **10 s** | 241 | `120` | `80` / `160` | Heavy on 24 GB — lower res or Q5/Q4 if OOM |
+
+> **Important:** Any enabled `frame_idx` must be **strictly less than total frames** (e.g. if you shorten a clip to 4 s / 97 frames, don't leave a guide at `120` or `144`). `END` uses `-1`, which always targets the last frame automatically.
+
+### Resolution Rules & RTX 3090 Presets
+Every width and height must be **divisible by 32** (and **divisible by 64** in **LTX Director** so both `1.0×` and `0.5×` stay divisible by 32).
+
+* **SingleStage:** Edit `width` / `height` in Group 2 = **final output size**.
+* **OptionalTwoStage / ManualContinuation / MSR TwoStage:** Edit `Stage 1 WIDTH` / `HEIGHT` in Group 2. When `RUN STAGE 2?` = ON, final output = **2×**; when OFF, final output = exact Stage 1 size.
+* **LTX Director:** Edit `custom_width` / `custom_height` to your **FINAL target size** (or `0` to match first image); keep `divisible_by = 64`.
+* **DFR:** Set `Output size (aspect / megapixels)` (default `16:9` at `0.87 MP` = `1280×704` final; Stage 1 runs at half-res).
+
+| Aspect Ratio | 2-Stage (Stage 1 → Final ×2) | 1-Stage (Direct Final Size) | LTX Director (`custom_width × custom_height`) |
+|---|---|---|---|
+| **1:1 Square** | `512×512` → **`1024×1024`** *(default)* | `512×512` (draft) or `768×768` | `1024×1024` (2-stage) / `768×768` (1-stage) |
+| **16:9 Widescreen** | `768×448` → **`1536×896`** | `768×448` or `832×480` or `960×544` | `1536×896` (2-stage) / `768×448` or `896×512` (1-stage) |
+| **16:9 Full HD** | `960×544` → **`1920×1088`** | Avoid 1-stage @ 1080p on 3090 | `1920×1088` (2-stage ON only) |
+| **9:16 Vertical** | `448×768` → **`896×1536`** | `448×768` or `544×960` | `896×1536` (2-stage) / `448×768` or `512×896` (1-stage) |
+
+### Using 1, 2, 3, or More Guiding Images
+* **`LTX-2.5_I2V_DFR_SingleImage_Audio_GGUF.json`:** Single start image + native audio (enter subgraph → `Switch to T2V` for text-only).
+* **`LTX-2.5_I2V_LTXDirector_OptionalTwoStage_GGUF.json` (easiest for 3–5+ images):** Drag images onto the timeline, slide to desired timestamps, right-click final block → **Pin as End Frame**, write a Global Prompt + per-segment prompts (Prompt Relay).
+* **`LTX-2.5_I2V_ThreeKeyframes_ManualContinuation_GGUF.json`:** `START` + `MIDDLE (96)` + `END (-1)` are ON by default. For a 4th image (`MID-B`), upload in `EXTRA MID-B image`, adjust indices, and **Ctrl+B** both `MID-B guide` nodes. For standalone clips from a sharp still, set `START preprocess` to `18` and Stage 1 `START` strength to `0.7`.
+* **`LTX-2.5_I2V_Keyframes_Dialog_OptionalTwoStage_GGUF.json` / `SingleStage`:** `START` + `END` are ON by default. For **1-image I2V**, press **Ctrl+B** on both `END guide` nodes. To enable `MID-A`/`MID-B`, set the shared frame index and **Ctrl+B** its guide nodes.
+
+### Custom Dialog Audio (Optional) & Multi-Clip Continuation
+By default, all LTX-2.5 workflows generate synchronized audio from your prompt.
+* **SingleStage & OptionalTwoStage:** Press **Ctrl+B** on the 4 nodes in Group 4c (`LoadAudio`, `Encode dialog`, `mask 0`, `Lock dialog audio`) **plus** `Use dialog audio` in Stage 1. Load a clean WAV matching clip length and state in the prompt who speaks which line.
+* **ManualContinuation (long multi-clip dialogue):** Load full recording in `DIALOG`, **Ctrl+B** `Encode dialog` + `mask 0` + `Lock dialog audio` + Stage 1 `Use dialog audio`, flip `CUSTOM VOICE?` ON, and advance `AUDIO START` (`0`, `8`, `16`, …) per clip.
+* **LTX Director:** Drag audio onto the Director audio track and set `use_custom_audio = true` (`inpaint_audio = true` generates ambience in gaps; `false` locks the whole track).
+* **Multi-clip continuation:** Both `ManualContinuation` and `LTXDirector` automatically save the actual last decoded frame PNG (`last_frame_*.png`) — upload it as the next clip's `START` image.
+
+### MSR Workflows (`LTX/LTX-2.5_MSR_*`)
+* **When to use MSR vs Keyframes / LTX Director:** Keyframes/Director anchor *what happens at specific timestamps*; **MSR** locks *character/object/background identity* across angles and cuts using `LTX-2.5-Licon-MSR-V2.safetensors`.
+* **Setup:** Clone `ComfyUI-LTX2.5-MSR`, drop `LTX-2.5-Licon-MSR-V2.safetensors` in `models/loras/`, restart ComfyUI, and select your installed model filenames in Group 1 (`ltx25_uncensored_*` or official `ltx-2.5-22b-distilled-*`).
+* **Usage:**
+  1. Load portraits into `pic1` (required), `pic2`, `pic3`, `pic4`, and optional `background` — references must be **contiguous** (disconnect unused `picN` wires from **both** Stage 1 and Stage 2 MSR guide nodes).
+  2. Label them in your prompt as **`Image 1`**, **`Image 2`**, **`Image 3`**… and describe positions/actions.
+  3. Always keep `LTXVCropGuides` active before VAE decode.
+  4. Start at `832×480` (2-stage → `1664×960`) or `768×448` and `5 s` (`121` frames) on 24 GB.
+  5. MSR `audio_ref1/2` are for speaker voice identity (requires an AVref MSR LoRA), *not* full dialogue tracks — use Group 4c (`DIALOG audio`) for lip-syncing a pre-recorded track.
+
+### Recommended Production Routine (ComfyUI + DaVinci Resolve)
+1. **Find seed fast:** Run a 1-stage draft (`RUN STAGE 2?` = OFF, `5–8 s`, `512×512` or `768×448`, seed = `randomize`) for 2–4 takes.
+2. **Render keeper:** Fix the winning seed and turn `RUN STAGE 2?` = ON (or test hero single-image shots in `DFR`).
+3. **Cleanest dialogue audio in DaVinci Resolve:** Feed your original clean WAV into ComfyUI for lip-sync, then align that **same original clean WAV** on the DaVinci Resolve timeline and mute the VAE-decoded MP4 voice track (or blend lightly for LTX ambience), mixing music & SFX separately.
+4. **Assemble:** Trim 1–3 frames off continuation joins if needed and do light color/exposure matching across cuts.
+
+---
+
+## 3. MiniMax H3 & Pika H3 Flex (`Minimax/`)
+
+### Ready-to-use workflows (100% native ComfyUI, no custom nodes)
+* **[`Minimax/Pika-H3-Flex_Ref2VA_MultiRef_6Step.json`](Minimax/Pika-H3-Flex_Ref2VA_MultiRef_6Step.json)** *(recommended fast Ref2VA, ComfyUI `0.44.0+`)*:
+  * Runs Pika's **6-step** distilled Ref2VA adapter (`lcm` + exact 7-value `ManualSigmas`, CFG 1.0) on the **same MiniMax H3 Ref2VA base**.
+  * **3 semantic character/scene refs ON** (`<Picture 1..3>`, up to 9 images supported) with `ref_image_size = match`, optional bypassed Start/End `MiniMaxH3AddGuide` timeline pins, optional `<Audio 1>` ref, `LTXVSeparateAVLatent` → `VAEDecodeTiled`, and automatic last-frame PNG save.
+  * Defaults to **`960×544` (`0.5 MP`)** / **`5.0 s` (`124` frames)** and scales cleanly up to **`1344×768` (`0.98 MP`)**.
+* **[`Minimax/Pika-H3-Flex_FL2VA_FirstLast_6Step.json`](Minimax/Pika-H3-Flex_FL2VA_FirstLast_6Step.json)** *(ComfyUI `0.44.0+`)*:
+  * **6-step** First & Last Frame (or **1-image Start-Only I2V** by disconnecting `last_frame` on `MiniMaxH3ImageToVideo`) with native stereo audio, tiled VAE decode, and last-frame PNG save.
+  * Uses the separate **FL2VA base + FL2VA Pika LoRA** (shares the same Qwen3-VL text encoder and Video/Audio VAEs).
+* **[`Minimax/MiniMax-H3_Ref2VA_MultiChar_4StepTurbo.json`](Minimax/MiniMax-H3_Ref2VA_MultiChar_4StepTurbo.json)** *(ComfyUI `0.34.0+`)*:
+  * **4-step Ref2V Turbo LoRA ON** (`4-STEP TURBO?` toggle switches between 4-step fastest drafts and **20-step base**).
+  * Keep at `0.4–0.5 MP` (`864×480`–`960×544`) while 4-step Turbo is ON (trained at 544p).
+
+> **Critical Pika H3 Flex rules:** Never mix Ref2VA and FL2VA models/LoRAs, never stack a Turbo/Lightning LoRA on top of Pika H3 Flex, and keep LoRA strength `1.0`, sampler `lcm`, and all 7 `ManualSigmas` values unchanged (raising steps to 8 does not add detail and breaks the trained schedule).
+
+### Model Files (`Comfy-Org/MiniMax-H3`)
+
+| Folder | File | Approx. Size | Used By |
+|---|---|---:|---|
+| `models/text_encoders/` | [`qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors) | 15.7 GB | **All 3 workflows** *(works on 3090 via emulation to save RAM; INT8 alternative exists if you want to compare)* |
+| `models/vae/` | [`minimax_h3_video_vae_int8_convrot.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/vae/minimax_h3_video_vae_int8_convrot.safetensors) | 2.8 GB | **All 3 workflows** |
+| `models/vae/` | [`minimax_h3_audio_vae_fp32.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/vae/minimax_h3_audio_vae_fp32.safetensors) | 0.6 GB | **All 3 workflows** |
+| `models/diffusion_models/` | [`minimax_h3_ref2va_pruned_int8_convrot.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors) | 21.0 GB | Pika Ref2VA + MiniMax 4-Step Ref2VA |
+| `models/loras/` | [`pika_h3_flex_ref2va_v1_bf16.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/loras/pika_h3_flex_ref2va_v1_bf16.safetensors) | ~2 GB | **Pika Ref2VA (6-step)** |
+| `models/loras/` | [`minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/loras/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors) | 2.0 GB | **MiniMax Ref2VA (4-step Turbo)** |
+| `models/diffusion_models/` | [`minimax_h3_fl2va_pruned_int8_convrot.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors) | 19.5 GB | **Pika FL2VA (First & Last Frame)** |
+| `models/loras/` | [`pika_h3_flex_fl2va_v1_bf16.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/loras/pika_h3_flex_fl2va_v1_bf16.safetensors) | ~2 GB | **Pika FL2VA (6-step)** |
+
+### RTX 3090 Notes for MiniMax H3 / Pika H3 Flex
+* **ComfyUI & CUDA:** Use ComfyUI **`0.44.0+`**. INT8 ConvRot benefits from PyTorch **CUDA 13.0+**. Check with your ComfyUI Python:
+  ```bash
+  python -c "import torch; print('PyTorch:', torch.__version__, 'CUDA build:', torch.version.cuda, 'GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'unavailable')"
+  ```
+* **Frame cadence:** H3 snaps duration to `17n + 5` (`5 s` → `124` frames ≈ `5.17 s` @ 24 fps).
+* **Prompting:** Tag references as `<Picture 1>`, `<Picture 2>`, `<Picture 3>`, and dialogue as `(S1) ... <d>[English] Hello there.</d>` (see [MiniMax H3 Prompt Guide](https://docs.comfy.org/tutorials/video/minimax/minimax-h3-prompt-guide)).
+* **Guides vs semantic refs:** An image wired only to `MiniMaxH3AddGuide` is not automatically visible as `<Picture N>` — connect it to `ref_images` too if referenced by tag in the prompt.
+* **Memory & speed:** Model weights offload between 24 GB VRAM and 64 GB system RAM. Draft at `0.4–0.5 MP` / `5 s` first (`~1.5–3 min` typical on a 3090 at 4–6 steps), then raise Pika H3 Flex to `0.98 MP` (`1344×768`) for finals. If you hit RAM pressure on a smaller machine, `--disable-pinned-memory` can help.
+
+---
+
+## 4. Wan 2.2 14B (`WAN/`) & HunyuanVideo 1.5 (`HunyuanVideo1.5/`)
+
+All 3 workflows use **100% native ComfyUI core nodes** (no custom nodes required) and save a `last_frame` PNG alongside each MP4.
+
+### Wan 2.2 14B First-Last Frame (`WAN/`)
+* **[`WAN/Wan2.2_14B_I2V_FLF_4StepLightX2V.json`](WAN/Wan2.2_14B_I2V_FLF_4StepLightX2V.json)** — fast **4-step** preset (2 High-Noise + 2 Low-Noise, CFG `1.0`, shift `5.0`, `832×480`, `5 s` = `81` frames @ 16 fps).
+* **[`WAN/Wan2.2_14B_I2V_FLF_8StepOrBase20Step.json`](WAN/Wan2.2_14B_I2V_FLF_8StepOrBase20Step.json)** — 1-click **`USE 8-STEP LORA?`** toggle:
+  * **ON (default):** **8 steps** (4 High + 4 Low, CFG `1.0`, shift `5.0`) — cleaner hands/motion than 4 steps while still fast.
+  * **OFF:** **20-step Base** (10 High + 10 Low, CFG `3.5`, shift `8.0`, no LoRA) for maximum motion dynamics.
+* **1-Image I2V only:** Disconnect `end_image` on `WanFirstLastFrameToVideo`.
+
+**Wan 2.2 14B Model Files** ([`Comfy-Org/Wan_2.2_ComfyUI_Repackaged`](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged) & [`Wan_2.1_ComfyUI_repackaged`](https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged)):
+| Folder | File |
 |---|---|
-| `LTX-2.5_I2V_StartEnd_TwoStage_GGUF.json` | Start image (required) + end image (optional). 2-stage: low res → latent ×2 upscale + refine |
-| `LTX-2.5_MSR_MultiRef_TwoStage_GGUF.json` | Up to 5 reference images (pic1–4 + background) with LiconStudio MSR V2 LoRA. 2-stage |
-| `LTX-2.5_I2V_Keyframes_Dialog_TwoStage_GGUF.json` | **No MSR.** START + END + optional MID-A/MID-B keyframes at any frame, 5/10 s switch, optional pre-generated dialog audio (lip-sync) |
-| `LTX-2.5_MSR_Keyframes_Dialog_TwoStage_GGUF.json` | **With MSR.** Same as above + 2–3 character reference portraits (pic1–3) to lock identities |
-| `LTX-2.5_I2V_Keyframes_Dialog_SingleStage_GGUF.json` | Same as the no-MSR keyframes workflow, **1 stage only** (no ×2 upscale/refine). Width/height = final size |
-| `LTX-2.5_MSR_Keyframes_Dialog_SingleStage_GGUF.json` | Same as the MSR keyframes workflow, **1 stage only**. Width/height = final size |
+| `models/diffusion_models/` | `wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors` |
+| `models/diffusion_models/` | `wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors` |
+| `models/loras/` | `wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors` |
+| `models/loras/` | `wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors` |
+| `models/text_encoders/` | `umt5_xxl_fp8_e4m3fn_scaled.safetensors` |
+| `models/vae/` | `wan_2.1_vae.safetensors` |
 
-### Keyframes + dialog workflows (both variants)
-- **Length:** `duration seconds` in group 2 → frames = seconds × fps + 1 (5 s = 121, 10 s = 241 at 24 fps). Keep fps 24.
-- **Resolution:** stage-1 width/height (÷32), final = ×2. 10 s at 960×544 is heavy on 24 GB → 768×448 or UD-Q5/Q4 if OOM.
-- **START** required, **END** on by default (same characters/scene, end positions). No end → Ctrl+B both `END guide` nodes.
-- **MID-A / MID-B** bypassed by default. Enable = Ctrl+B its LoadImage + preprocess + guide in **stage 1 and stage 2**.
-  Set `frame_idx` to any frame (not only the middle), same value in both stages.
-- **Dialog audio** (voices generated elsewhere): bypassed by default (LTX then generates its own audio).
-  Enable group 4c + `Use dialog audio` node. The track is encoded and locked with a 0 noise mask, so LTX
-  keeps it unchanged and lip-syncs to it. Make it the same length as the video; say in the prompt who speaks which line.
-- **MSR variant:** pic1/pic2 linked; for a 3rd character link pic3 to `pic3` on both MSR guides. Start frame
-  (in-place) and end/mid guides are chained around the MSR guide; `LTXVCropGuides` removes all of them.
-  MSR `audio_ref1/2` = voice identity refs (need AVref LoRA), not the dialog track.
+### HunyuanVideo 1.5 I2V (`HunyuanVideo1.5/`)
+* **[`HunyuanVideo1.5/HunyuanVideo-1.5_I2V_FastDistilled.json`](HunyuanVideo1.5/HunyuanVideo-1.5_I2V_FastDistilled.json)** — pre-configured for `hunyuanvideo1.5_480p_i2v_step_distilled_fp16.safetensors` loaded with `weight_dtype = fp8_e4m3fn` (~9 GB VRAM), **12 steps** (8–12 rec.), CFG `1.0`, shift `7.0`, `848×480`, `5 s` (`121` frames @ 24 fps).
+* **720p Base option:** Swap Node 1 to `hunyuanvideo1.5_720p_i2v_fp16.safetensors`, set `1280×720`, CFG `6.0`, `20–50` steps, shift `7.0`.
 
-> These workflows have **not been tested in ComfyUI yet**; they were generated from Lightricks' official
-> `LTX-2.5_T2V_I2V_Two_Stage_Distilled.json` and LiconStudio's `LTX2.5-MSR-sample-workflow-V2.json`.
-> If a node shows red/missing values, compare it with those official files.
+**HunyuanVideo 1.5 Model Files** ([`Comfy-Org/HunyuanVideo_1.5_repackaged`](https://huggingface.co/Comfy-Org/HunyuanVideo_1.5_repackaged) & [`Comfy-Org/sigclip_vision_384`](https://huggingface.co/Comfy-Org/sigclip_vision_384)):
+| Folder | File |
+|---|---|
+| `models/diffusion_models/` | `hunyuanvideo1.5_480p_i2v_step_distilled_fp16.safetensors` *(or optional `720p_i2v_fp16`)* |
+| `models/text_encoders/` | `qwen_2.5_vl_7b_fp8_scaled.safetensors` |
+| `models/text_encoders/` | `byt5_small_glyphxl_fp16.safetensors` |
+| `models/clip_vision/` | `sigclip_vision_patch14_384.safetensors` |
+| `models/vae/` | `hunyuanvideo15_vae_fp16.safetensors` |
 
-### How both workflows work
-1. **Stage 1** – generate at low resolution, 8 steps (distilled model, CFG 1).
-2. **Stage 2** – LTX **latent spatial upscaler ×2** + 3 refine steps (adds real detail, not just stretching).
-3. **Decode** – tiled VAE decode + audio decode → MP4 with sound.
-
-Width / height / frames / fps are set **once** (group 2). Final size = **2× stage-1 size**.
-
-### I2V start/end workflow
-- Start + end frame: load both images and run.
-- Start image only: select both `END-FRAME guide` nodes → **Ctrl+B** (bypass).
-- `START frame` strength stage 1: `0.7` = more motion (official default), `1.0` = exact first frame.
-
-### MSR multi-reference workflow
-- Needs custom node `ComfyUI-LTX2.5-MSR` and `LTX-2.5-Licon-MSR-V2.safetensors` in `models/loras`.
-- `pic1` required; references must be contiguous (pic1, pic2, …). For fewer refs, delete the links to **both** guide nodes.
-- Prompt tips:
-  - Label references as `Image 1`, `Image 2`, `Image 3`…
-  - Say which reference provides character / clothing / object / background.
-  - Describe actions and positions ("Image 1 on the left, Image 2 on the right").
-- Optional audio refs (up to 2 speakers): `Load Audio` → `LTXV Audio VAE Encode` → `audio_ref1/2` on **both** guides (paired with pic1/pic2).
-- Always keep `LTXVCropGuides` before decoding (removes reference slots from the video).
-- MSR uses more VRAM than plain I2V → default stage-1 size is 832×480.
+### Adding Audio to Wan 2.2 / HunyuanVideo 1.5
+1. **Direct mux inside the workflow:** Press **Ctrl+B** on the bypassed `LoadAudio` + `TrimAudioDuration` nodes wired into `CreateVideo` to trim and mux WAV/MP3 straight into the MP4.
+2. **AI-generated SFX/Foley (`ComfyUI-MMAudio`):** Install [`kijai/ComfyUI-MMAudio`](https://github.com/kijai/ComfyUI-MMAudio) (~4–6 GB VRAM) to generate matching footsteps/ambience/Foley directly from video frames.
+3. **DaVinci Resolve / Talking shots:** Mix music/SFX in Resolve; for **speaking lip-sync shots**, render that shot in **LTX-2.5** (locks your voice WAV) or **MiniMax / Pika H3 Flex**.
 
 ---
 
-## 2. Installation (Linux, RTX 3090)
+## 5. Audio Generation (`Audio/`)
 
-ComfyUI Desktop is officially only Windows (NVIDIA) and macOS (Apple Silicon). On Linux use the git install:
+### A. Voice Cloning & Dialogue TTS ([`Audio/Audio_Qwen3TTS_VoiceClone_TTSSuite.json`](Audio/Audio_Qwen3TTS_VoiceClone_TTSSuite.json))
+* **Custom node required:** [`diodiogod/TTS-Audio-Suite`](https://github.com/diodiogod/TTS-Audio-Suite)
+  ```bash
+  cd ComfyUI/custom_nodes
+  git clone https://github.com/diodiogod/TTS-Audio-Suite
+  pip install -r TTS-Audio-Suite/requirements.txt
+  ```
+* **Auto-downloads model:** **Qwen3-TTS Base 1.7B** (Apache 2.0, ~4–6 GB VRAM, 10 languages).
+* **Clone an existing voice:** Load a **3–15 s** clean speech clip in `LoadAudio`, paste its **exact spoken words** into `CharacterVoicesNode`, type your script in `PrimitiveStringMultiline` (supports `[pause:0.8s]` and `[Character]` tags), and Queue.
+* **Invent a brand-new character voice from text, then lock it:**
+  1. Switch `Qwen3-TTS Engine` to **`TTS - VoiceDesign 1.7B`** (or `TTS - CustomVoice 1.7B` for 9 presets), disconnect `opt_narrator` on `UnifiedTTSTextNode`, describe the voice, generate a clean 5–10 s sentence, and save it.
+  2. Switch back to **`TTS - Base 1.7B (Voice Clone)`**, reconnect `opt_narrator`, load that saved clip into `LoadAudio`, and paste its exact sentence into `CharacterVoicesNode` — now every line stays locked to that voice.
+* **Extras included:** Un-bypass **`ChatterBoxEngineNode`** (`Ctrl+B`) for 23-language cloning without a transcript; `TTS-Audio-Suite` also supports **RVC voice conversion**.
 
+### B. Text-to-Music & Background Scores ([`Audio/Audio_ACEStep15_TextToMusic.json`](Audio/Audio_ACEStep15_TextToMusic.json))
+* **100% native ComfyUI** — runs in **under 10 seconds on an RTX 3090** (<4 GB VRAM).
+* **Single model file:** Download [`ace_step_1.5_turbo_aio.safetensors`](https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/checkpoints/ace_step_1.5_turbo_aio.safetensors) (~9.3 GB, MIT license) into `ComfyUI/models/checkpoints/`.
+* Set `Duration in seconds` (default `30 s`, up to `600 s`). Use `[Instrumental]` in `lyrics` for film scores, or `[Verse 1]` / `[Chorus]` for vocal songs.
+
+---
+
+## 6. Upscaling Beyond 1080p (Optional)
+
+| Method | Quality | Speed | Notes |
+|---|---|---|---|
+| Lightricks `LTX-2.5_V2V_TiledFusion_Upscale.json` | Best LTX-native | Slow | FullHD/4K/8K, in `ComfyUI-LTXVideo/example_workflows/2.5` |
+| SeedVR2 | Very good, temporally consistent | Slow | Use block swap on 3090, process in frame batches |
+| `Upscale Image (using Model)` + 4x-UltraSharp / RealESRGAN | OK | Fast | Per-frame → slight flicker |
+| RIFE / FILM (`ComfyUI-Frame-Interpolation`) | – | Fast | 24 → 48 fps for smoother motion (or use DFR Stage 3) |
+
+Save with native `SaveVideo` or VHS Video Combine (H.264/H.265, CRF 16–18).
+
+---
+
+## 7. Linux RTX 3090 Installation, Troubleshooting & Tips
+
+### Installation (Linux, RTX 3090)
+ComfyUI Desktop is officially Windows/macOS only — on Linux use the git install:
 ```bash
 git clone https://github.com/comfyanonymous/ComfyUI
 cd ComfyUI
 python -m venv venv && source venv/bin/activate
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 pip install -r requirements.txt
-pip install -r manager_requirements.txt        # built-in Manager (newer versions)
-pip install triton sageattention
+pip install -r manager_requirements.txt
+pip install triton sageattention   # or compile SageAttention 2.2 for CUDA 13: see Compile-sage-linux.md
 
 cd custom_nodes
 git clone https://github.com/city96/ComfyUI-GGUF && pip install -r ComfyUI-GGUF/requirements.txt
-git clone https://github.com/liconstudio/ComfyUI-LTX2.5-MSR        # MSR workflow only
+git clone https://github.com/liconstudio/ComfyUI-LTX2.5-MSR          # MSR workflows only
+git clone https://github.com/WhatDreamsCost/WhatDreamsCost-ComfyUI   # LTX Director only
+git clone https://github.com/diodiogod/TTS-Audio-Suite && pip install -r TTS-Audio-Suite/requirements.txt  # Qwen3-TTS only
 # optional/useful:
-git clone https://github.com/Lightricks/ComfyUI-LTXVideo           # official LTX workflows/nodes
+git clone https://github.com/Lightricks/ComfyUI-LTXVideo
 git clone https://github.com/kijai/ComfyUI-KJNodes
 git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite
 git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation
 ```
 
-Launch:
+Launch (see [`start-comfy.sh`](start-comfy.sh)):
 ```bash
 python main.py --use-sage-attention --enable-manager
-# add --reserve-vram 1 if the desktop/monitor uses the same GPU
+# add --listen 0.0.0.0 for LAN access, or --reserve-vram 1 if the monitor uses the 3090
 ```
-- Do **not** use `--highvram`. Use `--lowvram` only as last resort.
-- `--fast` gives nothing on the 3090 (fp8 speedups need Ada/Blackwell).
-- Make sure PyTorch CUDA version matches your driver, otherwise sage attention fails.
+* Do **not** use `--highvram`. Use `--lowvram` only as a last resort.
+* `--fast` gives nothing on the 3090 (FP8 speedups need Ada/Blackwell).
 
----
+### Out-of-Memory / Slow Checklist (RTX 3090 24 GB)
+1. Lower `VAEDecodeTiled` `tile_size`: `512` → `384` → `256`.
+2. In LTX Director, set `use_tiled_encode = true` on both `LTXDirectorGuide` nodes.
+3. Reduce resolution (`1024×1024` → `768×768`, `960×544` → `768×448`) or duration (`10 s` → `8 s` → `5 s`).
+4. Try a smaller GGUF (`UD-Q5_K_XL` or `UD-Q4_K_XL` instead of `Q6_K`).
+5. MSR / MiniMax Ref2VA: fewer reference images.
+6. Close GPU-accelerated browser tabs; add `--reserve-vram 1`.
+7. Watch the console: **"loaded partially"** = model didn't fit in VRAM → slow (fix with steps 3–5). 64 GB system RAM is recommended for offloaded parts.
 
-## 3. Models (3090)
+### ComfyUI Manager Notes
+* ComfyUI Desktop already includes the Manager — don't clone `ComfyUI-Manager` into `custom_nodes` too.
+* `"not allowed with this security level"`: edit `user/default/ComfyUI-Manager/config.ini` (or `user/__manager/config.ini`) → `security_level = normal` (or `weak` for git URL installs).
+* Git install: run with `--enable-manager`.
 
-Lightricks/LTX-2.5 is gated: accept license on Hugging Face, then `hf auth login`.
-
-| Folder | File | Size | Source |
-|---|---|---|---|
-| `models/unet/` | `ltx-2.5-22b-distilled-Q6_K.gguf` | 17.8 GB | `unsloth/LTX-2.5-GGUF` (`distilled/`) |
-| `models/text_encoders/` | `gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors` | 15.4 GB | `Lightricks/LTX-2.5` |
-| `models/vae/` | `ltx-2.5-video-vae-bf16.safetensors` | 1.5 GB | `Lightricks/LTX-2.5` |
-| `models/vae/` | `ltx-2.5-audio-vae-bf16.safetensors` | 0.4 GB | `Lightricks/LTX-2.5` |
-| `models/latent_upscale_models/` | `ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors` | 1.0 GB | `Lightricks/LTX-2.5` |
-| `models/loras/` | `LTX-2.5-Licon-MSR-V2.safetensors` | 2.2 GB | `LiconStudio/LTX-2.5-Multiple-Subject-Reference` |
-
-### GGUF choice (distilled, quality vs bf16 from unsloth's table)
-| File | Size | Notes |
-|---|---|---|
-| `Q8_0` | 22.8 GB | closest to bf16, heavy for 24 GB |
-| `Q6_K` | 17.8 GB | **default** – very good quality |
-| `UD-Q5_K_XL` | 16.0 GB | good compromise |
-| `UD-Q4_K_XL` | 14.0 GB | unsloth's recommendation for most GPUs |
-| `UD-Q3_K_XL` / `UD-Q2_K_XL` | 12 / 9.5 GB | emergency only |
-
-- Prefer `UD-` variants over plain `Q4_K_M` / `Q3_K_M` at the same size.
-- Text encoder: int8 version (3090 has int8 tensor cores). Don't use the 26 GB bf16 one on 24 GB.
-- **Skip `nvfp4`** files on the 3090 – Blackwell only (good for the N1X laptop).
-
----
-
-## 4. Resolution & length rules
-
-- Width/height **divisible by 32**.
-- Frames = **8n + 1**: 97 (≈4 s), 121 (≈5 s), 161 (≈6.7 s) at 24 fps.
-
-| Stage 1 | Final (×2) | Use |
-|---|---|---|
-| 768×448 | 1536×896 | fast tests / finding seeds & prompts |
-| **960×544** | **1920×1088** | default 16:9 1080p (crop to 1920×1080) |
-| 544×960 | 1088×1920 | vertical |
-| 832×480 | 1664×960 | MSR default |
-| 1280×704 | 2560×1408 | upper limit on 3090; may need Q5/Q4 + small tiles |
-
-Recommended routine:
-1. Find seed + prompt at 768×448 (fast, seed = randomize).
-2. Fix the seed, render at 960×544 → 1920×1088.
-3. Optional 4K / smoother motion (section 6).
-
----
-
-## 5. Out of memory / slow – checklist (3090)
-
-1. VAE Decode (Tiled) `tile_size` 512 → 384 → 256.
-2. Smaller GGUF (UD-Q5_K_XL → UD-Q4_K_XL).
-3. Fewer frames (121 → 97).
-4. Smaller stage-1 resolution.
-5. MSR: fewer reference images.
-6. `--reserve-vram 1`, close browser tabs with GPU acceleration.
-7. Watch the console: **"loaded partially"** = model didn't fit in VRAM → slow. Fix with steps 2–4.
-
-64 GB system RAM is enough for offloaded parts; 32 GB would swap.
-
----
-
-## 6. Upscaling beyond 1080p (optional)
-
-| Method | Quality | Speed | Notes |
-|---|---|---|---|
-| Lightricks `LTX-2.5_V2V_TiledFusion_Upscale.json` | best LTX-native | slow | FullHD/4K/8K, in `ComfyUI-LTXVideo/example_workflows/2.5` |
-| SeedVR2 | very good, temporally consistent | slow | use its block swap on 3090, process in frame batches |
-| `Upscale Image (using Model)` + 4x-UltraSharp / RealESRGAN | ok | fast | per frame → slight flicker |
-| RIFE / FILM (Frame-Interpolation) | – | fast | 24 → 48 fps for smoother motion |
-
-Save with VHS Video Combine (H.264/H.265, CRF 16–18) or native Save Video.
-
----
-
-## 7. Coming from Wan2GP – what replaces what
-
+### Coming from Wan2GP – What Replaces What
 | Wan2GP | ComfyUI |
 |---|---|
 | mmgp offloading / profiles | ComfyUI smart memory, Kijai WanVideoWrapper block swap, ComfyUI-MultiGPU DisTorch |
-| int8/fp8 quantization | fp8 "scaled" / int8 checkpoints, GGUF via ComfyUI-GGUF |
+| int8/fp8 quantization | fp8 scaled / int8 ConvRot checkpoints, GGUF via `ComfyUI-GGUF` |
 | Sage attention | `--use-sage-attention` |
 | TeaCache | TeaCache / MagCache nodes (KJNodes, WanVideoWrapper) |
-| Distilled LoRAs (Lightx2v, CausVid) | same LoRAs, 4–8 steps, CFG 1 |
-| VAE tiling | VAE Decode (Tiled) |
+| Distilled LoRAs (LightX2V, CausVid) | Same LoRAs, 4–8 steps, CFG 1 |
+| VAE tiling | `VAEDecodeTiled` |
 | compile | TorchCompile nodes (needs Triton) |
 
-Wan on 3090: fp8 or GGUF Q8 14B, block swap ~20 at 720p (reduce until OOM), fp8 umt5 text encoder. Wan 2.2 14B uses two models (high/low noise) → needs lots of system RAM (64 GB).
+---
+
+## 8. Other Local Video Models Comparison (Reference)
+
+| Model | Images & timeline control | Audio | Practical on a 3090 |
+|---|---|---|---|
+| [LTX-2.5](https://docs.comfy.org/tutorials/video/ltx/ltx-2-5) | Start/Mid/End guides, DFR single-image, LTX Director timeline, MSR multi-subject refs, continuation last-frame. | Generates synchronized audio + locks prerecorded dialogue for lip-sync. | Primary daily driver with GGUF Q6_K + int8 Gemma 4. |
+| [MiniMax H3 / Pika H3 Flex](https://docs.comfy.org/tutorials/video/pika/pika-h3-flex) | Ref2VA (up to 9 images + guides) and FL2VA (first/last frame). | Native stereo speech, music, and SFX; `<Audio 1>` timbre ref. | Pruned INT8 + dynamic offloading works on 24 GB + 64 GB RAM; 4–6 steps takes ~1.5–3 min. |
+| [Kandinsky 6 Lite / Lite Distill](https://github.com/kandinskylab/kandinsky-6/tree/main/comfyui) | 1 image in ComfyUI example (FLF in Python pipeline); 5 s clips. | Native synced audio; audio-to-video mode cannot combine with image input. | 3B Lite / 10-step distill is lighter, though full pipeline still uses encoders/VAEs/vocoder. |
+| [LongCat Video / Avatar 1.6](https://github.com/meituan-longcat/LongCat-Video) | I2V & continuation; Avatar focuses on talking characters rather than timed keyframes. | **Audio-driven:** animates a character from speech. | 13.6B model; needs quantized/offloaded setup. |
+| [HunyuanVideo 1.5](https://docs.comfy.org/tutorials/video/hunyuan/hunyuan-video-1-5) | T2V and 1-image I2V. | Video only; mux audio or use MMAudio. | Very light (~9 GB VRAM in FP8 distilled). Regional license restrictions apply. |
+| [FramePack](https://github.com/lllyasviel/FramePack) | Starts from 1 image and progressively generates longer video. | No native soundtrack. | Runs from 6 GB VRAM, slower on long clips. |
+| [SkyReels V2 1.3B](https://github.com/SkyworkAI/SkyReels-V2) | I2V or Diffusion Forcing start/end continuation. | No native soundtrack. | ~14.7 GB peak VRAM at 540p. |
 
 ---
 
-## 8. ComfyUI Manager notes
+## 9. RTX Spark N1X Laptop vs. RTX 3090
 
-- ComfyUI Desktop already **includes** the Manager – don't clone `ComfyUI-Manager` into `custom_nodes` too (conflicts).
-- "not allowed with this security level": edit `user/default/ComfyUI-Manager/config.ini` (or `user/__manager/config.ini`) → `security_level = normal` (or `weak` for git URL installs).
-- Git must be installed and on PATH.
-- Desktop uses its own `.venv`; install pip packages from Desktop's built-in terminal, not system Python.
-- Git install: run with `--enable-manager`.
-
----
-
-## 9. Images on RTX Spark (N1X, 128 GB unified)
-
-Memory **size** is no problem; memory **bandwidth** (~273 GB/s vs 936 GB/s on 3090) is the bottleneck → use it for images, 3090 for video.
-
-- **Turn off** memory tricks: no block swap, no `--lowvram`/`--reserve-vram`, no small GGUF just to fit, no tiled VAE needed.
-- **Use fp8 / NVFP4** models – Blackwell has hardware support, they are *faster* here, not just smaller. `--fast` helps.
-- Use turbo / lightning / distilled image models & LoRAs (fewer steps = biggest speedup).
-- Leave ~16–20 GB for Windows + apps (shared memory).
-- Laptop: plug in and use **Performance** power mode; long jobs will thermal-throttle.
-- Windows on ARM caveats:
-  - Need native **ARM64 + CUDA** PyTorch (x86 emulation can't use CUDA).
-  - Check whether ComfyUI Desktop has an ARM64 build; otherwise use manual install per NVIDIA/ComfyUI guidance.
-  - Sage attention / Triton / TorchCompile may not exist yet → PyTorch SDPA attention is fine.
-  - Custom nodes with compiled x86 wheels (InsightFace etc.) may fail; pure-Python nodes usually work.
-
-### Using both machines
-- Make images on the laptop → use as start/end frames on the 3090.
-- Shared folder, or run 3090 ComfyUI with `--listen` and open it from the laptop browser (trusted network only).
+* **Best split between the two machines:** Generate high-res **images on the RTX Spark N1X** (128 GB unified memory, native Blackwell FP8/NVFP4) → render **videos on the RTX 3090** (~936 GB/s VRAM bandwidth vs ~273–300 GB/s unified memory bandwidth on N1X). You can share a folder or run the 3090 with `--listen 0.0.0.0` on a trusted LAN.
+* **For images on RTX Spark N1X (128 GB):**
+  * Turn off memory tricks: no block swap, no `--lowvram`/`--reserve-vram`, no small GGUF just to fit, no tiled VAE needed.
+  * Prefer **FP8 / NVFP4** models (`--fast` helps on Blackwell) and turbo/lightning/distilled models (fewer steps = biggest speedup).
+  * Leave ~16–20 GB for Windows + apps; plug in and use **Performance** power mode.
+  * **Windows on ARM caveats:** Needs native ARM64 + CUDA PyTorch; SageAttention / Triton / TorchCompile / compiled x86 wheels (e.g. InsightFace) may not exist yet — PyTorch SDPA attention and pure-Python nodes work fine.
+* **Can RTX Spark N1X run MiniMax H3 locally?** Yes on the **128 GB** configuration (note: a smaller 32 GB N1X exists — check installed RAM; N1X is not the same product as DGX Spark GB10). More memory avoids 3090-to-RAM offloading, **but** lower memory bandwidth means per-step sampling is typically slower than a stock 3090 (one comparison reported ~15.06 s/step vs ~8.20 s/step at 832×480 I2V).
