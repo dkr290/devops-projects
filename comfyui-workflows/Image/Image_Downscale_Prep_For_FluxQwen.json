@@ -1,0 +1,509 @@
+{
+  "id": "ad34f2b4-7eaa-466a-8b68-c6580a1c6276",
+  "revision": 0,
+  "last_node_id": 9,
+  "last_link_id": 8,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        340,
+        380
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            1,
+            2
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "upscaled_character_or_bg.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "upscaled_character_or_bg.png",
+        "upload": "image"
+      },
+      "title": "1. Load Oversized Image (2K/4K Character or Background)"
+    },
+    {
+      "id": 2,
+      "type": "PrimitiveBoolean",
+      "pos": [
+        400,
+        0
+      ],
+      "size": [
+        340,
+        85
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "BOOLEAN",
+          "type": "BOOLEAN",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveBoolean",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        false
+      ],
+      "widgets_values_named": {
+        "value": false
+      },
+      "title": "USE EXACT WIDTH/HEIGHT? OFF = Auto 1 MP; ON = Custom Size",
+      "color": "#234",
+      "bgcolor": "#365"
+    },
+    {
+      "id": 3,
+      "type": "ImageScaleToTotalPixels",
+      "pos": [
+        400,
+        125
+      ],
+      "size": [
+        340,
+        130
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageScaleToTotalPixels",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "area",
+        1.0,
+        64
+      ],
+      "widgets_values_named": {
+        "upscale_method": "area",
+        "megapixels": 1.0,
+        "resolution_steps": 64
+      },
+      "title": "Auto ~1.0 MP (area, \u00f764: 9:16->768x1344, 16:9->1344x768)"
+    },
+    {
+      "id": 4,
+      "type": "PrimitiveInt",
+      "pos": [
+        400,
+        295
+      ],
+      "size": [
+        160,
+        85
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveInt",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        1344,
+        "fixed"
+      ],
+      "widgets_values_named": {
+        "value": 1344,
+        "control_after_generate": "fixed"
+      },
+      "title": "Target WIDTH"
+    },
+    {
+      "id": 5,
+      "type": "PrimitiveInt",
+      "pos": [
+        580,
+        295
+      ],
+      "size": [
+        160,
+        85
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveInt",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        768,
+        "fixed"
+      ],
+      "widgets_values_named": {
+        "value": 768,
+        "control_after_generate": "fixed"
+      },
+      "title": "Target HEIGHT"
+    },
+    {
+      "id": 6,
+      "type": "ImageScale",
+      "pos": [
+        400,
+        415
+      ],
+      "size": [
+        340,
+        140
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 2
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 3,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 4,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageScale",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "area",
+        1344,
+        768,
+        "center"
+      ],
+      "widgets_values_named": {
+        "upscale_method": "area",
+        "width": 1344,
+        "height": 768,
+        "crop": "center"
+      },
+      "title": "Exact Size Downscale (area + center crop)"
+    },
+    {
+      "id": 7,
+      "type": "ComfySwitchNode",
+      "pos": [
+        800,
+        125
+      ],
+      "size": [
+        270,
+        110
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_false",
+          "type": "IMAGE",
+          "link": 5,
+          "shape": 7
+        },
+        {
+          "name": "on_true",
+          "type": "IMAGE",
+          "link": 6,
+          "shape": 7
+        },
+        {
+          "name": "switch",
+          "type": "BOOLEAN",
+          "link": 7,
+          "widget": {
+            "name": "switch"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "IMAGE",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfySwitchNode",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        false
+      ],
+      "widgets_values_named": {
+        "switch": false
+      },
+      "title": "If/Else: Auto 1 MP OR Exact Size"
+    },
+    {
+      "id": 8,
+      "type": "SaveImage",
+      "pos": [
+        1120,
+        0
+      ],
+      "size": [
+        400,
+        420
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 8
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "Image_Prep_1MP"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "Image_Prep_1MP"
+      },
+      "title": "Save Clean Downscaled PNG (for FLUX.2 / Qwen)"
+    },
+    {
+      "id": 9,
+      "type": "MarkdownNote",
+      "pos": [
+        0,
+        420
+      ],
+      "size": [
+        360,
+        470
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "# Downscale Prep for FLUX.2 / Qwen-Image-Edit (~1 MP)\n\nUse this workflow when you **already generated a high-res (2K/4K) character or background you love** and want to merge them in FLUX.2 or Qwen-Image-Edit without slow multi-image compute.\n\n## Why downscale instead of regenerating?\n- Regenerating with the same seed at a lower resolution changes the latent shape and produces a **different face/pose/outfit**.\n- Downscaling preserves **100% of your exact character**, runs in under 1 second, and looks clean/supersampled with `area` resampling.\n\n## Modes (`USE EXACT WIDTH/HEIGHT?` switch)\n- **OFF (default \u2014 recommended):** Automatically scales any image to **`1.0 MP`** snapped to multiples of **`64`**, keeping its exact aspect ratio:\n  - `9:16` character (e.g. 2160\u00d73840) \u2192 **`768\u00d71344`**\n  - `16:9` background (e.g. 3840\u00d72160) \u2192 **`1344\u00d7768`**\n  - `1:1` square (e.g. 2048\u00d72048) \u2192 **`1024\u00d71024`**\n- **ON (Exact dimensions):** Forces exact `Target WIDTH \u00d7 Target HEIGHT` (with `center` crop if aspect ratios differ). Useful if you need exact `1344\u00d7768` (16:9) or `768\u00d71344` (9:16).\n\nSaves a clean lossless PNG in `ComfyUI/output/Image_Prep_1MP_*.png`.\n"
+      ],
+      "widgets_values_named": {
+        "text": "# Downscale Prep for FLUX.2 / Qwen-Image-Edit (~1 MP)\n\nUse this workflow when you **already generated a high-res (2K/4K) character or background you love** and want to merge them in FLUX.2 or Qwen-Image-Edit without slow multi-image compute.\n\n## Why downscale instead of regenerating?\n- Regenerating with the same seed at a lower resolution changes the latent shape and produces a **different face/pose/outfit**.\n- Downscaling preserves **100% of your exact character**, runs in under 1 second, and looks clean/supersampled with `area` resampling.\n\n## Modes (`USE EXACT WIDTH/HEIGHT?` switch)\n- **OFF (default \u2014 recommended):** Automatically scales any image to **`1.0 MP`** snapped to multiples of **`64`**, keeping its exact aspect ratio:\n  - `9:16` character (e.g. 2160\u00d73840) \u2192 **`768\u00d71344`**\n  - `16:9` background (e.g. 3840\u00d72160) \u2192 **`1344\u00d7768`**\n  - `1:1` square (e.g. 2048\u00d72048) \u2192 **`1024\u00d71024`**\n- **ON (Exact dimensions):** Forces exact `Target WIDTH \u00d7 Target HEIGHT` (with `center` crop if aspect ratios differ). Useful if you need exact `1344\u00d7768` (16:9) or `768\u00d71344` (9:16).\n\nSaves a clean lossless PNG in `ComfyUI/output/Image_Prep_1MP_*.png`.\n"
+      },
+      "title": "HOW TO: Downscale Prep (~1 MP)",
+      "color": "#222",
+      "bgcolor": "#000"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      3,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      1,
+      0,
+      6,
+      0,
+      "IMAGE"
+    ],
+    [
+      3,
+      4,
+      0,
+      6,
+      1,
+      "INT"
+    ],
+    [
+      4,
+      5,
+      0,
+      6,
+      2,
+      "INT"
+    ],
+    [
+      5,
+      3,
+      0,
+      7,
+      0,
+      "IMAGE"
+    ],
+    [
+      6,
+      6,
+      0,
+      7,
+      1,
+      "IMAGE"
+    ],
+    [
+      7,
+      2,
+      0,
+      7,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      8,
+      7,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "1. Input Image",
+      "bounding": [
+        -20,
+        -45,
+        380,
+        445
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "2. Downscale Mode (Auto ~1 MP or Exact Size)",
+      "bounding": [
+        380,
+        -45,
+        710,
+        625
+      ],
+      "color": "#8A8",
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "3. Output PNG",
+      "bounding": [
+        1100,
+        -45,
+        440,
+        485
+      ],
+      "color": "#2a6",
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7,
+      "offset": [
+        80,
+        100
+      ]
+    }
+  },
+  "version": 0.4
+}

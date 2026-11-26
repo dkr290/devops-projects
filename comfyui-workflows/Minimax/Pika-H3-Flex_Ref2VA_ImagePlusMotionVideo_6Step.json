@@ -1,0 +1,1843 @@
+{
+  "id": "49d0da7b-3d69-4f5b-aa45-59b005112a2b",
+  "revision": 0,
+  "last_node_id": 30,
+  "last_link_id": 36,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        430,
+        95
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+        "default"
+      ],
+      "widgets_values_named": {
+        "unet_name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      },
+      "title": "MiniMax H3 Ref2VA Base (pruned INT8 ConvRot)"
+    },
+    {
+      "id": 2,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        0,
+        130
+      ],
+      "size": [
+        430,
+        95
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "pika_h3_flex_ref2va_v1_bf16.safetensors",
+        1.0
+      ],
+      "widgets_values_named": {
+        "lora_name": "pika_h3_flex_ref2va_v1_bf16.safetensors",
+        "strength_model": 1.0
+      },
+      "title": "Pika H3 Flex Ref2VA LoRA (6-step; keep strength 1.0)"
+    },
+    {
+      "id": 3,
+      "type": "CLIPLoader",
+      "pos": [
+        0,
+        260
+      ],
+      "size": [
+        430,
+        120
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "minimax",
+        "default"
+      ],
+      "widgets_values_named": {
+        "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "type": "minimax",
+        "device": "default"
+      },
+      "title": "Text Encoder (Qwen3-VL 32B NVFP4)"
+    },
+    {
+      "id": 4,
+      "type": "VAELoader",
+      "pos": [
+        0,
+        415
+      ],
+      "size": [
+        430,
+        80
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            4,
+            18,
+            29
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "minimax_h3_video_vae_int8_convrot.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"
+      },
+      "title": "MiniMax H3 Video VAE (INT8 ConvRot)"
+    },
+    {
+      "id": 5,
+      "type": "VAELoader",
+      "pos": [
+        0,
+        530
+      ],
+      "size": [
+        430,
+        80
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            5,
+            19,
+            31
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "minimax_h3_audio_vae_fp32.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+      },
+      "title": "MiniMax H3 Audio VAE (FP32)"
+    },
+    {
+      "id": 6,
+      "type": "ResolutionSelector",
+      "pos": [
+        480,
+        0
+      ],
+      "size": [
+        320,
+        170
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "links": [
+            12
+          ]
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ResolutionSelector",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "16:9 (Widescreen)",
+        0.5,
+        32
+      ],
+      "widgets_values_named": {
+        "aspect_ratio": "16:9 (Widescreen)",
+        "megapixels": 0.5,
+        "multiple": 32
+      },
+      "title": "Resolution (0.5 MP = 960x544 draft; 0.98 MP = 1344x768)",
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 7,
+      "type": "PrimitiveFloat",
+      "pos": [
+        480,
+        205
+      ],
+      "size": [
+        320,
+        80
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "FLOAT",
+          "type": "FLOAT",
+          "links": [
+            14
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveFloat",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        5.0
+      ],
+      "widgets_values_named": {
+        "value": 5.0
+      },
+      "title": "Duration in seconds (5s = 124f; 2-15s)",
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 8,
+      "type": "ComfyMathExpression",
+      "pos": [
+        480,
+        320
+      ],
+      "size": [
+        320,
+        120
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "values.a",
+          "type": "FLOAT,INT,BOOLEAN",
+          "link": 14,
+          "label": "a"
+        },
+        {
+          "name": "values.b",
+          "type": "FLOAT,INT,BOOLEAN",
+          "link": null,
+          "label": "b",
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "FLOAT",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            15
+          ]
+        },
+        {
+          "name": "BOOL",
+          "type": "BOOLEAN",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ComfyMathExpression",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "max(5, round(a * 24)) + (5 - (max(5, round(a * 24)) % 17)) % 17"
+      ],
+      "widgets_values_named": {
+        "expression": "max(5, round(a * 24)) + (5 - (max(5, round(a * 24)) % 17)) % 17"
+      },
+      "title": "Snap frames to H3 cadence (17n + 5: 5s -> 124)"
+    },
+    {
+      "id": 9,
+      "type": "LoadImage",
+      "pos": [
+        860,
+        0
+      ],
+      "size": [
+        270,
+        310
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            6
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "character_scene.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "character_scene.png",
+        "upload": "image"
+      },
+      "title": "1. Character / Scene Image (<Picture 1>)"
+    },
+    {
+      "id": 10,
+      "type": "LoadImage",
+      "pos": [
+        1160,
+        0
+      ],
+      "size": [
+        270,
+        310
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            7
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "background_scene.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "background_scene.png",
+        "upload": "image"
+      },
+      "title": "2. Optional Background (<Picture 2> - unlink if unused)"
+    },
+    {
+      "id": 11,
+      "type": "LoadVideo",
+      "pos": [
+        1460,
+        0
+      ],
+      "size": [
+        300,
+        310
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadVideo",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "motion_ref.mp4",
+        "image"
+      ],
+      "widgets_values_named": {
+        "file": "motion_ref.mp4",
+        "upload": "image"
+      },
+      "title": "3. Motion Reference Video (<Video 1>, 2-15s @ 24fps)"
+    },
+    {
+      "id": 12,
+      "type": "Video Slice",
+      "pos": [
+        1790,
+        0
+      ],
+      "size": [
+        270,
+        130
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Video Slice",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        0,
+        5.0,
+        false
+      ],
+      "widgets_values_named": {
+        "start_time": 0,
+        "duration": 5.0,
+        "strict_duration": false
+      },
+      "title": "Trim Motion Video (start_time -> duration s)"
+    },
+    {
+      "id": 13,
+      "type": "GetVideoComponents",
+      "pos": [
+        1790,
+        165
+      ],
+      "size": [
+        270,
+        130
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            10
+          ]
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": []
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "bit_depth",
+          "type": "COMBO",
+          "links": []
+        },
+        {
+          "name": "color_space",
+          "type": "COMBO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GetVideoComponents",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [],
+      "title": "Extract Video Frames (link audio -> ref_video_audio_0 if wanted)"
+    },
+    {
+      "id": 14,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        860,
+        360
+      ],
+      "size": [
+        570,
+        410
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "subject_definitions:\n<Subject 1> is the person in <Picture 1>. Reference role: identity, face, hair, and outfit anchor. Preserve facial features, hairstyle, build, and clothing accurately.\n<Subject 2> is the environment in <Picture 2> (or the background of <Picture 1> if <Picture 2> is disconnected). Reference role: location, lighting, and atmosphere anchor.\n<Video 1> is the motion and camera reference clip only. Do NOT copy the person, face, outfit, or background from <Video 1>.\n\nsummary:\n[reference generation] A five-second cinematic shot where <Subject 1> from <Picture 1> performs the exact body movement, timing, and camera choreography of <Video 1> inside <Subject 2>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - face, hair, clothing, and identity from <Picture 1>.\n<Subject 2> (appears in [Shot 1]): fully_preserved - environment, lighting, and palette from <Picture 2>.\n<Video 1> (motion & camera): attribute_transfer - transfer the body motion, pacing, gesture rhythm, and camera movement from <Video 1>; treat the appearance and setting of <Video 1> as weak_reference and discard them completely.\nNo audio reference is used in this generation.\n\ndetailed_description:\nNatural cinematic photography with realistic skin texture, consistent lighting, and smooth motion.\n\n[Shot 1] Inside <Subject 2>, <Subject 1> performs the exact movement sequence and pacing from <Video 1>, matching the body motion, head turns, and camera choreography cleanly while keeping <Subject 1>'s exact face, outfit, and the environment of <Subject 2> throughout the entire five-second shot.\n\noverall_soundscape:\nNatural ambient room tone and subtle footsteps/clothing movement synced to <Subject 1>'s motion.\n\nnon_diegetic_music:\nN/A"
+      ],
+      "widgets_values_named": {
+        "value": "subject_definitions:\n<Subject 1> is the person in <Picture 1>. Reference role: identity, face, hair, and outfit anchor. Preserve facial features, hairstyle, build, and clothing accurately.\n<Subject 2> is the environment in <Picture 2> (or the background of <Picture 1> if <Picture 2> is disconnected). Reference role: location, lighting, and atmosphere anchor.\n<Video 1> is the motion and camera reference clip only. Do NOT copy the person, face, outfit, or background from <Video 1>.\n\nsummary:\n[reference generation] A five-second cinematic shot where <Subject 1> from <Picture 1> performs the exact body movement, timing, and camera choreography of <Video 1> inside <Subject 2>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - face, hair, clothing, and identity from <Picture 1>.\n<Subject 2> (appears in [Shot 1]): fully_preserved - environment, lighting, and palette from <Picture 2>.\n<Video 1> (motion & camera): attribute_transfer - transfer the body motion, pacing, gesture rhythm, and camera movement from <Video 1>; treat the appearance and setting of <Video 1> as weak_reference and discard them completely.\nNo audio reference is used in this generation.\n\ndetailed_description:\nNatural cinematic photography with realistic skin texture, consistent lighting, and smooth motion.\n\n[Shot 1] Inside <Subject 2>, <Subject 1> performs the exact movement sequence and pacing from <Video 1>, matching the body motion, head turns, and camera choreography cleanly while keeping <Subject 1>'s exact face, outfit, and the environment of <Subject 2> throughout the entire five-second shot.\n\noverall_soundscape:\nNatural ambient room tone and subtle footsteps/clothing movement synced to <Subject 1>'s motion.\n\nnon_diegetic_music:\nN/A"
+      },
+      "title": "Prompt (<Picture 1..2> identity + <Video 1> motion transfer)",
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 15,
+      "type": "MiniMaxH3ReferenceToVideo",
+      "pos": [
+        1480,
+        360
+      ],
+      "size": [
+        420,
+        410
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 3
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 4,
+          "shape": 7
+        },
+        {
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": 5,
+          "shape": 7
+        },
+        {
+          "name": "ref_images.ref_image_0",
+          "type": "IMAGE",
+          "link": 6,
+          "label": "ref_image_0",
+          "shape": 7
+        },
+        {
+          "name": "ref_images.ref_image_1",
+          "type": "IMAGE",
+          "link": 7,
+          "label": "ref_image_1",
+          "shape": 7
+        },
+        {
+          "name": "ref_images.ref_image_2",
+          "type": "IMAGE",
+          "link": null,
+          "label": "ref_image_2",
+          "shape": 7
+        },
+        {
+          "name": "ref_videos.ref_video_0",
+          "type": "IMAGE",
+          "link": 10,
+          "label": "ref_video_0",
+          "shape": 7
+        },
+        {
+          "name": "ref_video_audios.ref_video_audio_0",
+          "type": "AUDIO",
+          "link": null,
+          "label": "ref_video_audio_0",
+          "shape": 7
+        },
+        {
+          "name": "ref_audios.ref_audio_0",
+          "type": "AUDIO",
+          "link": null,
+          "label": "ref_audio_0",
+          "shape": 7
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 11,
+          "widget": {
+            "name": "prompt"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 12,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 13,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "length",
+          "type": "INT",
+          "link": 15,
+          "widget": {
+            "name": "length"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            16
+          ]
+        },
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            17,
+            26
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3ReferenceToVideo",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "",
+        960,
+        544,
+        124,
+        "match"
+      ],
+      "widgets_values_named": {
+        "prompt": "",
+        "width": 960,
+        "height": 544,
+        "length": 124,
+        "ref_image_size": "match"
+      },
+      "title": "MiniMax H3 Ref2VA (Image + Motion Video <Video 1>)",
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 16,
+      "type": "LoadImage",
+      "pos": [
+        860,
+        820
+      ],
+      "size": [
+        270,
+        290
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            20
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "start_frame.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "start_frame.png",
+        "upload": "image"
+      },
+      "title": "Optional START frame pin (bypassed; Ctrl+B with guide)"
+    },
+    {
+      "id": 17,
+      "type": "MiniMaxH3AddGuide",
+      "pos": [
+        1160,
+        820
+      ],
+      "size": [
+        320,
+        185
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 16
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 17
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 18,
+          "shape": 7
+        },
+        {
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": 19,
+          "shape": 7
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 20,
+          "shape": 7
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            21
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3AddGuide",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        0
+      ],
+      "widgets_values_named": {
+        "frame_idx": 0
+      },
+      "title": "Optional START guide @ frame 0 (Ctrl+B to enable)"
+    },
+    {
+      "id": 18,
+      "type": "RandomNoise",
+      "pos": [
+        2150,
+        0
+      ],
+      "size": [
+        350,
+        95
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            22
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        71284901234567,
+        "randomize"
+      ],
+      "widgets_values_named": {
+        "noise_seed": 71284901234567,
+        "control_after_generate": "randomize"
+      },
+      "title": "Seed"
+    },
+    {
+      "id": 19,
+      "type": "BasicGuider",
+      "pos": [
+        2150,
+        130
+      ],
+      "size": [
+        350,
+        75
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 2
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 21
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            23
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicGuider",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [],
+      "title": "Basic Guider (CFG 1.0, distilled)"
+    },
+    {
+      "id": 20,
+      "type": "KSamplerSelect",
+      "pos": [
+        2150,
+        240
+      ],
+      "size": [
+        350,
+        75
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            24
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "lcm"
+      ],
+      "widgets_values_named": {
+        "sampler_name": "lcm"
+      },
+      "title": "Sampler (lcm \u2014 Pika H3 Flex required)"
+    },
+    {
+      "id": 21,
+      "type": "ManualSigmas",
+      "pos": [
+        2150,
+        350
+      ],
+      "size": [
+        350,
+        100
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            25
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ManualSigmas",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "1.0, 0.972973, 0.923077, 0.8, 0.571429, 0.333333, 0.0"
+      ],
+      "widgets_values_named": {
+        "sigmas": "1.0, 0.972973, 0.923077, 0.8, 0.571429, 0.333333, 0.0"
+      },
+      "title": "Pika H3 Flex 6-Step Sigmas (keep exact 7 values)"
+    },
+    {
+      "id": 22,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        2550,
+        0
+      ],
+      "size": [
+        290,
+        180
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 22
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 23
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 24
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 25
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 26
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            27
+          ]
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [],
+      "title": "Pika H3 Flex Sampler (6 steps)"
+    },
+    {
+      "id": 23,
+      "type": "LTXVSeparateAVLatent",
+      "pos": [
+        2550,
+        220
+      ],
+      "size": [
+        290,
+        75
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "av_latent",
+          "type": "LATENT",
+          "link": 27
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video_latent",
+          "type": "LATENT",
+          "links": [
+            28
+          ]
+        },
+        {
+          "name": "audio_latent",
+          "type": "LATENT",
+          "links": [
+            30
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXVSeparateAVLatent",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [],
+      "title": "Separate H3 AV Latent (for VAEDecodeTiled)"
+    },
+    {
+      "id": 24,
+      "type": "VAEDecodeTiled",
+      "pos": [
+        2550,
+        330
+      ],
+      "size": [
+        290,
+        150
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 28
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 29
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            32,
+            35
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeTiled",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        512,
+        64,
+        64,
+        8
+      ],
+      "widgets_values_named": {
+        "tile_size": 512,
+        "overlap": 64,
+        "temporal_size": 64,
+        "temporal_overlap": 8
+      },
+      "title": "Video VAE Decode (Tiled \u2014 lower tile_size to 256 if OOM)"
+    },
+    {
+      "id": 25,
+      "type": "VAEDecodeAudio",
+      "pos": [
+        2550,
+        515
+      ],
+      "size": [
+        290,
+        75
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 30
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 31
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            33
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeAudio",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [],
+      "title": "Audio VAE Decode (native stereo audio)"
+    },
+    {
+      "id": 26,
+      "type": "CreateVideo",
+      "pos": [
+        2890,
+        0
+      ],
+      "size": [
+        310,
+        175
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 32
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 33,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            34
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreateVideo",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        24,
+        "auto",
+        "sRGB",
+        "auto",
+        "none"
+      ],
+      "widgets_values_named": {
+        "fps": 24,
+        "bit_depth": "auto",
+        "color_space": "sRGB",
+        "chroma_subsampling": "auto",
+        "codec": "none"
+      },
+      "title": "Create Video (24 fps)"
+    },
+    {
+      "id": 27,
+      "type": "SaveVideo",
+      "pos": [
+        3250,
+        0
+      ],
+      "size": [
+        420,
+        440
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 34
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveVideo",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "video/Pika_H3_Flex_MotionTransfer",
+        "auto",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "video/Pika_H3_Flex_MotionTransfer",
+        "format": "auto",
+        "format.codec": "auto",
+        "codec": "auto"
+      },
+      "title": "Save Video (MP4 + native stereo audio)"
+    },
+    {
+      "id": 28,
+      "type": "ImageFromBatch",
+      "pos": [
+        2890,
+        215
+      ],
+      "size": [
+        310,
+        110
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 35
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            36
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageFromBatch",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        -1,
+        1
+      ],
+      "widgets_values_named": {
+        "batch_index": -1,
+        "length": 1
+      },
+      "title": "Extract last frame"
+    },
+    {
+      "id": 29,
+      "type": "SaveImage",
+      "pos": [
+        2890,
+        360
+      ],
+      "size": [
+        310,
+        280
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 36
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      },
+      "widgets_values": [
+        "Pika_H3_Flex_MotionTransfer_last_frame"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "Pika_H3_Flex_MotionTransfer_last_frame"
+      },
+      "title": "Save Last Frame PNG"
+    },
+    {
+      "id": 30,
+      "type": "MarkdownNote",
+      "pos": [
+        0,
+        660
+      ],
+      "size": [
+        800,
+        520
+      ],
+      "flags": {},
+      "order": 29,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "# Pika H3 Flex \u2014 Image + Motion Reference Video (6-Step, 0 New Models!)\n\nTransfer **body motion, gesture timing, and camera choreography** from a reference video (`<Video 1>`) onto your character/scene image (`<Picture 1>`, optional `<Picture 2>`) in **6 steps** with native stereo audio.\n\n## Models (Reuses your existing Pika H3 Flex Ref2VA files \u2014 ZERO new downloads!)\n- `models/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors`\n- `models/loras/pika_h3_flex_ref2va_v1_bf16.safetensors`\n- `models/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors`\n- `models/vae/minimax_h3_video_vae_int8_convrot.safetensors`\n- `models/vae/minimax_h3_audio_vae_fp32.safetensors`\n\n## How to Use\n1. Load your **Character / Scene image** into `1. Character / Scene (<Picture 1>)` (and optional background into `<Picture 2>`, or disconnect `ref_image_1` if `<Picture 1>` already has your scene).\n2. Load your **Motion Reference Video** (2\u201315 s) into `LoadVideo`, and set `Video Slice` `start_time` / `duration` (default `0` \u2192 `5.0 s`) to grab the exact 5-second motion you want.\n   - **24 fps tip:** MiniMax H3 reads `ref_video_0` as **24 fps** without metadata \u2014 if your source clip is 30/60 fps and timing feels slightly off, convert the source clip to 24 fps first.\n   - **Want to copy the video's audio too?** Link `GetVideoComponents.audio` \u2192 `MiniMaxH3ReferenceToVideo.ref_video_audio_0` and reference `<Audio 1>` in the prompt.\n3. **Want frame 0 locked tightly to your starting image?** Select `Optional START frame pin` + `Optional START guide @ frame 0` and press **Ctrl+B** to un-bypass.\n4. **Need exact limb-for-limb dance/skeleton lock?** Use `MiniMax-H3_FunControlNet_PosePlusImage.json` in this same folder.\n5. Start at **`0.5 MP` (`960\u00d7544`)** on RTX 3090, then raise to **`0.98 MP` (`1344\u00d7768`)** for finals.\n"
+      ],
+      "widgets_values_named": {
+        "text": "# Pika H3 Flex \u2014 Image + Motion Reference Video (6-Step, 0 New Models!)\n\nTransfer **body motion, gesture timing, and camera choreography** from a reference video (`<Video 1>`) onto your character/scene image (`<Picture 1>`, optional `<Picture 2>`) in **6 steps** with native stereo audio.\n\n## Models (Reuses your existing Pika H3 Flex Ref2VA files \u2014 ZERO new downloads!)\n- `models/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors`\n- `models/loras/pika_h3_flex_ref2va_v1_bf16.safetensors`\n- `models/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors`\n- `models/vae/minimax_h3_video_vae_int8_convrot.safetensors`\n- `models/vae/minimax_h3_audio_vae_fp32.safetensors`\n\n## How to Use\n1. Load your **Character / Scene image** into `1. Character / Scene (<Picture 1>)` (and optional background into `<Picture 2>`, or disconnect `ref_image_1` if `<Picture 1>` already has your scene).\n2. Load your **Motion Reference Video** (2\u201315 s) into `LoadVideo`, and set `Video Slice` `start_time` / `duration` (default `0` \u2192 `5.0 s`) to grab the exact 5-second motion you want.\n   - **24 fps tip:** MiniMax H3 reads `ref_video_0` as **24 fps** without metadata \u2014 if your source clip is 30/60 fps and timing feels slightly off, convert the source clip to 24 fps first.\n   - **Want to copy the video's audio too?** Link `GetVideoComponents.audio` \u2192 `MiniMaxH3ReferenceToVideo.ref_video_audio_0` and reference `<Audio 1>` in the prompt.\n3. **Want frame 0 locked tightly to your starting image?** Select `Optional START frame pin` + `Optional START guide @ frame 0` and press **Ctrl+B** to un-bypass.\n4. **Need exact limb-for-limb dance/skeleton lock?** Use `MiniMax-H3_FunControlNet_PosePlusImage.json` in this same folder.\n5. Start at **`0.5 MP` (`960\u00d7544`)** on RTX 3090, then raise to **`0.98 MP` (`1344\u00d7768`)** for finals.\n"
+      },
+      "title": "HOW TO: Image + Motion Video Transfer (Pika H3 Flex 6-Step)",
+      "color": "#222",
+      "bgcolor": "#000"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      2,
+      0,
+      19,
+      0,
+      "MODEL"
+    ],
+    [
+      3,
+      3,
+      0,
+      15,
+      0,
+      "CLIP"
+    ],
+    [
+      4,
+      4,
+      0,
+      15,
+      1,
+      "VAE"
+    ],
+    [
+      5,
+      5,
+      0,
+      15,
+      2,
+      "VAE"
+    ],
+    [
+      6,
+      9,
+      0,
+      15,
+      3,
+      "IMAGE"
+    ],
+    [
+      7,
+      10,
+      0,
+      15,
+      4,
+      "IMAGE"
+    ],
+    [
+      8,
+      11,
+      0,
+      12,
+      0,
+      "VIDEO"
+    ],
+    [
+      9,
+      12,
+      0,
+      13,
+      0,
+      "VIDEO"
+    ],
+    [
+      10,
+      13,
+      0,
+      15,
+      6,
+      "IMAGE"
+    ],
+    [
+      11,
+      14,
+      0,
+      15,
+      9,
+      "STRING"
+    ],
+    [
+      12,
+      6,
+      0,
+      15,
+      10,
+      "INT"
+    ],
+    [
+      13,
+      6,
+      1,
+      15,
+      11,
+      "INT"
+    ],
+    [
+      14,
+      7,
+      0,
+      8,
+      0,
+      "FLOAT"
+    ],
+    [
+      15,
+      8,
+      1,
+      15,
+      12,
+      "INT"
+    ],
+    [
+      16,
+      15,
+      0,
+      17,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      17,
+      15,
+      1,
+      17,
+      1,
+      "LATENT"
+    ],
+    [
+      18,
+      4,
+      0,
+      17,
+      2,
+      "VAE"
+    ],
+    [
+      19,
+      5,
+      0,
+      17,
+      3,
+      "VAE"
+    ],
+    [
+      20,
+      16,
+      0,
+      17,
+      4,
+      "IMAGE"
+    ],
+    [
+      21,
+      17,
+      0,
+      19,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      22,
+      18,
+      0,
+      22,
+      0,
+      "NOISE"
+    ],
+    [
+      23,
+      19,
+      0,
+      22,
+      1,
+      "GUIDER"
+    ],
+    [
+      24,
+      20,
+      0,
+      22,
+      2,
+      "SAMPLER"
+    ],
+    [
+      25,
+      21,
+      0,
+      22,
+      3,
+      "SIGMAS"
+    ],
+    [
+      26,
+      15,
+      1,
+      22,
+      4,
+      "LATENT"
+    ],
+    [
+      27,
+      22,
+      0,
+      23,
+      0,
+      "LATENT"
+    ],
+    [
+      28,
+      23,
+      0,
+      24,
+      0,
+      "LATENT"
+    ],
+    [
+      29,
+      4,
+      0,
+      24,
+      1,
+      "VAE"
+    ],
+    [
+      30,
+      23,
+      1,
+      25,
+      0,
+      "LATENT"
+    ],
+    [
+      31,
+      5,
+      0,
+      25,
+      1,
+      "VAE"
+    ],
+    [
+      32,
+      24,
+      0,
+      26,
+      0,
+      "IMAGE"
+    ],
+    [
+      33,
+      25,
+      0,
+      26,
+      1,
+      "AUDIO"
+    ],
+    [
+      34,
+      26,
+      0,
+      27,
+      0,
+      "VIDEO"
+    ],
+    [
+      35,
+      24,
+      0,
+      28,
+      0,
+      "IMAGE"
+    ],
+    [
+      36,
+      28,
+      0,
+      29,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "1. Models (Shared H3 Ref2VA + Pika Flex 6-Step LoRA)",
+      "bounding": [
+        -20,
+        -45,
+        470,
+        680
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "2. Size & Duration",
+      "bounding": [
+        460,
+        -45,
+        360,
+        510
+      ],
+      "color": "#8A8",
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "3. Character Image(s) + Motion Reference Video (<Video 1>)",
+      "bounding": [
+        840,
+        -45,
+        1250,
+        835
+      ],
+      "color": "#a1309b",
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "4. Optional START Frame Pin (bypassed by default)",
+      "bounding": [
+        840,
+        780,
+        670,
+        355
+      ],
+      "color": "#555",
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "5. Pika H3 Flex 6-Step Sampling (lcm + ManualSigmas)",
+      "bounding": [
+        2130,
+        -45,
+        730,
+        660
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "6. Output Video + Last Frame PNG",
+      "bounding": [
+        2870,
+        -45,
+        820,
+        710
+      ],
+      "color": "#2a6",
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.45,
+      "offset": [
+        100,
+        120
+      ]
+    }
+  },
+  "version": 0.4
+}

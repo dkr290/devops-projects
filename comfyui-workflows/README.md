@@ -1,6 +1,6 @@
 # ComfyUI Video & Audio Workflows Guide (RTX 3090 & RTX Spark)
 
-Complete guide for all **16 workflows** organized by model family (`LTX/`, `Minimax/`, `WAN/`, `HunyuanVideo1.5/`, `Audio/`). Every workflow also includes built-in **`HOW TO`** note panels directly inside ComfyUI.
+Complete guide for all **21 workflows** organized by model family (`LTX/`, `Minimax/`, `WAN/`, `HunyuanVideo1.5/`, `Audio/`, `Image/`). Every workflow also includes built-in **`HOW TO`** note panels directly inside ComfyUI.
 
 Setup notes cover:
 - **Videos:** Linux PC, NVIDIA RTX 3090 (24 GB VRAM) + 64 GB system RAM
@@ -11,7 +11,7 @@ Setup notes cover:
 
 ## 1. Which Workflow Should You Use?
 
-### LTX-2.5 (`LTX/` — 8 workflows)
+### LTX-2.5 & LTX-2.3 (`LTX/` — 9 workflows)
 
 | Workflow | Best For | Stages / Steps | Default Images / Inputs | Audio |
 |---|---|---|---|---|
@@ -23,12 +23,15 @@ Setup notes cover:
 | [`LTX/LTX-2.5_MSR_MultiRef_TwoStage_GGUF.json`](LTX/LTX-2.5_MSR_MultiRef_TwoStage_GGUF.json) | **MSR multi-subject reference** (up to `pic1–4` + `background`) with LiconStudio MSR V2 LoRA to lock character/object identities | **2-stage** (8 + 3 steps) | Up to **5 semantic refs** (`pic1–4` + `background`) | Native audio + optional `audio_ref1/2` voice refs |
 | [`LTX/LTX-2.5_MSR_Keyframes_Dialog_TwoStage_GGUF.json`](LTX/LTX-2.5_MSR_Keyframes_Dialog_TwoStage_GGUF.json) | **MSR identity refs + keyframes + dialog** (`pic1–3` + START/MID-A/MID-B/END) | **2-stage** (8 + 3 steps) | `pic1–3` + START/END ON (`MID-A/B` bypassed) | Optional dialog audio (auto-fitted & locked) |
 | [`LTX/LTX-2.5_MSR_Keyframes_Dialog_SingleStage_GGUF.json`](LTX/LTX-2.5_MSR_Keyframes_Dialog_SingleStage_GGUF.json) | Same MSR + keyframes + dialog workflow, **1-stage only** | **1-stage only** | `pic1–3` + START/END ON (`MID-A/B` bypassed) | Optional dialog audio (auto-fitted & locked) |
+| [`LTX/LTX-2.3_I2V_ICLoRA_MotionControl_DepthUnion.json`](LTX/LTX-2.3_I2V_ICLoRA_MotionControl_DepthUnion.json) | **LTX-2.3 Image + Motion Video Control** (`IC-LoRA Union Control` — Depth via built-in MoGe 2, swappable with Canny/Pose) — 100% native ComfyUI | **8 steps** distilled (`ltx-2.3-22b-distilled-fp8`) | **1 First Frame** + **1 Control Video** (`LoadVideo` → `Video Slice` → MoGe Depth) | Native synchronized audio |
 
-### MiniMax H3 & Pika H3 Flex (`Minimax/` — 3 workflows)
+### MiniMax H3 & Pika H3 Flex (`Minimax/` — 5 workflows)
 
 | Workflow | Best For | Stages / Steps | Default Images / Inputs | Audio |
 |---|---|---|---|---|
 | [`Minimax/Pika-H3-Flex_Ref2VA_MultiRef_6Step.json`](Minimax/Pika-H3-Flex_Ref2VA_MultiRef_6Step.json) | **Pika H3 Flex multi-reference** (`<Picture 1..3>`, up to 9 images + audio) distilled to 6 steps (`lcm` + `ManualSigmas`), works up to `1344×768`, optional bypassed Start/End pins — 100% native ComfyUI `0.44.0+` | **6 steps** (`pika_h3_flex_ref2va_v1_bf16`) | **3 semantic refs ON** (`<Picture 1..3>`); Start/End pins bypassed | Native stereo speech/SFX/music + optional `<Audio 1>` ref |
+| [`Minimax/Pika-H3-Flex_Ref2VA_ImagePlusMotionVideo_6Step.json`](Minimax/Pika-H3-Flex_Ref2VA_ImagePlusMotionVideo_6Step.json) | **Image + Motion Reference Video (`<Video 1>`)** — transfer body motion, timing & camera moves from any 2–15 s clip onto your character image (**0 new models** over Ref2VA!) — 100% native ComfyUI `0.44.0+` | **6 steps** (`pika_h3_flex_ref2va_v1_bf16`) | **1–2 images** (`<Picture 1..2>`) + **1 motion video** (`<Video 1>`, `Video Slice`); optional bypassed Start pin | Native stereo audio (or link `GetVideoComponents.audio` → `ref_video_audio_0`) |
+| [`Minimax/MiniMax-H3_FunControlNet_PosePlusImage.json`](Minimax/MiniMax-H3_FunControlNet_PosePlusImage.json) | **Exact Skeleton-Locked Pose Transfer + Character Image** (built-in **SDPose** wholebody extractor + `MiniMaxH3FunControlNetApply` Union patch — best for strict dance/choreography) — 100% native ComfyUI `0.35.0+` | **4-step Turbo ON** (toggle OFF → 20-step base) | **1 image** (`<Picture 1>`) + **1 pose control video** (`LoadVideo` → SDPose) | Native stereo audio |
 | [`Minimax/Pika-H3-Flex_FL2VA_FirstLast_6Step.json`](Minimax/Pika-H3-Flex_FL2VA_FirstLast_6Step.json) | **Pika H3 Flex First & Last Frame** (or 1-image Start-Only I2V by unlinking `last_frame`) distilled to 6 steps — 100% native ComfyUI `0.44.0+` | **6 steps** (`pika_h3_flex_fl2va_v1_bf16`) | **2 ON** (`First frame` + `Last frame`; unlink `last_frame` for 1-image I2V) | Native stereo speech/SFX/music |
 | [`Minimax/MiniMax-H3_Ref2VA_MultiChar_4StepTurbo.json`](Minimax/MiniMax-H3_Ref2VA_MultiChar_4StepTurbo.json) | **Fastest 4-step Ref2VA draft** (`<Picture 1..3>`) + 1-click toggle to **20-step base** + optional bypassed Start/End timeline guides | **4-step Turbo ON** (`4-STEP TURBO?` toggle → 20-step base) | **3 semantic refs ON** (`<Picture 1..3>`); Start/End timeline guides bypassed | Native stereo speech/SFX + optional `<Audio 1>` voice timbre ref |
 
@@ -47,11 +50,85 @@ Setup notes cover:
 | [`Audio/Audio_Qwen3TTS_VoiceClone_TTSSuite.json`](Audio/Audio_Qwen3TTS_VoiceClone_TTSSuite.json) | **Voice cloning & dialogue TTS** from a 3–15 s sample (or preset speakers / voice design / `[Alice]` multi-character scripts) | Fast (~4–6 GB VRAM) | 3–15 s reference voice + transcript + script | Clean FLAC/WAV voice for LTX-2.5 lip-sync & DaVinci Resolve |
 | [`Audio/Audio_ACEStep15_TextToMusic.json`](Audio/Audio_ACEStep15_TextToMusic.json) | **Text-to-Music & background scores** (instrumental or vocal songs with lyrics, up to 10 min) — 100% native ComfyUI | **8 steps** Turbo (<10 s on 3090, <4 GB VRAM) | Style tags + lyrics (`[Instrumental]` default) + duration | Studio FLAC/MP3 music for Resolve or Wan/Hunyuan mux |
 
+### Image Prep & Scaling (`Image/` — 2 workflows)
+
+| Workflow | Best For | Speed / Models | Controls | Output |
+|---|---|---|---|---|
+| [`Image/Image_Downscale_Prep_For_FluxQwen.json`](Image/Image_Downscale_Prep_For_FluxQwen.json) | **Downscale already-generated 2K/4K characters or backgrounds** to ~1 MP (`768×1344` / `1344×768`) before merging in FLUX.2 / Qwen-Image-Edit — 100% native ComfyUI | Instant (<1 s), **no models** | `USE EXACT WIDTH/HEIGHT?` toggle (OFF = auto `1.0 MP` ÷64; ON = custom `W×H`) | Clean lossless PNG (`Image_Prep_1MP_*.png`) |
+| [`Image/Image_Upscale_Final_After_FluxQwen.json`](Image/Image_Upscale_Final_After_FluxQwen.json) | **Optional post-FLUX.2 / post-Qwen upscaler** for your final merged `16:9` still (only when needed for LTX 1080p or high-res stills) — 100% native ComfyUI | Fast; optional `models/upscale_models/` (e.g. `4x-UltraSharp.pth`) | `USE UPSCALE MODEL?` (AI Model vs No-Model `lanczos`) + `FIT TO TARGET SIZE?` (`1920×1088` vs raw 4×) | Clean lossless PNG (`Image_Upscaled_Final_*.png`) |
+
 > **Is 2-stage mandatory in LTX-2.5?** **No.** 1-stage works great for fast renders and moderate resolutions (up to ~`768×768` or `960×544`). Use **2-stage** (or **DFR**) when you want `1024×1024` or `1080p` (`1920×1088`) on a 24 GB RTX 3090 — generating motion at low resolution and refining at ×2 is sharper, more stable, and safer on VRAM.
 
 ---
 
-## 2. LTX-2.5 Setup & Usage (`LTX/`)
+## 2. Image Prep & Dimensions Best Practices (FLUX.2 / Qwen → Video I2V)
+
+When building scenes from multiple images (e.g., generating a **9:16 full-body character** + a **16:9 background**, merging them in **FLUX.2** or **Qwen-Image-Edit**, and animating the final still in **LTX-2.5 / Pika H3 Flex / Wan / Hunyuan**), **never upscale intermediate images**.
+
+### Why upscaled inputs make multi-image merging very slow
+In **FLUX.2** and **Qwen-Image-Edit**, every input reference image is encoded into visual tokens. Feeding upscaled 2K–4K character/background images multiplies the token count and attention compute dramatically (`O(n²)`) — making generation several times slower with **no real quality gain**, because both models' native sweet spot is **~1 MP** (`~1024×1024` pixel area).
+
+### Recommended Pipeline & Dimensions (for 16:9 Video)
+
+| Step | Aspect Ratio | Recommended Size | Upscale? | Notes |
+|---|---|---|---|---|
+| **1. Character ref (full body)** | `9:16` | **`768×1344`** *(or `720×1280`)* | **No** | Native ~1 MP (`÷64` friendly); sharp face & outfit details without blowing up token count |
+| **2. Background / location ref** | `16:9` | **`1344×768`** *(or `1280×720`)* | **No** | Native ~1 MP; matches final video aspect ratio |
+| **3. Merged scene + Mid/End keyframes** *(FLUX.2 / Qwen-Image-Edit)* | `16:9` | **`1344×768`** *(or `1280×704`)* | **No** | Fast merging & best identity coherence; keep all keyframes for a clip at the **exact same 16:9 size** |
+| **4. Final still → Video I2V** | `16:9` | **`1344×768`** *(or `1920×1088` for LTX 1080p)* | **Usually No** *(max 1080p)* | See model rules below — **do not feed 4K stills into I2V** |
+| **5. Final Video Upscale** *(optional)* | `16:9` | `1920×1088` → `4K` | **Yes, here** | Upscale **after** the video is rendered (see Section 7: LTX TiledFusion / SeedVR2 / DaVinci Resolve) |
+
+*(For vertical **9:16** videos, simply flip the Step 2–4 dimensions to `768×1344` / `896×1536` / `1088×1920`.)*
+
+### Practical Rules
+1. **Already generated 2K/4K characters you love? Downscale them — do NOT regenerate at lower res with the same seed:**
+   * Changing width/height alters the latent noise shape, so the same seed produces a **different face/pose/outfit**.
+   * Downscaling with [`Image/Image_Downscale_Prep_For_FluxQwen.json`](Image/Image_Downscale_Prep_For_FluxQwen.json) preserves **100% of your exact character**, runs in <1 second, and looks clean/supersampled (`area` resampling to `1.0 MP` ÷64: `9:16` → `768×1344`, `16:9` → `1344×768`).
+   * Only generate directly at `768×1344` / `1344×768` for **new** characters and backgrounds going forward.
+2. **Always match the video's aspect ratio (`16:9`) on the final merged image:** If you feed a `9:16` portrait directly into a `16:9` video workflow, it will either center-crop off the character's head/feet or distort framing. Always compose the final Start/Mid/End stills in **`16:9`** first.
+3. **Should you upscale the final merged still right before Video I2V?**
+   * **Pika H3 Flex / MiniMax H3:** **No.** Native max is `1344×768` — your `1344×768` merged still is already exact 1:1.
+   * **Wan 2.2 / HunyuanVideo 1.5:** **No.** They run at `832×480`–`1280×720` and downscale anything larger.
+   * **LTX-2.5 DFR (`1280×704`) / 2-stage (`1536×896`):** **No** — `1344×768` works directly.
+   * **LTX-2.5 2-stage Full HD (`960×544 → 1920×1088`) or standalone high-res stills:** Use [`Image/Image_Upscale_Final_After_FluxQwen.json`](Image/Image_Upscale_Final_After_FluxQwen.json) (1-click If/Else between **AI upscale model** like `4x-UltraSharp.pth` and **No-Model `lanczos`**, plus `FIT TO TARGET SIZE?` = ON for supersampled `1920×1088` video-ready PNG, or OFF for raw 4× still). Never feed 4K into Video I2V — upscale the rendered video instead (Section 7).
+
+### Recommended Image Upscaling Models (`ComfyUI/models/upscale_models/`)
+
+All models below work natively in ComfyUI via `UpscaleModelLoader` + `ImageUpscaleWithModel` (Spandrel backend) inside [`Image/Image_Upscale_Final_After_FluxQwen.json`](Image/Image_Upscale_Final_After_FluxQwen.json). Browse downloads and visual comparisons on [OpenModelDB](https://openmodeldb.info/).
+
+#### Best for Photorealistic Characters, Skin & FLUX / Qwen Scenes
+| Model | Scale | Speed | Best For |
+|---|---|---|---|
+| **`4x_NMKD-Siax_200k.pth`** | 4× | Fast | **Top realistic default** — natural skin texture & balanced sharpness without plastic/oversharpened look |
+| **`4xNomos8kSC.pth`** / **`4xNomos8kDAT.pth`** / **`4xNomos8k_atd_jpg.safetensors`** | 4× | Medium / Slow (DAT/ATD) | State-of-the-art realistic hair, fabric, eyes, and natural grain (`DAT`/`ATD` = highest fidelity, slower) |
+| **`2xNomosUni_esrgan_multijpg.pth`** *(or **`2xHFA2kAVCOCompact.pth`**)* | 2× | Very Fast | **Best 2× pick for `1344×768` → `1920×1088`** — avoids overshooting to 5K before downscaling |
+| **`4xFaceUpDAT.pth`** / **`4xFaceUpSharpDAT.pth`** | 4× | Slow | Specialized for realistic faces, eyes, and fine skin pores |
+| **`4x-ClearRealityV1.pth`** | 4× | Fast | Very clean photorealism with strong artifact/noise cleanup |
+
+#### All-Round / General Purpose
+| Model | Scale | Speed | Best For |
+|---|---|---|---|
+| **`4x-UltraSharp.pth`** *(or **`4x-UltraSharpV2.pth`**)* | 4× | Fast | Classic crisp ComfyUI default — great when supersampled down to `1920×1088` (`FIT TO TARGET SIZE?` ON); raw 4× can look slightly sharp on soft skin |
+| **`4x_foolhardy_Remacri.pth`** | 4× | Fast | Balanced detail + natural texture; great all-rounder for photos and realistic renders |
+| **`RealESRGAN_x4plus.pth`** | 4× | Fast | Clean, smooth baseline with strong denoising (slightly softer than UltraSharp/Nomos) |
+
+#### Anime, 2D & Stylized 3D Illustration
+| Model | Scale | Speed | Best For |
+|---|---|---|---|
+| **`4x-AnimeSharp.pth`** | 4× | Fast | Crisp cel-shaded lines and stylized 3D renders |
+| **`RealESRGAN_x4plus_anime_6B.pth`** | 4× | Very Fast | Lightweight, clean 2D anime linework |
+| **`4x_NMKD-Superscale-SP_178000_G.pth`** | 4× | Fast | Clean general illustration & 3D renders |
+
+#### Fast / Lightweight (Great on RTX Spark N1X or Batch Runs)
+| Model | Scale | Speed | Best For |
+|---|---|---|---|
+| **`4xNomos2_hq_mosr.pth`** *(MoSR)* / **`4xNomosUni_span_multijpg.pth`** *(SPAN)* | 4× | Ultra-Fast | Modern lightweight architectures — close to ESRGAN/Nomos quality at a fraction of the time |
+
+> **Pixel upscaler vs. Diffusion upscaler:** The models above sharpen and enlarge existing pixels in 1–5 seconds without changing the character's face. If a source still is genuinely blurry and you want to *re-imagine* brand-new pores/textures, use a **diffusion upscaler** instead (e.g. **SeedVR2**, **SUPIR**, or **Ultimate SD Upscale + FLUX** at low denoise `0.2–0.35`).
+
+---
+
+## 3. LTX-2.5 Setup & Usage (`LTX/`)
 
 ### Custom Nodes (`ComfyUI/custom_nodes/`)
 * **All 8 LTX-2.5 workflows:** [`ComfyUI-GGUF`](https://github.com/city96/ComfyUI-GGUF) (`UnetLoaderGGUF`)
@@ -140,6 +217,16 @@ By default, all LTX-2.5 workflows generate synchronized audio from your prompt.
   4. Start at `832×480` (2-stage → `1664×960`) or `768×448` and `5 s` (`121` frames) on 24 GB.
   5. MSR `audio_ref1/2` are for speaker voice identity (requires an AVref MSR LoRA), *not* full dialogue tracks — use Group 4c (`DIALOG audio`) for lip-syncing a pre-recorded track.
 
+### LTX-2.3 Motion Control (`LTX/LTX-2.3_I2V_ICLoRA_MotionControl_DepthUnion.json`)
+* **100% native ComfyUI** (no custom nodes needed) — uses Lightricks' official **LTX-2.3 Union Control IC-LoRA** (`Depth` / `Canny` / `Pose`) with a built-in **MoGe 2** depth extractor subgraph.
+* **Separate model set from LTX-2.5:** LTX-2.3 uses its own checkpoint and **Gemma 3** text encoder (do not mix with LTX-2.5 Gemma 4 models):
+  * `models/checkpoints/` → [`ltx-2.3-22b-distilled-fp8.safetensors`](https://huggingface.co/Lightricks/LTX-2.3-fp8/resolve/main/ltx-2.3-22b-distilled-fp8.safetensors) (27.5 GB — includes Video & Audio VAEs)
+  * `models/text_encoders/` → [`gemma_3_12B_it_fp4_mixed.safetensors`](https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors) (8.8 GB)
+  * `models/loras/` → [`ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors`](https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-Union-Control/resolve/main/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors) (624 MB)
+  * `models/loras/` → [`gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors`](https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors) (599 MB)
+  * `models/geometry_estimation/` → [`moge_2_vitl_normal_fp16.safetensors`](https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_2_vitl_normal_fp16.safetensors) (631 MB)
+* **Defaults:** `960×544` @ `24 fps` (safe 3090 start; bump to `1280×704` for finals), `VAEDecodeTiled` (`512, 64, 64, 8`), 5 s clip sliced via `Video Slice`. To use Canny or Pose instead of Depth, swap the MoGe subgraph output for `Canny` (`Detect Edges`) or SDPose frames into `control_images`.
+
 ### Recommended Production Routine (ComfyUI + DaVinci Resolve)
 1. **Find seed fast:** Run a 1-stage draft (`RUN STAGE 2?` = OFF, `5–8 s`, `512×512` or `768×448`, seed = `randomize`) for 2–4 takes.
 2. **Render keeper:** Fix the winning seed and turn `RUN STAGE 2?` = ON (or test hero single-image shots in `DFR`).
@@ -148,13 +235,18 @@ By default, all LTX-2.5 workflows generate synchronized audio from your prompt.
 
 ---
 
-## 3. MiniMax H3 & Pika H3 Flex (`Minimax/`)
+## 4. MiniMax H3 & Pika H3 Flex (`Minimax/`)
 
 ### Ready-to-use workflows (100% native ComfyUI, no custom nodes)
 * **[`Minimax/Pika-H3-Flex_Ref2VA_MultiRef_6Step.json`](Minimax/Pika-H3-Flex_Ref2VA_MultiRef_6Step.json)** *(recommended fast Ref2VA, ComfyUI `0.44.0+`)*:
   * Runs Pika's **6-step** distilled Ref2VA adapter (`lcm` + exact 7-value `ManualSigmas`, CFG 1.0) on the **same MiniMax H3 Ref2VA base**.
   * **3 semantic character/scene refs ON** (`<Picture 1..3>`, up to 9 images supported) with `ref_image_size = match`, optional bypassed Start/End `MiniMaxH3AddGuide` timeline pins, optional `<Audio 1>` ref, `LTXVSeparateAVLatent` → `VAEDecodeTiled`, and automatic last-frame PNG save.
   * Defaults to **`960×544` (`0.5 MP`)** / **`5.0 s` (`124` frames)** and scales cleanly up to **`1344×768` (`0.98 MP`)**.
+* **[`Minimax/Pika-H3-Flex_Ref2VA_ImagePlusMotionVideo_6Step.json`](Minimax/Pika-H3-Flex_Ref2VA_ImagePlusMotionVideo_6Step.json)** *(easiest **Image + Motion Video** transfer — **0 new models**, ComfyUI `0.44.0+`)*:
+  * Wires `LoadVideo` → `Video Slice` → `GetVideoComponents` directly into `MiniMaxH3ReferenceToVideo.ref_video_0` (`<Video 1>`) alongside your character/scene image(s) (`<Picture 1>`, optional `<Picture 2>`), plus an optional bypassed frame-0 START pin.
+  * Transfers body movement, gesture timing, and camera choreography in **6 steps** without needing a ControlNet or pose extractor. Convert non-24fps source videos to **24 fps** if timing drifts.
+* **[`Minimax/MiniMax-H3_FunControlNet_PosePlusImage.json`](Minimax/MiniMax-H3_FunControlNet_PosePlusImage.json)** *(exact **limb-for-limb Pose ControlNet + Character Image**, ComfyUI `0.35.0+`)*:
+  * Adapted from ComfyUI's official `video_minimax_h3_fun_controlnet_union` template with `<Picture 1>` wired into `ref_image_0`, built-in **SDPose wholebody skeleton extractor**, **`LTXVSeparateAVLatent` → `VAEDecodeTiled`** for 3090 safety, and 4-step Turbo ON by default (toggle OFF for 20-step base). Use when `<Video 1>` alone is too loose for strict dance/choreography.
 * **[`Minimax/Pika-H3-Flex_FL2VA_FirstLast_6Step.json`](Minimax/Pika-H3-Flex_FL2VA_FirstLast_6Step.json)** *(ComfyUI `0.44.0+`)*:
   * **6-step** First & Last Frame (or **1-image Start-Only I2V** by disconnecting `last_frame` on `MiniMaxH3ImageToVideo`) with native stereo audio, tiled VAE decode, and last-frame PNG save.
   * Uses the separate **FL2VA base + FL2VA Pika LoRA** (shares the same Qwen3-VL text encoder and Video/Audio VAEs).
@@ -162,20 +254,28 @@ By default, all LTX-2.5 workflows generate synchronized audio from your prompt.
   * **4-step Ref2V Turbo LoRA ON** (`4-STEP TURBO?` toggle switches between 4-step fastest drafts and **20-step base**).
   * Keep at `0.4–0.5 MP` (`864×480`–`960×544`) while 4-step Turbo is ON (trained at 544p).
 
+> **Image + Motion from a Reference Video — Why MiniMax / Pika H3?**
+> * **MiniMax / Pika H3 (`Minimax/`):** Best native support — direct `<Video 1>` motion reference in 6 steps (**0 extra models**) OR exact SDPose/Depth/Canny **Fun ControlNet Union**.
+> * **LTX (`LTX/`):** Lightricks has not released a general RGB Pose/Depth/Canny Union IC-LoRA for **LTX-2.5** yet (`Layout-To-Render` is for 3D clay playblasts), so use **[`LTX/LTX-2.3_I2V_ICLoRA_MotionControl_DepthUnion.json`](LTX/LTX-2.3_I2V_ICLoRA_MotionControl_DepthUnion.json)** if you specifically want LTX motion control via Depth/Canny/Pose.
+> * **HunyuanVideo 1.5 (`HunyuanVideo1.5/`):** No native ComfyUI motion-transfer or pose ControlNet workflow (T2V / 1-image I2V / 1080p SR only).
+
 > **Critical Pika H3 Flex rules:** Never mix Ref2VA and FL2VA models/LoRAs, never stack a Turbo/Lightning LoRA on top of Pika H3 Flex, and keep LoRA strength `1.0`, sampler `lcm`, and all 7 `ManualSigmas` values unchanged (raising steps to 8 does not add detail and breaks the trained schedule).
 
-### Model Files (`Comfy-Org/MiniMax-H3`)
+### Model Files (`Comfy-Org/MiniMax-H3` & `Comfy-Org/SDPose`)
 
 | Folder | File | Approx. Size | Used By |
 |---|---|---:|---|
-| `models/text_encoders/` | [`qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors) | 15.7 GB | **All 3 workflows** *(works on 3090 via emulation to save RAM; INT8 alternative exists if you want to compare)* |
-| `models/vae/` | [`minimax_h3_video_vae_int8_convrot.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/vae/minimax_h3_video_vae_int8_convrot.safetensors) | 2.8 GB | **All 3 workflows** |
-| `models/vae/` | [`minimax_h3_audio_vae_fp32.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/vae/minimax_h3_audio_vae_fp32.safetensors) | 0.6 GB | **All 3 workflows** |
-| `models/diffusion_models/` | [`minimax_h3_ref2va_pruned_int8_convrot.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors) | 21.0 GB | Pika Ref2VA + MiniMax 4-Step Ref2VA |
-| `models/loras/` | [`pika_h3_flex_ref2va_v1_bf16.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/loras/pika_h3_flex_ref2va_v1_bf16.safetensors) | ~2 GB | **Pika Ref2VA (6-step)** |
-| `models/loras/` | [`minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/loras/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors) | 2.0 GB | **MiniMax Ref2VA (4-step Turbo)** |
+| `models/text_encoders/` | [`qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors) | 15.7 GB | **All 5 workflows** *(works on 3090 via emulation to save RAM; INT8 alternative exists if you want to compare)* |
+| `models/vae/` | [`minimax_h3_video_vae_int8_convrot.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/vae/minimax_h3_video_vae_int8_convrot.safetensors) | 2.8 GB | **All 5 workflows** |
+| `models/vae/` | [`minimax_h3_audio_vae_fp32.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/vae/minimax_h3_audio_vae_fp32.safetensors) | 0.6 GB | **All 5 workflows** |
+| `models/diffusion_models/` | [`minimax_h3_ref2va_pruned_int8_convrot.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors) | 21.0 GB | Pika Ref2VA, Pika MotionVideo, FunControlNet Pose, MiniMax 4-Step Ref2VA |
+| `models/loras/` | [`pika_h3_flex_ref2va_v1_bf16.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/loras/pika_h3_flex_ref2va_v1_bf16.safetensors) | ~2 GB | **Pika Ref2VA + Pika Image+MotionVideo (6-step)** |
+| `models/loras/` | [`minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/loras/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors) | 2.0 GB | **MiniMax Ref2VA (4-step Turbo) + FunControlNet Pose** |
 | `models/diffusion_models/` | [`minimax_h3_fl2va_pruned_int8_convrot.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors) | 19.5 GB | **Pika FL2VA (First & Last Frame)** |
 | `models/loras/` | [`pika_h3_flex_fl2va_v1_bf16.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/loras/pika_h3_flex_fl2va_v1_bf16.safetensors) | ~2 GB | **Pika FL2VA (6-step)** |
+| `models/model_patches/` | [`minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors`](https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/model_patches/minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors) | 2.1 GB | **FunControlNet Pose+Image only** (also supports Canny / Depth / Inpaint) |
+| `models/checkpoints/` | [`sdpose_wholebody_fp16.safetensors`](https://huggingface.co/Comfy-Org/SDPose/blob/main/checkpoints/sdpose_wholebody_fp16.safetensors) | 1.8 GB | **FunControlNet Pose+Image only** (SDPose skeleton extractor) |
+| `models/diffusion_models/` | [`rt_detr_v4-x-hgnet_fp16.safetensors`](https://huggingface.co/Comfy-Org/SDPose/blob/main/diffusion_models/rt_detr_v4-x-hgnet_fp16.safetensors) | 118 MB | **FunControlNet Pose+Image only** (SDPose person detector) |
 
 ### RTX 3090 Notes for MiniMax H3 / Pika H3 Flex
 * **ComfyUI & CUDA:** Use ComfyUI **`0.44.0+`**. INT8 ConvRot benefits from PyTorch **CUDA 13.0+**. Check with your ComfyUI Python:
@@ -189,7 +289,7 @@ By default, all LTX-2.5 workflows generate synchronized audio from your prompt.
 
 ---
 
-## 4. Wan 2.2 14B (`WAN/`) & HunyuanVideo 1.5 (`HunyuanVideo1.5/`)
+## 5. Wan 2.2 14B (`WAN/`) & HunyuanVideo 1.5 (`HunyuanVideo1.5/`)
 
 All 3 workflows use **100% native ComfyUI core nodes** (no custom nodes required) and save a `last_frame` PNG alongside each MP4.
 
@@ -230,7 +330,7 @@ All 3 workflows use **100% native ComfyUI core nodes** (no custom nodes required
 
 ---
 
-## 5. Audio Generation (`Audio/`)
+## 6. Audio Generation (`Audio/`)
 
 ### A. Voice Cloning & Dialogue TTS ([`Audio/Audio_Qwen3TTS_VoiceClone_TTSSuite.json`](Audio/Audio_Qwen3TTS_VoiceClone_TTSSuite.json))
 * **Custom node required:** [`diodiogod/TTS-Audio-Suite`](https://github.com/diodiogod/TTS-Audio-Suite)
@@ -253,7 +353,7 @@ All 3 workflows use **100% native ComfyUI core nodes** (no custom nodes required
 
 ---
 
-## 6. Upscaling Beyond 1080p (Optional)
+## 7. Upscaling Beyond 1080p (Optional)
 
 | Method | Quality | Speed | Notes |
 |---|---|---|---|
@@ -266,7 +366,7 @@ Save with native `SaveVideo` or VHS Video Combine (H.264/H.265, CRF 16–18).
 
 ---
 
-## 7. Linux RTX 3090 Installation, Troubleshooting & Tips
+## 8. Linux RTX 3090 Installation, Troubleshooting & Tips
 
 ### Installation (Linux, RTX 3090)
 ComfyUI Desktop is officially Windows/macOS only — on Linux use the git install:
@@ -326,7 +426,7 @@ python main.py --use-sage-attention --enable-manager
 
 ---
 
-## 8. Other Local Video Models Comparison (Reference)
+## 9. Other Local Video Models Comparison (Reference)
 
 | Model | Images & timeline control | Audio | Practical on a 3090 |
 |---|---|---|---|
@@ -340,7 +440,7 @@ python main.py --use-sage-attention --enable-manager
 
 ---
 
-## 9. RTX Spark N1X Laptop vs. RTX 3090
+## 10. RTX Spark N1X Laptop vs. RTX 3090
 
 * **Best split between the two machines:** Generate high-res **images on the RTX Spark N1X** (128 GB unified memory, native Blackwell FP8/NVFP4) → render **videos on the RTX 3090** (~936 GB/s VRAM bandwidth vs ~273–300 GB/s unified memory bandwidth on N1X). You can share a folder or run the 3090 with `--listen 0.0.0.0` on a trusted LAN.
 * **For images on RTX Spark N1X (128 GB):**
