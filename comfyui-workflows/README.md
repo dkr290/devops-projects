@@ -1,6 +1,6 @@
 # ComfyUI Video & Audio Workflows Guide (RTX 3090 & RTX Spark)
 
-Complete guide for all **21 workflows** organized by model family (`LTX/`, `Minimax/`, `WAN/`, `HunyuanVideo1.5/`, `Audio/`, `Image/`). Every workflow also includes built-in **`HOW TO`** note panels directly inside ComfyUI.
+Complete guide for all **22 workflows** organized by model family (`LTX/`, `Minimax/`, `WAN/`, `HunyuanVideo1.5/`, `Audio/`, `Image/`). Every workflow also includes built-in **`HOW TO`** note panels directly inside ComfyUI.
 
 Setup notes cover:
 - **Videos:** Linux PC, NVIDIA RTX 3090 (24 GB VRAM) + 64 GB system RAM
@@ -11,11 +11,12 @@ Setup notes cover:
 
 ## 1. Which Workflow Should You Use?
 
-### LTX-2.5 & LTX-2.3 (`LTX/` — 9 workflows)
+### LTX-2.5 & LTX-2.3 (`LTX/` — 10 workflows)
 
 | Workflow | Best For | Stages / Steps | Default Images / Inputs | Audio |
 |---|---|---|---|---|
 | [`LTX/LTX-2.5_I2V_DFR_SingleImage_Audio_GGUF.json`](LTX/LTX-2.5_I2V_DFR_SingleImage_Audio_GGUF.json) | **Official LTX-2.5 DFR** (Diffusion Fidelity Rendering) — highest detail/sharpness single-image I2V (or T2V) using detailing keyframes + Pixel-Spatial IC-LoRA | **2-stage DFR ON** (8 + 3 steps) + **optional Stage 3 Temporal ×2** (48 fps, OFF by default) | **1 ON** (`Start image`; or `Switch to T2V` inside subgraph) | Native synchronized audio generated in Stage 1 |
+| [`LTX/LTX-2.5_I2V_PromptRelay_OptionalTwoStage_GGUF.json`](LTX/LTX-2.5_I2V_PromptRelay_OptionalTwoStage_GGUF.json) | **Kijai Prompt Relay (Smart)** — multi-event temporal prompting (`Scene 1:` / `Scene 2:` / `Scene 3:` or `A \| B \| C`) pasted straight from LM Studio for **1 image** or **2–4 images** | **1-stage or 2-stage** (`RUN STAGE 2?` toggle; Prompt Relay on Stage 1) | **1 ON** (`START`); `END`, `MID-A`, `MID-B` bypassed (Ctrl+B to enable) | Optional dialog audio (auto-fitted & locked) |
 | [`LTX/LTX-2.5_I2V_LTXDirector_OptionalTwoStage_GGUF.json`](LTX/LTX-2.5_I2V_LTXDirector_OptionalTwoStage_GGUF.json) | **Visual timeline** with **3, 4, or more images**, different prompts per time segment (Prompt Relay), drag-and-drop audio, and automatic last-frame PNG save | **1-stage or 2-stage** (`RUN STAGE 2?` toggle) | Drag & drop as many as you want | Built into Director (`use_custom_audio`) |
 | [`LTX/LTX-2.5_I2V_ThreeKeyframes_ManualContinuation_GGUF.json`](LTX/LTX-2.5_I2V_ThreeKeyframes_ManualContinuation_GGUF.json) | **Ready-to-run 3-image** workflow (`START` + `MIDDLE` + `END`, optional 4th `MID-B`), saves last decoded frame PNG for manual multi-clip continuation | **1-stage or 2-stage** (`RUN STAGE 2?` toggle) | **3 ON** (`START`, `MIDDLE @ 96`, `END @ -1`); `MID-B @ 144` bypassed | Optional full-track audio + `TrimAudioDuration` (`AUDIO START`) |
 | [`LTX/LTX-2.5_I2V_Keyframes_Dialog_OptionalTwoStage_GGUF.json`](LTX/LTX-2.5_I2V_Keyframes_Dialog_OptionalTwoStage_GGUF.json) | Clean general-purpose **1–4 image** keyframe workflow with fast 1-stage draft or 2-stage final toggle | **1-stage or 2-stage** (`RUN STAGE 2?` toggle) | **2 ON** (`START`, `END`); `MID-A` & `MID-B` bypassed | Optional dialog audio (auto-fitted & locked) |
@@ -131,8 +132,9 @@ All models below work natively in ComfyUI via `UpscaleModelLoader` + `ImageUpsca
 ## 3. LTX-2.5 Setup & Usage (`LTX/`)
 
 ### Custom Nodes (`ComfyUI/custom_nodes/`)
-* **All 8 LTX-2.5 workflows:** [`ComfyUI-GGUF`](https://github.com/city96/ComfyUI-GGUF) (`UnetLoaderGGUF`)
+* **All 9 LTX-2.5 workflows:** [`ComfyUI-GGUF`](https://github.com/city96/ComfyUI-GGUF) (`UnetLoaderGGUF`)
 * **DFR workflow (`LTX-2.5_I2V_DFR_SingleImage_Audio_GGUF.json`):** Requires recent ComfyUI (`0.44.0+` recommended) with native DFR nodes (`LTXVAddGeneratedKeyframes`, `LTXVAddLatentGuide`, `LTXVFreezeLatent`).
+* **Prompt Relay workflow (`LTX-2.5_I2V_PromptRelay_OptionalTwoStage_GGUF.json`):** [`ComfyUI-PromptRelay`](https://github.com/kijai/ComfyUI-PromptRelay) (`PromptRelaySmartEncode`) — supports both LTX (video + audio cross-attention) and Wan; do not stack with LTX Director.
 * **LTX Director workflow only:** [`WhatDreamsCost-ComfyUI`](https://github.com/WhatDreamsCost/WhatDreamsCost-ComfyUI) (latest v2.0+ with `LTXDirector`, `LTXDirectorGuide`, `LTXDirectorCropGuides`) + up-to-date ComfyUI & [`ComfyUI-LTXVideo`](https://github.com/Lightricks/ComfyUI-LTXVideo)
 * **MSR workflows (`LTX-2.5_MSR_*`) only:** [`ComfyUI-LTX2.5-MSR`](https://github.com/liconstudio/ComfyUI-LTX2.5-MSR)
 
