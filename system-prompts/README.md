@@ -5,11 +5,13 @@ Standalone prompt-writing assistants adapted from the collections in
 
 | System prompt | Purpose |
 | --- | --- |
-| [FLUX-prompts/SYSTEM_PROMPT.md](FLUX-prompts/SYSTEM_PROMPT.md) | FLUX image creation, editing and stills for LTX keyframes |
-| [LTX-Prompts/SYSTEM_PROMPT.md](LTX-Prompts/SYSTEM_PROMPT.md) | LTX-2.5 prose prompts (I2V, FLF, DFR, MSR and LTX Director) |
-| [LTX-IC-LoRA-Prompts/SYSTEM_PROMPT.md](LTX-IC-LoRA-Prompts/SYSTEM_PROMPT.md) | LTX-2.5 baked IC-LoRA structured prompts (`[VISUAL]:` / `[SPEECH]:` / `[SOUNDS]:`, `Unscored`) |
-| [Minimax-H3-prompts/SYSTEM_PROMPT.md](Minimax-H3-prompts/SYSTEM_PROMPT.md) | MiniMax H3 & Pika H3 Flex structured Ref2VA, FL2VA and T2VA multimodal prompts |
-| [Qwen-Image-prompts/SYSTEM_PROMPT.md](Qwen-Image-prompts/SYSTEM_PROMPT.md) | Qwen-Image-Edit instructions and edited LTX keyframe stills |
+| [FLUX-prompts/SYSTEM_PROMPT.md](FLUX-prompts/SYSTEM_PROMPT.md) | **FLUX Text-to-Image (T2I)** — creating brand-new characters, backgrounds, and stills from scratch |
+| [FLUX-I2I-prompts/SYSTEM_PROMPT.md](FLUX-I2I-prompts/SYSTEM_PROMPT.md) | **FLUX.2 Image-to-Image & Multi-Ref (I2I)** — editing a source still or merging `image 1` + `image 2` without re-describing the subject from scratch |
+| [Qwen-Image-prompts/SYSTEM_PROMPT.md](Qwen-Image-prompts/SYSTEM_PROMPT.md) | **Qwen-Image (original)** — general Qwen-Image-Edit instructions |
+| [Qwen-Image-I2I-prompts/SYSTEM_PROMPT.md](Qwen-Image-I2I-prompts/SYSTEM_PROMPT.md) | **Qwen-Image-Edit Strict I2I & Multi-Ref** — anchors directly to *"the same person from image 1"* / *"the background from image 2"* (no T2I re-description drift) |
+| [LTX-Prompts/SYSTEM_PROMPT.md](LTX-Prompts/SYSTEM_PROMPT.md) | **LTX-2.5 prose prompts** (I2V, FLF, DFR, MSR and LTX Director) |
+| [LTX-IC-LoRA-Prompts/SYSTEM_PROMPT.md](LTX-IC-LoRA-Prompts/SYSTEM_PROMPT.md) | **LTX-2.5 baked IC-LoRA structured prompts** (`[VISUAL]:` / `[SPEECH]:` / `[SOUNDS]:`, `Unscored`) |
+| [Minimax-H3-prompts/SYSTEM_PROMPT.md](Minimax-H3-prompts/SYSTEM_PROMPT.md) | **MiniMax H3 & Pika H3 Flex** structured Ref2VA, FL2VA and T2VA multimodal prompts |
 
 ## Use in LM Studio
 
@@ -37,8 +39,11 @@ not install, run or test the target image/video models.
 
 ### Example requests
 
-- **FLUX:** “Create a wide photographic image of a lighthouse on a rocky coast
-  at dusk, with soft mist and a warm light in its window.”
+- **FLUX (T2I):** “Create a wide photographic image of a lighthouse on a rocky
+  coast at dusk, with soft mist and a warm light in its window.”
+- **FLUX / Qwen (I2I / Multi-Ref):** “Image 1 is my character, image 2 is a
+  16:9 garden background. Place her standing on the path in the garden, keeping
+  her exact face and outfit.”
 - **LTX (prose):** “My start frame shows a woman seated in a room. She stands
   up and walks to the doorway in one continuous six-second shot; keep the
   camera still.”
