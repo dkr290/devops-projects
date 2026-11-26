@@ -1,6 +1,6 @@
 # ComfyUI Video & Audio Workflows Guide (RTX 3090 & RTX Spark)
 
-Complete guide for all **22 workflows** organized by model family (`LTX/`, `Minimax/`, `WAN/`, `HunyuanVideo1.5/`, `Audio/`, `Image/`). Every workflow also includes built-in **`HOW TO`** note panels directly inside ComfyUI.
+Complete guide for all **23 workflows** organized by model family (`LTX/`, `Minimax/`, `WAN/`, `HunyuanVideo1.5/`, `Audio/`, `Image/`). Every workflow also includes built-in **`HOW TO`** note panels directly inside ComfyUI.
 
 Setup notes cover:
 - **Videos:** Linux PC, NVIDIA RTX 3090 (24 GB VRAM) + 64 GB system RAM
@@ -11,7 +11,7 @@ Setup notes cover:
 
 ## 1. Which Workflow Should You Use?
 
-### LTX-2.5 & LTX-2.3 (`LTX/` — 10 workflows)
+### LTX-2.5 & LTX-2.3 (`LTX/` — 11 workflows)
 
 | Workflow | Best For | Stages / Steps | Default Images / Inputs | Audio |
 |---|---|---|---|---|
@@ -24,6 +24,7 @@ Setup notes cover:
 | [`LTX/LTX-2.5_MSR_MultiRef_TwoStage_GGUF.json`](LTX/LTX-2.5_MSR_MultiRef_TwoStage_GGUF.json) | **MSR multi-subject reference** (up to `pic1–4` + `background`) with LiconStudio MSR V2 LoRA to lock character/object identities | **2-stage** (8 + 3 steps) | Up to **5 semantic refs** (`pic1–4` + `background`) | Native audio + optional `audio_ref1/2` voice refs |
 | [`LTX/LTX-2.5_MSR_Keyframes_Dialog_TwoStage_GGUF.json`](LTX/LTX-2.5_MSR_Keyframes_Dialog_TwoStage_GGUF.json) | **MSR identity refs + keyframes + dialog** (`pic1–3` + START/MID-A/MID-B/END) | **2-stage** (8 + 3 steps) | `pic1–3` + START/END ON (`MID-A/B` bypassed) | Optional dialog audio (auto-fitted & locked) |
 | [`LTX/LTX-2.5_MSR_Keyframes_Dialog_SingleStage_GGUF.json`](LTX/LTX-2.5_MSR_Keyframes_Dialog_SingleStage_GGUF.json) | Same MSR + keyframes + dialog workflow, **1-stage only** | **1-stage only** | `pic1–3` + START/END ON (`MID-A/B` bypassed) | Optional dialog audio (auto-fitted & locked) |
+| [`LTX/LTX-2.5_V2V_TiledFusion_4K_Upscale_GGUF.json`](LTX/LTX-2.5_V2V_TiledFusion_4K_Upscale_GGUF.json) | **V2V 4K / FullHD / 8K Video Upscaler** (Lightricks Tiled Fusion + Refine Details IC-LoRA) — upscales any rendered MP4 (from LTX, Pika/MiniMax, Wan, or Hunyuan) | **8 fused steps** (`LTXVTiledFusionSampler`, `HD` or `qHD` tiles) | **1 Video MP4** (`LoadVideo`) + style-only prompt | Preserves original video audio |
 | [`LTX/LTX-2.3_I2V_ICLoRA_MotionControl_DepthUnion.json`](LTX/LTX-2.3_I2V_ICLoRA_MotionControl_DepthUnion.json) | **LTX-2.3 Image + Motion Video Control** (`IC-LoRA Union Control` — Depth via built-in MoGe 2, swappable with Canny/Pose) — 100% native ComfyUI | **8 steps** distilled (`ltx-2.3-22b-distilled-fp8`) | **1 First Frame** + **1 Control Video** (`LoadVideo` → `Video Slice` → MoGe Depth) | Native synchronized audio |
 
 ### MiniMax H3 & Pika H3 Flex (`Minimax/` — 5 workflows)
@@ -132,8 +133,9 @@ All models below work natively in ComfyUI via `UpscaleModelLoader` + `ImageUpsca
 ## 3. LTX-2.5 Setup & Usage (`LTX/`)
 
 ### Custom Nodes (`ComfyUI/custom_nodes/`)
-* **All 9 LTX-2.5 workflows:** [`ComfyUI-GGUF`](https://github.com/city96/ComfyUI-GGUF) (`UnetLoaderGGUF`)
+* **All 10 LTX-2.5 workflows:** [`ComfyUI-GGUF`](https://github.com/city96/ComfyUI-GGUF) (`UnetLoaderGGUF`)
 * **DFR workflow (`LTX-2.5_I2V_DFR_SingleImage_Audio_GGUF.json`):** Requires recent ComfyUI (`0.44.0+` recommended) with native DFR nodes (`LTXVAddGeneratedKeyframes`, `LTXVAddLatentGuide`, `LTXVFreezeLatent`).
+* **Tiled Fusion 4K Upscale (`LTX-2.5_V2V_TiledFusion_4K_Upscale_GGUF.json`):** Latest [`Lightricks/ComfyUI-LTXVideo`](https://github.com/Lightricks/ComfyUI-LTXVideo) (`LTXVTiledFusionSampler`, `LTXICLoRALoaderModelOnly`).
 * **Prompt Relay workflow (`LTX-2.5_I2V_PromptRelay_OptionalTwoStage_GGUF.json`):** [`ComfyUI-PromptRelay`](https://github.com/kijai/ComfyUI-PromptRelay) (`PromptRelaySmartEncode`) — supports both LTX (video + audio cross-attention) and Wan; do not stack with LTX Director.
 * **LTX Director workflow only:** [`WhatDreamsCost-ComfyUI`](https://github.com/WhatDreamsCost/WhatDreamsCost-ComfyUI) (latest v2.0+ with `LTXDirector`, `LTXDirectorGuide`, `LTXDirectorCropGuides`) + up-to-date ComfyUI & [`ComfyUI-LTXVideo`](https://github.com/Lightricks/ComfyUI-LTXVideo)
 * **MSR workflows (`LTX-2.5_MSR_*`) only:** [`ComfyUI-LTX2.5-MSR`](https://github.com/liconstudio/ComfyUI-LTX2.5-MSR)
@@ -149,6 +151,7 @@ Lightricks/LTX-2.5 is gated on Hugging Face: accept the license, then run `hf au
 | `models/vae/` | `ltx25_uncensored_audio_vae.safetensors` *(or official `ltx-2.5-audio-vae-bf16.safetensors`)* | 0.4 GB | All LTX-2.5 workflows |
 | `models/latent_upscale_models/` | `ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors` | 1.0 GB | DFR, OptionalTwoStage, ManualContinuation, LTXDirector, MSR TwoStage *(must be installed & selected even when Stage 2 is OFF because ComfyUI validates connected loaders)* |
 | `models/loras/` | `ltx-2.5-22b-ic-lora-pixel-spatial-upscaler-x2-1.0.safetensors` | ~1–2 GB | **DFR workflow only** (from [`Lightricks/LTX-2.5-22b-IC-LoRA-Pixel-Spatial-Upscaler`](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Pixel-Spatial-Upscaler)) |
+| `models/loras/` | `ltx-2.5-22b-ic-lora-refine-details-1.0.safetensors` | ~1–2 GB | **Tiled Fusion 4K Upscale only** (from [`Lightricks/LTX-2.5-22b-IC-LoRA-Refine-Details`](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Refine-Details)) |
 | `models/latent_upscale_models/` | `ltx-2.5-latent-temporal-upscaler-x2-bf16-1.0.safetensors` *(optional)* | ~1.0 GB | **DFR Stage 3 (48 fps) only** — OFF by default; placeholder selected so DFR runs without downloading this file until you want 48 fps |
 | `models/loras/` | `LTX-2.5-Licon-MSR-V2.safetensors` | 2.2 GB | **MSR workflows only** (`LiconStudio/LTX-2.5-Multiple-Subject-Reference`) |
 
@@ -359,7 +362,7 @@ All 3 workflows use **100% native ComfyUI core nodes** (no custom nodes required
 
 | Method | Quality | Speed | Notes |
 |---|---|---|---|
-| Lightricks `LTX-2.5_V2V_TiledFusion_Upscale.json` | Best LTX-native | Slow | FullHD/4K/8K, in `ComfyUI-LTXVideo/example_workflows/2.5` |
+| [`LTX/LTX-2.5_V2V_TiledFusion_4K_Upscale_GGUF.json`](LTX/LTX-2.5_V2V_TiledFusion_4K_Upscale_GGUF.json) | Best LTX-native | Slow | FullHD/4K/8K, adapted from Lightricks `ComfyUI-LTXVideo` for your GGUF setup (needs `ltx-2.5-22b-ic-lora-refine-details-1.0.safetensors`; use `tile_size = qHD` if `HD` hits VRAM limit at 4K) |
 | SeedVR2 | Very good, temporally consistent | Slow | Use block swap on 3090, process in frame batches |
 | `Upscale Image (using Model)` + 4x-UltraSharp / RealESRGAN | OK | Fast | Per-frame → slight flicker |
 | RIFE / FILM (`ComfyUI-Frame-Interpolation`) | – | Fast | 24 → 48 fps for smoother motion (or use DFR Stage 3) |
